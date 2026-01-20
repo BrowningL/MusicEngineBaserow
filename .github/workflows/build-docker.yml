@@ -9,7 +9,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/isrcanalytics-baserow
 
 jobs:
   build-backend:
@@ -18,10 +17,15 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image: ${{ steps.meta.outputs.tags }}
+      image_name: ${{ steps.lowercase.outputs.image_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Convert to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository_owner }}/isrcanalytics-baserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -39,7 +43,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-backend:${{ github.sha }}
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
           target: production
@@ -49,9 +53,16 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      image_name: ${{ steps.lowercase.outputs.image_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Convert to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository_owner }}/isrcanalytics-baserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -69,7 +80,7 @@ jobs:
           context: ./web-frontend
           file: ./web-frontend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-webfrontend:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-webfrontend:${{ github.sha }}
           cache-from: type=gha,scope=webfrontend
           cache-to: type=gha,mode=max,scope=webfrontend
           target: production
@@ -83,6 +94,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Convert to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository_owner }}/isrcanalytics-baserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -98,7 +114,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}
           tags: |
             type=ref,event=branch
             type=sha,prefix=
@@ -116,10 +132,10 @@ jobs:
           cache-to: type=gha,mode=max,scope=allinone
           target: prod
           build-args: |
-            BACKEND_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
-            WEBFRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-webfrontend
+            BACKEND_IMAGE=${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-backend
+            WEBFRONTEND_IMAGE=${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-webfrontend
           build-contexts: |
-            backend_image=docker-image://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }}
-            backend_image_dev=docker-image://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }}
-            web_frontend_image=docker-image://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-webfrontend:${{ github.sha }}
-            web_frontend_image_dev=docker-image://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-webfrontend:${{ github.sha }}
+            backend_image=docker-image://${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-backend:${{ github.sha }}
+            backend_image_dev=docker-image://${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-backend:${{ github.sha }}
+            web_frontend_image=docker-image://${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-webfrontend:${{ github.sha }}
+            web_frontend_image_dev=docker-image://${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-webfrontend:${{ github.sha }}
