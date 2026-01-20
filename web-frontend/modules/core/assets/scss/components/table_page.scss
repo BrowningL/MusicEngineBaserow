@@ -4,10 +4,29 @@
   flex-direction: column;
   position: absolute;
   inset: 0;
+  overflow: hidden;
 }
 
 .table-page-content {
   position: relative;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+
+  // Override layout positioning for header and content
+  // since they're now inside the flex container
+  .layout__col-2-1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .layout__col-2-2 {
+    position: absolute;
+    top: 51px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
