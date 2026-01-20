@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import SidebarUserContext from '@baserow/modules/core/components/sidebar/SidebarUserContext'
 import SidebarWithWorkspace from '@baserow/modules/core/components/sidebar/SidebarWithWorkspace'
@@ -58,7 +58,6 @@ import SidebarAdmin from '@baserow/modules/core/components/sidebar/SidebarAdmin'
 import SidebarFoot from '@baserow/modules/core/components/sidebar/SidebarFoot'
 import SidebarMenu from '@baserow/modules/core/components/sidebar/SidebarMenu'
 import SidebarAdminItem from './SidebarAdminItem.vue'
-import ViewsSidebar from '@baserow/modules/database/components/view/ViewsSidebar'
 
 export default {
   name: 'Sidebar',
@@ -69,7 +68,6 @@ export default {
     SidebarUserContext,
     SidebarMenu,
     SidebarFoot,
-    ViewsSidebar,
   },
   props: {
     applications: {
@@ -123,32 +121,6 @@ export default {
       unreadNotificationsInOtherWorkspaces:
         'notification/anyOtherWorkspaceWithUnread',
     }),
-    ...mapState({
-      allViews: (state) => state.view?.items || [],
-      selectedView: (state) => state.view?.selected || null,
-    }),
-    // ISRCAnalytics: Airtable-style layout computed properties
-    isTableViewMode() {
-      return this.$route.matched.some(
-        (r) => r.name === 'database-table' || r.name === 'database-table-row'
-      )
-    },
-    currentDatabase() {
-      if (!this.isTableViewMode) return null
-      const databaseId = parseInt(this.$route.params.databaseId)
-      return this.applications.find((app) => app.id === databaseId) || null
-    },
-    currentTable() {
-      if (!this.isTableViewMode || !this.currentDatabase) return null
-      const tableId = parseInt(this.$route.params.tableId)
-      return (
-        this.currentDatabase.tables?.find((t) => t.id === tableId) || null
-      )
-    },
-    currentViews() {
-      if (!this.isTableViewMode) return []
-      return this.allViews || []
-    },
   },
   created() {
     // Checks whether the rendered page is an admin page. If so, switch the left sidebar
@@ -165,19 +137,6 @@ export default {
     setShowAdmin(value) {
       this.showAdmin = value
       this.$forceUpdate()
-    },
-    // ISRCAnalytics: Navigate to selected view
-    navigateToView(view) {
-      if (!this.currentDatabase || !this.currentTable) return
-
-      this.$nuxt.$router.push({
-        name: 'database-table',
-        params: {
-          databaseId: this.currentDatabase.id,
-          tableId: this.currentTable.id,
-          viewId: view.id,
-        },
-      })
     },
   },
 }
