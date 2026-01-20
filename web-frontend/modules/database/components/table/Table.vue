@@ -19,11 +19,11 @@
       <header
         ref="header"
         class="layout__col-2-1 header"
-      :class="[
-        { 'header--overflow': headerOverflow },
-        getViewHeaderClassNames(view),
-      ]"
-    >
+        :class="[
+          { 'header--overflow': headerOverflow },
+          getViewHeaderClassNames(view),
+        ]"
+      >
       <div v-show="tableLoading" class="header__loading"></div>
       <ul v-if="!tableLoading" class="header__filter">
         <li v-if="showLogo" class="header__filter-item">

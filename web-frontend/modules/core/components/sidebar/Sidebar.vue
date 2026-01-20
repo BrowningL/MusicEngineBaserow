@@ -17,41 +17,28 @@
       <SidebarAdmin v-show="!collapsed"></SidebarAdmin>
     </template>
     <template v-if="!showAdmin">
-      <!-- ISRCAnalytics: Airtable-style layout - show ViewsSidebar when viewing a table -->
-      <template v-if="isTableViewMode && currentDatabase && currentTable">
-        <ViewsSidebar
-          v-show="!collapsed"
-          :database="currentDatabase"
-          :table="currentTable"
-          :views="currentViews"
-          :read-only="false"
-          @selected-view="navigateToView"
-        />
-      </template>
-      <template v-else>
-        <!-- ISRCAnalytics: Removed workspace selector entirely -->
+      <!-- ISRCAnalytics: Removed workspace selector entirely -->
 
-        <SidebarMenu
-          v-show="!collapsed"
-          v-if="hasSelectedWorkspace"
-          :selected-workspace="selectedWorkspace"
-          :right-sidebar-open="rightSidebarOpen"
-          @open-workspace-search="$emit('open-workspace-search')"
-        ></SidebarMenu>
+      <SidebarMenu
+        v-show="!collapsed"
+        v-if="hasSelectedWorkspace"
+        :selected-workspace="selectedWorkspace"
+        :right-sidebar-open="rightSidebarOpen"
+        @open-workspace-search="$emit('open-workspace-search')"
+      ></SidebarMenu>
 
-        <SidebarWithWorkspace
-          v-show="!collapsed"
-          v-if="hasSelectedWorkspace"
-          :applications="applications"
-          :selected-workspace="selectedWorkspace"
-        ></SidebarWithWorkspace>
+      <SidebarWithWorkspace
+        v-show="!collapsed"
+        v-if="hasSelectedWorkspace"
+        :applications="applications"
+        :selected-workspace="selectedWorkspace"
+      ></SidebarWithWorkspace>
 
-        <SidebarWithoutWorkspace
-          v-show="!collapsed"
-          v-if="!hasSelectedWorkspace"
-          :workspaces="workspaces"
-        ></SidebarWithoutWorkspace>
-      </template>
+      <SidebarWithoutWorkspace
+        v-show="!collapsed"
+        v-if="!hasSelectedWorkspace"
+        :workspaces="workspaces"
+      ></SidebarWithoutWorkspace>
     </template>
     <SidebarFoot
       :collapsed="collapsed"
