@@ -1,12 +1,13 @@
 <template>
+  <!-- ISRCAnalytics: Updated branding from Baserow to ISRCAnalytics -->
   <a
-    href="https://baserow.io"
+    href="https://isrcanalytics.com"
     target="_blank"
-    title="Baserow - open source no-code database tool and Airtable alternative"
+    title="ISRCAnalytics - Music Industry Data Platform"
   >
     <Logo
       height="14"
-      alt="Baserow - open source no-code database tool and Airtable alternative"
+      alt="ISRCAnalytics - Music Industry Data Platform"
     />
   </a>
 </template>

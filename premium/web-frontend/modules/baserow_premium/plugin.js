@@ -7,17 +7,11 @@ import {
 } from '@baserow_premium/tableExporterTypes'
 import { LicensesAdminType } from '@baserow_premium/adminTypes'
 import rowCommentsStore from '@baserow_premium/store/row_comments'
-import kanbanStore from '@baserow_premium/store/view/kanban'
-import calendarStore from '@baserow_premium/store/view/calendar'
-import timelineStore from '@baserow_premium/store/view/timeline'
+// ISRCAnalytics: Removed Kanban, Calendar, Timeline view stores
 import impersonatingStore from '@baserow_premium/store/impersonating'
 import { PremiumDatabaseApplicationType } from '@baserow_premium/applicationTypes'
 import { registerRealtimeEvents } from '@baserow_premium/realtime'
-import {
-  KanbanViewType,
-  CalendarViewType,
-  TimelineViewType,
-} from '@baserow_premium/viewTypes'
+// ISRCAnalytics: Removed Kanban, Calendar, Timeline view types
 
 import {
   LeftBorderColorViewDecoratorType,
@@ -28,7 +22,7 @@ import {
   SingleSelectColorValueProviderType,
   ConditionalColorValueProviderType,
 } from '@baserow_premium/decoratorValueProviders'
-import { FormViewSurveyModeType } from '@baserow_premium/formViewModeTypes'
+// ISRCAnalytics: Removed FormViewSurveyModeType
 import {
   TextFieldType,
   LongTextFieldType,
@@ -60,13 +54,9 @@ import {
   VarianceViewAggregationType,
   MedianViewAggregationType,
 } from '@baserow/modules/database/viewAggregationTypes'
-import {
-  ChartWidgetType,
-  PieChartWidgetType,
-} from '@baserow_premium/dashboard/widgetTypes'
-import { SingleSelectFormattingType } from '@baserow_premium/dashboard/chartFieldFormatting'
-import { GenerateAIValuesJobType } from '@baserow_premium/jobTypes'
-import { GenerateAIValuesContextItemType } from '@baserow_premium/fieldContextItemTypes'
+// ISRCAnalytics: Removed ChartWidgetType, PieChartWidgetType
+// ISRCAnalytics: Removed SingleSelectFormattingType (chart formatting)
+// ISRCAnalytics: Removed GenerateAIValuesJobType, GenerateAIValuesContextItemType
 import en from '@baserow_premium/locales/en.json'
 import fr from '@baserow_premium/locales/fr.json'
 import nl from '@baserow_premium/locales/nl.json'
@@ -84,26 +74,18 @@ import {
 } from '@baserow_premium/notificationTypes'
 import { CommentsRowModalSidebarType } from '@baserow_premium/rowModalSidebarTypes'
 import {
-  AIFieldType,
+  // ISRCAnalytics: Removed AIFieldType
   PremiumFormulaFieldType,
 } from '@baserow_premium/fieldTypes'
+// ISRCAnalytics: Removed AI field output types
 import {
-  ChoiceAIFieldOutputType,
-  TextAIFieldOutputType,
-} from '@baserow_premium/aiFieldOutputTypes'
-import {
-  AIPaidFeature,
-  CalendarViewPaidFeature,
+  // ISRCAnalytics: Removed AI, Kanban, Calendar, Timeline, Survey, Chart paid features
   ExportsPaidFeature,
-  FormSurveyModePaidFeature,
-  KanbanViewPaidFeature,
   PersonalViewsPaidFeature,
   PublicLogoRemovalPaidFeature,
   RowColoringPaidFeature,
   RowCommentsPaidFeature,
   RowNotificationsPaidFeature,
-  TimelineViewPaidFeature,
-  ChartPaidFeature,
 } from '@baserow_premium/paidFeatures'
 
 export default (context) => {
@@ -140,15 +122,10 @@ export default (context) => {
   }
 
   store.registerModule('row_comments', rowCommentsStore)
-  store.registerModule('page/view/kanban', kanbanStore)
-  store.registerModule('page/view/calendar', calendarStore)
-  store.registerModule('page/view/timeline', timelineStore)
-  store.registerModule('template/view/kanban', kanbanStore)
-  store.registerModule('template/view/calendar', calendarStore)
-  store.registerModule('template/view/timeline', timelineStore)
+  // ISRCAnalytics: Removed Kanban, Calendar, Timeline view store registrations
   store.registerModule('impersonating', impersonatingStore)
 
-  app.$registry.registerNamespace('aiFieldOutputType')
+  // ISRCAnalytics: Removed aiFieldOutputType namespace registration
   app.$registry.registerNamespace('paidFeature')
 
   app.$registry.register('plugin', new PremiumPlugin(context))
@@ -157,11 +134,9 @@ export default (context) => {
   app.$registry.register('exporter', new XMLTableExporter(context))
   app.$registry.register('exporter', new ExcelTableExporterType(context))
   app.$registry.register('exporter', new FileTableExporter(context))
-  app.$registry.register('field', new AIFieldType(context))
+  // ISRCAnalytics: Removed AIFieldType registration
   app.$registry.register('field', new PremiumFormulaFieldType(context))
-  app.$registry.register('view', new KanbanViewType(context))
-  app.$registry.register('view', new CalendarViewType(context))
-  app.$registry.register('view', new TimelineViewType(context))
+  // ISRCAnalytics: Removed Kanban, Calendar, Timeline view registrations
 
   app.$registry.register(
     'viewDecorator',
@@ -186,7 +161,7 @@ export default (context) => {
     new PersonalViewOwnershipType(context)
   )
 
-  app.$registry.register('formViewMode', new FormViewSurveyModeType(context))
+  // ISRCAnalytics: Removed FormViewSurveyModeType registration
 
   app.$registry.register('license', new PremiumLicenseType(context))
 
@@ -217,21 +192,7 @@ export default (context) => {
     new CommentsRowModalSidebarType(context)
   )
 
-  app.$registry.register(
-    'aiFieldOutputType',
-    new TextAIFieldOutputType(context)
-  )
-  app.$registry.register(
-    'aiFieldOutputType',
-    new ChoiceAIFieldOutputType(context)
-  )
-
-  app.$registry.register('job', new GenerateAIValuesJobType(context))
-
-  app.$registry.register(
-    'fieldContextItem',
-    new GenerateAIValuesContextItemType(context)
-  )
+  // ISRCAnalytics: Removed AI field output types, AI job type, and AI context item registrations
 
   app.$registry.register(
     'groupedAggregation',
@@ -343,31 +304,21 @@ export default (context) => {
     new AutonumberFieldType(context)
   )
 
-  app.$registry.register('dashboardWidget', new ChartWidgetType(context))
-  app.$registry.register('dashboardWidget', new PieChartWidgetType(context))
-  app.$registry.register(
-    'chartFieldFormatting',
-    new SingleSelectFormattingType(context)
-  )
+  // ISRCAnalytics: Removed Chart widgets and chart field formatting registrations
 
-  app.$registry.register('paidFeature', new KanbanViewPaidFeature(context))
-  app.$registry.register('paidFeature', new CalendarViewPaidFeature(context))
-  app.$registry.register('paidFeature', new TimelineViewPaidFeature(context))
+  // ISRCAnalytics: Only register features we want to keep (removed Kanban, Calendar, Timeline, AI, Survey, Chart)
   app.$registry.register('paidFeature', new RowColoringPaidFeature(context))
   app.$registry.register('paidFeature', new RowCommentsPaidFeature(context))
   app.$registry.register(
     'paidFeature',
     new RowNotificationsPaidFeature(context)
   )
-  app.$registry.register('paidFeature', new AIPaidFeature(context))
   app.$registry.register('paidFeature', new PersonalViewsPaidFeature(context))
   app.$registry.register('paidFeature', new ExportsPaidFeature(context))
-  app.$registry.register('paidFeature', new FormSurveyModePaidFeature(context))
   app.$registry.register(
     'paidFeature',
     new PublicLogoRemovalPaidFeature(context)
   )
-  app.$registry.register('paidFeature', new ChartPaidFeature(context))
 
-  app.$registry.registerNamespace('timelineFieldRules')
+  // ISRCAnalytics: Removed timelineFieldRules namespace registration
 }

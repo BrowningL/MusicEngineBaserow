@@ -104,14 +104,9 @@ export class LicenseHandler {
   }
 
   hasFeature(feature, forSpecificWorkspace = null) {
-    return (
-      this.userHasFeatureEnabledInstanceWide(feature) ||
-      (forSpecificWorkspace
-        ? this.userHasFeatureEnabledForWorkspaceOnly(
-            feature,
-            forSpecificWorkspace
-          )
-        : false)
-    )
+    // ISRCAnalytics: Enable all premium features without license
+    // This enables: table export, personal views, row notifications,
+    // row comments, row coloring, and public logo removal
+    return true
   }
 }

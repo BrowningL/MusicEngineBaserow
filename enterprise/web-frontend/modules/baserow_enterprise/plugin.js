@@ -68,18 +68,8 @@ import {
 } from '@baserow_enterprise/notificationTypes'
 import { RowsEnterViewWebhookEventType } from '@baserow_enterprise/webhookEventTypes'
 import {
-  AdvancedWebhooksPaidFeature,
-  AuditLogPaidFeature,
-  BuilderBrandingPaidFeature,
-  BuilderCustomCodePaidFeature,
+  // ISRCAnalytics: Only keep BuilderFileInputElementPaidFeature, remove enterprise upsells
   BuilderFileInputElementPaidFeature,
-  CoBrandingPaidFeature,
-  DataSyncPaidFeature,
-  DateDependencyPaidFeature,
-  FieldLevelPermissionsPaidFeature,
-  RBACPaidFeature,
-  SSOPaidFeature,
-  SupportPaidFeature,
 } from '@baserow_enterprise/paidFeatures'
 import { FieldPermissionsContextItemType } from '@baserow_enterprise/fieldContextItemTypes'
 import {
@@ -216,31 +206,12 @@ export default (context) => {
     new RowsEnterViewWebhookEventType(context)
   )
 
-  app.$registry.register('paidFeature', new SSOPaidFeature(context))
-  app.$registry.register('paidFeature', new AuditLogPaidFeature(context))
-  app.$registry.register('paidFeature', new RBACPaidFeature(context))
-  app.$registry.register('paidFeature', new DataSyncPaidFeature(context))
-  app.$registry.register('paidFeature', new CoBrandingPaidFeature(context))
-  app.$registry.register(
-    'paidFeature',
-    new AdvancedWebhooksPaidFeature(context)
-  )
-  app.$registry.register(
-    'paidFeature',
-    new FieldLevelPermissionsPaidFeature(context)
-  )
-  app.$registry.register('paidFeature', new SupportPaidFeature(context))
-  app.$registry.register('paidFeature', new BuilderBrandingPaidFeature(context))
-  app.$registry.register(
-    'paidFeature',
-    new BuilderCustomCodePaidFeature(context)
-  )
+  // ISRCAnalytics: Removed most enterprise paid feature registrations
+  // Only keeping file input element feature
   app.$registry.register(
     'paidFeature',
     new BuilderFileInputElementPaidFeature(context)
   )
-
-  app.$registry.register('paidFeature', new DateDependencyPaidFeature(context))
   app.$registry.register(
     'timelineFieldRules',
     new DateDependencyTimelineComponent(context)
