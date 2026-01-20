@@ -47,6 +47,8 @@ import WorkspaceInvitation from '@baserow/modules/core/components/workspace/Work
 /**
  * The main purpose of the dashboard is to either redirect the user to the correct
  * workspace homepage or show a message if the user doesn't have a workspace.
+ *
+ * ISRCAnalytics: Modified to redirect directly to first database table.
  */
 export default {
   components: {
@@ -58,9 +60,38 @@ export default {
   async asyncData({ query, store, redirect }) {
     const selectedWorkspace = store.getters['workspace/getSelected']
     const allWorkspaces = store.getters['workspace/getAll']
+    const applications = store.getters['application/getAll']
 
-    // If there is a selected workspace, we'll redirect the user to that homepage.
+    // ISRCAnalytics: Helper to find first table in a workspace
+    const findFirstTable = (workspaceId) => {
+      const databases = applications
+        .filter((a) => a.type === 'database' && a.workspace?.id === workspaceId)
+        .sort((a, b) => a.order - b.order)
+
+      if (databases.length > 0) {
+        const firstDatabase = databases[0]
+        const tables = firstDatabase.tables || []
+        if (tables.length > 0) {
+          const firstTable = [...tables].sort((a, b) => a.order - b.order)[0]
+          return { database: firstDatabase, table: firstTable }
+        }
+      }
+      return null
+    }
+
+    // If there is a selected workspace, redirect directly to its first table
     if (Object.keys(selectedWorkspace).length > 0) {
+      const result = findFirstTable(selectedWorkspace.id)
+      if (result) {
+        return redirect({
+          name: 'database-table',
+          params: {
+            databaseId: result.database.id,
+            tableId: result.table.id,
+          },
+        })
+      }
+      // Fallback to workspace page if no tables
       return redirect({
         name: 'workspace',
         params: {
@@ -70,9 +101,19 @@ export default {
       })
     }
 
-    // If there isn't a selected workspace, but one does exist, we'll select the first
-    // one.
+    // If there isn't a selected workspace, but one does exist, redirect to first table
     if (allWorkspaces.length > 0) {
+      const result = findFirstTable(allWorkspaces[0].id)
+      if (result) {
+        return redirect({
+          name: 'database-table',
+          params: {
+            databaseId: result.database.id,
+            tableId: result.table.id,
+          },
+        })
+      }
+      // Fallback to workspace page if no tables
       return redirect({
         name: 'workspace',
         params: {
