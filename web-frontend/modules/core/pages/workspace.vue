@@ -173,7 +173,7 @@ export default {
    */
 
   async asyncData(context) {
-    const { error, app, store, params, redirect } = context
+    const { error, app, store, params } = context
     let workspace = null
 
     try {
@@ -183,27 +183,6 @@ export default {
       )
     } catch (e) {
       return error({ statusCode: 404, message: 'Workspace not found.' })
-    }
-
-    // ISRCAnalytics: Auto-redirect to first database's first table
-    const applications = store.getters['application/getAllOfWorkspace'](workspace)
-    const databases = applications
-      .filter((app) => app.type === 'database')
-      .sort((a, b) => a.order - b.order)
-
-    if (databases.length > 0) {
-      const firstDatabase = databases[0]
-      const tables = firstDatabase.tables || []
-      if (tables.length > 0) {
-        const firstTable = [...tables].sort((a, b) => a.order - b.order)[0]
-        return redirect({
-          name: 'database-table',
-          params: {
-            databaseId: firstDatabase.id,
-            tableId: firstTable.id,
-          },
-        })
-      }
     }
 
     try {
@@ -252,6 +231,10 @@ export default {
     return {
       title: this.$t('dashboard.title'),
     }
+  },
+  // ISRCAnalytics: Auto-redirect to first database's first table
+  mounted() {
+    this.redirectToFirstTable()
   },
   computed: {
     ...mapGetters({
@@ -308,6 +291,26 @@ export default {
     },
   },
   methods: {
+    // ISRCAnalytics: Redirect to first database's first table
+    redirectToFirstTable() {
+      const databases = this.orderedApplicationsInSelectedWorkspace
+        .filter((app) => app.type === 'database')
+
+      if (databases.length > 0) {
+        const firstDatabase = databases[0]
+        const tables = firstDatabase.tables || []
+        if (tables.length > 0) {
+          const firstTable = [...tables].sort((a, b) => a.order - b.order)[0]
+          this.$router.push({
+            name: 'database-table',
+            params: {
+              databaseId: firstDatabase.id,
+              tableId: firstTable.id,
+            },
+          })
+        }
+      }
+    },
     getApplicationType(application) {
       return this.$registry.get('application', application.type)
     },
