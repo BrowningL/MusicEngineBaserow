@@ -54,25 +54,7 @@
           @click="$refs.context.hide()"
         ></SidebarDuplicateApplicationContextItem>
       </li>
-      <li
-        v-if="
-          $hasPermission(
-            'application.create_snapshot',
-            application,
-            application.workspace.id
-          )
-        "
-        class="context__menu-item"
-      >
-        <a class="context__menu-item-link" @click="openSnapshots">
-          <i class="context__menu-item-icon baserow-icon-history"></i>
-          {{ $t('sidebarApplication.snapshots') }}
-        </a>
-      </li>
-      <SnapshotsModal
-        ref="snapshotsModal"
-        :application="application"
-      ></SnapshotsModal>
+      <!-- ISRCAnalytics: Removed Snapshots menu item -->
       <li
         v-if="
           applicationType.supportsTrash() &&
@@ -126,14 +108,12 @@
 <script>
 import { notifyIf } from '@baserow/modules/core/utils/error'
 import TrashModal from '@baserow/modules/core/components/trash/TrashModal'
-import SnapshotsModal from '@baserow/modules/core/components/snapshots/SnapshotsModal'
 import SidebarDuplicateApplicationContextItem from '@baserow/modules/core/components/sidebar/SidebarDuplicateApplicationContextItem.vue'
 import applicationContext from '@baserow/modules/core/mixins/applicationContext'
 
 export default {
   components: {
     TrashModal,
-    SnapshotsModal,
     SidebarDuplicateApplicationContextItem,
   },
   mixins: [applicationContext],
@@ -200,10 +180,6 @@ export default {
     showApplicationTrashModal() {
       this.$refs.context.hide()
       this.$refs.applicationTrashModal.show()
-    },
-    openSnapshots() {
-      this.$refs.context.hide()
-      this.$refs.snapshotsModal.show()
     },
     handleRename() {
       this.$refs.context.hide()

@@ -62,21 +62,7 @@
             {{ $t('sidebarItem.exportTable') }}
           </a>
         </li>
-        <li
-          v-if="
-            $hasPermission(
-              'database.table.create_webhook',
-              table,
-              database.workspace.id
-            )
-          "
-          class="context__menu-item"
-        >
-          <a class="context__menu-item-link" @click="openWebhookModal()">
-            <i class="context__menu-item-icon iconoir-globe"></i>
-            {{ $t('sidebarItem.webhooks') }}
-          </a>
-        </li>
+        <!-- ISRCAnalytics: Removed webhooks menu item -->
         <li
           v-if="
             table.data_sync &&
