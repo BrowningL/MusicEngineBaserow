@@ -64,47 +64,16 @@
         </ul>
       </div>
     </div>
-    <div
-      v-if="
-        $hasPermission(
-          'workspace.create_application',
-          selectedWorkspace,
-          selectedWorkspace.id
-        )
-      "
-      class="sidebar__new-wrapper"
-      :class="{
-        'sidebar__new-wrapper--separator': hasItems,
-      }"
-      data-highlight="create-new"
-    >
-      <a
-        ref="createApplicationContextLink"
-        class="sidebar__new"
-        @click="
-          $refs.createApplicationContext.toggle(
-            $refs.createApplicationContextLink
-          )
-        "
-      >
-        <i class="sidebar__new-icon iconoir-plus"></i>
-        {{ $t('action.createNew') }}...
-      </a>
-    </div>
-    <CreateApplicationContext
-      ref="createApplicationContext"
-      :workspace="selectedWorkspace"
-    ></CreateApplicationContext>
+<!-- ISRCAnalytics: Removed "Add new..." button and CreateApplicationContext -->
   </div>
 </template>
 
 <script>
 import { notifyIf } from '@baserow/modules/core/utils/error'
-import CreateApplicationContext from '@baserow/modules/core/components/application/CreateApplicationContext'
 
 export default {
   name: 'SidebarWithWorkspace',
-  components: { CreateApplicationContext },
+  components: {},
   props: {
     applications: {
       type: Array,
