@@ -17,17 +17,7 @@
       <SidebarAdmin v-show="!collapsed"></SidebarAdmin>
     </template>
     <template v-if="!showAdmin">
-      <!-- ISRCAnalytics: Removed workspace selector dropdown, just show workspace name -->
-      <div class="sidebar__workspaces-selector" style="cursor: default;">
-        <Avatar
-          :initials="selectedWorkspace.name || name | nameAbbreviation"
-        ></Avatar>
-        <span
-          v-show="!collapsed"
-          class="sidebar__workspaces-selector-selected-workspace"
-          >{{ selectedWorkspace.name || name }}</span
-        >
-      </div>
+      <!-- ISRCAnalytics: Removed workspace selector entirely -->
 
       <SidebarMenu
         v-show="!collapsed"
