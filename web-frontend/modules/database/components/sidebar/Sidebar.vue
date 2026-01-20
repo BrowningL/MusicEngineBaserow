@@ -1,21 +1,9 @@
 <template>
-  <div>
-    <!-- ISRCAnalytics: Airtable-style - show ViewsSidebar when table is selected -->
-    <ViewsSidebar
-      v-if="isTableViewMode && currentTable"
-      :database="application"
-      :table="currentTable"
-      :views="views"
-      :read-only="false"
-      @selected-view="navigateToView"
-    />
-    <!-- Original database sidebar for non-table views -->
-    <SidebarApplication
-      v-else
-      :workspace="workspace"
-      :application="application"
-      @selected="selected"
-    >
+  <SidebarApplication
+    :workspace="workspace"
+    :application="application"
+    @selected="selected"
+  >
     <template #context>
       <li class="context__menu-item">
         <nuxt-link
@@ -77,17 +65,15 @@
       </a>
       <CreateTableModal ref="createTableModal" :database="application" />
     </template>
-    </SidebarApplication>
-  </div>
+  </SidebarApplication>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { notifyIf } from '@baserow/modules/core/utils/error'
 import SidebarItem from '@baserow/modules/database/components/sidebar/SidebarItem'
 import SidebarApplication from '@baserow/modules/core/components/sidebar/SidebarApplication'
 import CreateTableModal from '@baserow/modules/database/components/table/CreateTableModal'
-import ViewsSidebar from '@baserow/modules/database/components/view/ViewsSidebar'
 
 export default {
   name: 'Sidebar',
@@ -95,7 +81,6 @@ export default {
     CreateTableModal,
     SidebarApplication,
     SidebarItem,
-    ViewsSidebar,
   },
   props: {
     application: {
@@ -121,21 +106,6 @@ export default {
       )
     },
     ...mapGetters({ isAppSelected: 'application/isSelected' }),
-    ...mapState({
-      views: (state) => state.view?.items || [],
-    }),
-    // ISRCAnalytics: Check if currently viewing a table
-    isTableViewMode() {
-      return this.$route.matched.some(
-        (r) => r.name === 'database-table' || r.name === 'database-table-row'
-      )
-    },
-    // ISRCAnalytics: Get current table from route
-    currentTable() {
-      if (!this.isTableViewMode) return null
-      const tableId = parseInt(this.$route.params.tableId)
-      return this.application.tables?.find((t) => t.id === tableId) || null
-    },
   },
   methods: {
     async selected(application) {
@@ -158,19 +128,6 @@ export default {
     },
     getPendingJobComponent(job) {
       return this.$registry.get('job', job.type).getSidebarComponent()
-    },
-    // ISRCAnalytics: Navigate to selected view
-    navigateToView(view) {
-      if (!this.currentTable) return
-
-      this.$nuxt.$router.push({
-        name: 'database-table',
-        params: {
-          databaseId: this.application.id,
-          tableId: this.currentTable.id,
-          viewId: view.id,
-        },
-      })
     },
   },
 }
