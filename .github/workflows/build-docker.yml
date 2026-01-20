@@ -46,7 +46,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-backend:${{ github.sha }}
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
-          target: production
+          target: prod
 
   build-webfrontend:
     runs-on: ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-webfrontend:${{ github.sha }}
           cache-from: type=gha,scope=webfrontend
           cache-to: type=gha,mode=max,scope=webfrontend
-          target: production
+          target: prod
 
   build-allinone:
     runs-on: ubuntu-latest
