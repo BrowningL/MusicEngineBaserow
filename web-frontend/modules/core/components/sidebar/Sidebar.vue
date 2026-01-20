@@ -17,28 +17,41 @@
       <SidebarAdmin v-show="!collapsed"></SidebarAdmin>
     </template>
     <template v-if="!showAdmin">
-      <!-- ISRCAnalytics: Removed workspace selector entirely -->
+      <!-- ISRCAnalytics: Airtable-style layout - show ViewsSidebar when viewing a table -->
+      <template v-if="isTableViewMode && currentDatabase && currentTable">
+        <ViewsSidebar
+          v-show="!collapsed"
+          :database="currentDatabase"
+          :table="currentTable"
+          :views="currentViews"
+          :read-only="false"
+          @selected-view="navigateToView"
+        />
+      </template>
+      <template v-else>
+        <!-- ISRCAnalytics: Removed workspace selector entirely -->
 
-      <SidebarMenu
-        v-show="!collapsed"
-        v-if="hasSelectedWorkspace"
-        :selected-workspace="selectedWorkspace"
-        :right-sidebar-open="rightSidebarOpen"
-        @open-workspace-search="$emit('open-workspace-search')"
-      ></SidebarMenu>
+        <SidebarMenu
+          v-show="!collapsed"
+          v-if="hasSelectedWorkspace"
+          :selected-workspace="selectedWorkspace"
+          :right-sidebar-open="rightSidebarOpen"
+          @open-workspace-search="$emit('open-workspace-search')"
+        ></SidebarMenu>
 
-      <SidebarWithWorkspace
-        v-show="!collapsed"
-        v-if="hasSelectedWorkspace"
-        :applications="applications"
-        :selected-workspace="selectedWorkspace"
-      ></SidebarWithWorkspace>
+        <SidebarWithWorkspace
+          v-show="!collapsed"
+          v-if="hasSelectedWorkspace"
+          :applications="applications"
+          :selected-workspace="selectedWorkspace"
+        ></SidebarWithWorkspace>
 
-      <SidebarWithoutWorkspace
-        v-show="!collapsed"
-        v-if="!hasSelectedWorkspace"
-        :workspaces="workspaces"
-      ></SidebarWithoutWorkspace>
+        <SidebarWithoutWorkspace
+          v-show="!collapsed"
+          v-if="!hasSelectedWorkspace"
+          :workspaces="workspaces"
+        ></SidebarWithoutWorkspace>
+      </template>
     </template>
     <SidebarFoot
       :collapsed="collapsed"
@@ -49,15 +62,17 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 import SidebarUserContext from '@baserow/modules/core/components/sidebar/SidebarUserContext'
+import { getDefaultView } from '@baserow/modules/database/utils/view'
 import SidebarWithWorkspace from '@baserow/modules/core/components/sidebar/SidebarWithWorkspace'
 import SidebarWithoutWorkspace from '@baserow/modules/core/components/sidebar/SidebarWithoutWorkspace'
 import SidebarAdmin from '@baserow/modules/core/components/sidebar/SidebarAdmin'
 import SidebarFoot from '@baserow/modules/core/components/sidebar/SidebarFoot'
 import SidebarMenu from '@baserow/modules/core/components/sidebar/SidebarMenu'
 import SidebarAdminItem from './SidebarAdminItem.vue'
+import ViewsSidebar from '@baserow/modules/database/components/view/ViewsSidebar'
 
 export default {
   name: 'Sidebar',
@@ -68,6 +83,7 @@ export default {
     SidebarUserContext,
     SidebarMenu,
     SidebarFoot,
+    ViewsSidebar,
   },
   props: {
     applications: {
@@ -121,6 +137,32 @@ export default {
       unreadNotificationsInOtherWorkspaces:
         'notification/anyOtherWorkspaceWithUnread',
     }),
+    ...mapState({
+      allViews: (state) => state.view.items,
+      selectedView: (state) => state.view.selected,
+    }),
+    // ISRCAnalytics: Airtable-style layout computed properties
+    isTableViewMode() {
+      return this.$route.matched.some(
+        (r) => r.name === 'database-table' || r.name === 'database-table-row'
+      )
+    },
+    currentDatabase() {
+      if (!this.isTableViewMode) return null
+      const databaseId = parseInt(this.$route.params.databaseId)
+      return this.applications.find((app) => app.id === databaseId) || null
+    },
+    currentTable() {
+      if (!this.isTableViewMode || !this.currentDatabase) return null
+      const tableId = parseInt(this.$route.params.tableId)
+      return (
+        this.currentDatabase.tables?.find((t) => t.id === tableId) || null
+      )
+    },
+    currentViews() {
+      if (!this.isTableViewMode) return []
+      return this.allViews || []
+    },
   },
   created() {
     // Checks whether the rendered page is an admin page. If so, switch the left sidebar
@@ -137,6 +179,19 @@ export default {
     setShowAdmin(value) {
       this.showAdmin = value
       this.$forceUpdate()
+    },
+    // ISRCAnalytics: Navigate to selected view
+    navigateToView(view) {
+      if (!this.currentDatabase || !this.currentTable) return
+
+      this.$nuxt.$router.push({
+        name: 'database-table',
+        params: {
+          databaseId: this.currentDatabase.id,
+          tableId: this.currentTable.id,
+          viewId: view.id,
+        },
+      })
     },
   },
 }

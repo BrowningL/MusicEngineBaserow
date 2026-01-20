@@ -1,5 +1,15 @@
 <template>
-  <div>
+  <div class="table-layout">
+    <!-- ISRCAnalytics: Airtable-style table tabs bar -->
+    <TableTabsBar
+      v-if="!isPublic && database.tables"
+      :database="database"
+      :tables="database.tables"
+      :selected-table-id="table.id"
+      :read-only="readOnly"
+    />
+
+    <!-- Toolbar header with filter/sort/group options -->
     <header
       ref="header"
       class="layout__col-2-1 header"
@@ -13,65 +23,7 @@
         <li v-if="showLogo" class="header__filter-item">
           <ExternalLinkBaserowLogo class="header__filter-logo" />
         </li>
-        <li class="header__filter-item header__filter-item--grids">
-          <a
-            ref="viewsSelectToggle"
-            class="header__filter-link active"
-            :class="{ 'header__filter-link--disabled': views === null }"
-            data-highlight="views"
-            @click="views !== null && openTableViewsContext()"
-          >
-            <template v-if="hasSelectedView">
-              <i
-                class="header__filter-icon header-filter-icon--view"
-                :class="`${view._.type.colorClass} ${view._.type.iconClass}`"
-              ></i>
-              <span class="header__filter-name header__filter-name--forced">
-                <EditableViewName ref="rename" :view="view"></EditableViewName>
-              </span>
-              <i
-                v-if="views !== null"
-                class="header__sub-icon iconoir-nav-arrow-down"
-              ></i>
-            </template>
-            <template v-else-if="view !== null">
-              {{ $t('table.chooseView') }}
-              <i class="header__sub-icon iconoir-nav-arrow-down"></i>
-            </template>
-          </a>
-          <ViewsContext
-            v-if="views !== null"
-            ref="viewsContext"
-            :database="database"
-            :table="table"
-            :views="views"
-            :read-only="readOnly"
-            :header-overflow="headerOverflow"
-            @selected-view="$emit('selected-view', $event)"
-          ></ViewsContext>
-        </li>
-        <li
-          v-if="hasSelectedView && !readOnly && showViewContext"
-          class="header__filter-item header__filter-item--no-margin-left"
-        >
-          <a
-            ref="viewSelectToggle"
-            class="header__filter-link"
-            data-highlight="view-options"
-            @click="openTableViewContext"
-          >
-            <i class="header__filter-icon baserow-icon-more-vertical"></i>
-          </a>
-          <ViewContext
-            ref="viewContext"
-            :database="database"
-            :view="view"
-            :table="table"
-            :views="views"
-            @enable-rename="$refs.rename.edit()"
-          >
-          </ViewContext>
-        </li>
+        <!-- ISRCAnalytics: Removed view selector dropdown - views now in sidebar -->
         <component
           :is="component"
           v-for="(component, index) in getAdditionalTableHeaderComponents(
@@ -252,6 +204,7 @@ import ExternalLinkBaserowLogo from '@baserow/modules/core/components/ExternalLi
 import ViewGroupBy from '@baserow/modules/database/components/view/ViewGroupBy'
 import DefaultErrorPage from '@baserow/modules/core/components/DefaultErrorPage'
 import { waitFor } from '@baserow/modules/core/utils/queue'
+import TableTabsBar from '@baserow/modules/database/components/table/TableTabsBar'
 
 /**
  * This page component is the skeleton for a table. Depending on the selected view it
@@ -270,6 +223,7 @@ export default {
     ViewSort,
     ViewSearch,
     ViewContext,
+    TableTabsBar,
   },
   /**
    * Because there is no hook that is called before the route changes, we need the

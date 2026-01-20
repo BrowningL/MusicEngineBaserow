@@ -1,0 +1,232 @@
+// ISRCAnalytics: Airtable-style views sidebar
+.views-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $palette-neutral-25;
+  overflow: hidden;
+}
+
+.views-sidebar__header {
+  padding: 12px;
+  border-bottom: 1px solid $palette-neutral-200;
+  flex-shrink: 0;
+}
+
+.views-sidebar__create-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $palette-neutral-900;
+  border-radius: $rounded-md;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($palette-neutral-1300, 0.04);
+    text-decoration: none;
+  }
+
+  i {
+    font-size: 16px;
+    color: $palette-neutral-600;
+  }
+}
+
+.views-sidebar__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 12px;
+  padding: 8px 12px;
+  background-color: $white;
+  border: 1px solid $palette-neutral-300;
+  border-radius: $rounded-md;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-within {
+    border-color: $palette-blue-500;
+    box-shadow: 0 0 0 2px rgba($palette-blue-500, 0.15);
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    background: transparent;
+    min-width: 0;
+
+    &::placeholder {
+      color: $palette-neutral-500;
+    }
+  }
+
+  i {
+    color: $palette-neutral-500;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.views-sidebar__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.views-sidebar__section {
+  margin-bottom: 8px;
+}
+
+.views-sidebar__section-title {
+  padding: 8px 12px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: $palette-neutral-500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.views-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $palette-neutral-900;
+  border-radius: $rounded-md;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+
+  &:hover {
+    background-color: rgba($palette-neutral-1300, 0.04);
+    text-decoration: none;
+  }
+
+  &--active {
+    background-color: rgba($palette-neutral-1300, 0.06);
+    color: $palette-neutral-1200;
+
+    &:hover {
+      background-color: rgba($palette-neutral-1300, 0.08);
+    }
+  }
+
+  &--dragging {
+    opacity: 0.5;
+  }
+}
+
+.views-sidebar__item-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.views-sidebar__item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.views-sidebar__item-options {
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: $rounded-sm;
+  color: $palette-neutral-600;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+  flex-shrink: 0;
+
+  .views-sidebar__item:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: $palette-neutral-200;
+    color: $palette-neutral-900;
+  }
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.views-sidebar__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  color: $palette-neutral-600;
+  text-align: center;
+
+  i {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  p {
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+// Create view dropdown
+.views-sidebar__create-dropdown {
+  padding: 8px;
+}
+
+.views-sidebar__create-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $palette-neutral-900;
+  border-radius: $rounded-md;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $palette-neutral-100;
+    text-decoration: none;
+  }
+
+  i {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+}
+
+.views-sidebar__create-item-info {
+  flex: 1;
+}
+
+.views-sidebar__create-item-name {
+  display: block;
+  font-weight: 500;
+}
+
+.views-sidebar__create-item-desc {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: $palette-neutral-600;
+  margin-top: 2px;
+}
