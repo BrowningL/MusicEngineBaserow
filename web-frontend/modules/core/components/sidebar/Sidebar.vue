@@ -65,7 +65,6 @@
 import { mapGetters, mapState } from 'vuex'
 
 import SidebarUserContext from '@baserow/modules/core/components/sidebar/SidebarUserContext'
-import { getDefaultView } from '@baserow/modules/database/utils/view'
 import SidebarWithWorkspace from '@baserow/modules/core/components/sidebar/SidebarWithWorkspace'
 import SidebarWithoutWorkspace from '@baserow/modules/core/components/sidebar/SidebarWithoutWorkspace'
 import SidebarAdmin from '@baserow/modules/core/components/sidebar/SidebarAdmin'
@@ -138,8 +137,8 @@ export default {
         'notification/anyOtherWorkspaceWithUnread',
     }),
     ...mapState({
-      allViews: (state) => state.view.items,
-      selectedView: (state) => state.view.selected,
+      allViews: (state) => state.view?.items || [],
+      selectedView: (state) => state.view?.selected || null,
     }),
     // ISRCAnalytics: Airtable-style layout computed properties
     isTableViewMode() {

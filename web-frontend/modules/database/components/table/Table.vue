@@ -1,6 +1,10 @@
 <template>
   <div class="table-layout">
-    <!-- ISRCAnalytics: Airtable-style table tabs bar -->
+    <!-- ISRCAnalytics: Airtable-style database selector and table tabs -->
+    <DatabaseSelector
+      v-if="!isPublic && database"
+      :database="database"
+    />
     <TableTabsBar
       v-if="!isPublic && database.tables"
       :database="database"
@@ -205,6 +209,7 @@ import ViewGroupBy from '@baserow/modules/database/components/view/ViewGroupBy'
 import DefaultErrorPage from '@baserow/modules/core/components/DefaultErrorPage'
 import { waitFor } from '@baserow/modules/core/utils/queue'
 import TableTabsBar from '@baserow/modules/database/components/table/TableTabsBar'
+import DatabaseSelector from '@baserow/modules/database/components/table/DatabaseSelector'
 
 /**
  * This page component is the skeleton for a table. Depending on the selected view it
@@ -224,6 +229,7 @@ export default {
     ViewSearch,
     ViewContext,
     TableTabsBar,
+    DatabaseSelector,
   },
   /**
    * Because there is no hook that is called before the route changes, we need the

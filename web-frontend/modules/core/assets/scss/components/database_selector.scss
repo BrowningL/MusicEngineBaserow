@@ -1,0 +1,58 @@
+// ISRCAnalytics: Airtable-style database selector
+.database-selector {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  background-color: $palette-neutral-50;
+  border-bottom: 1px solid $palette-neutral-200;
+  flex-shrink: 0;
+}
+
+.database-selector__workspace {
+  font-size: 14px;
+  font-weight: 500;
+  color: $palette-neutral-700;
+}
+
+.database-selector__divider {
+  margin: 0 8px;
+  font-size: 14px;
+  color: $palette-neutral-400;
+}
+
+.database-selector__database {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $palette-neutral-900;
+  border-radius: $rounded-md;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($palette-neutral-1300, 0.06);
+    text-decoration: none;
+  }
+}
+
+.database-selector__database-name {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.database-selector__database-arrow {
+  font-size: 14px;
+  color: $palette-neutral-600;
+  transition: transform 0.15s ease;
+}
+
+.context__menu-item-link--active {
+  background-color: $palette-neutral-100;
+  font-weight: 600;
+}

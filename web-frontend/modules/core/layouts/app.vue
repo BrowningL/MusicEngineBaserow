@@ -1,7 +1,7 @@
 <template>
   <div>
     <Toasts></Toasts>
-    <GuidedTour></GuidedTour>
+    <!-- ISRCAnalytics: Removed GuidedTour - tutorials disabled -->
     <div class="layout">
       <div class="layout__col-1" :style="{ width: col1Width + 'px' }">
         <Sidebar
@@ -67,7 +67,7 @@ import Sidebar from '@baserow/modules/core/components/sidebar/Sidebar'
 import RightSidebar from '@baserow/modules/core/components/sidebar/RightSidebar'
 import undoRedo from '@baserow/modules/core/mixins/undoRedo'
 import HorizontalResize from '@baserow/modules/core/components/HorizontalResize'
-import GuidedTour from '@baserow/modules/core/components/guidedTour/GuidedTour'
+// ISRCAnalytics: GuidedTour import removed - tutorials disabled
 import WorkspaceSearchModal from '@baserow/modules/core/components/workspace/WorkspaceSearchModal.vue'
 import { CORE_ACTION_SCOPES } from '@baserow/modules/core/utils/undoRedoConstants'
 import {
@@ -81,7 +81,7 @@ export default {
     Sidebar,
     RightSidebar,
     HorizontalResize,
-    GuidedTour,
+    // ISRCAnalytics: GuidedTour removed - tutorials disabled
     WorkspaceSearchModal,
   },
   mixins: [undoRedo],
