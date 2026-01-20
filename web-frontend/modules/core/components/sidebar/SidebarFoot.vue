@@ -1,9 +1,7 @@
 <template>
   <div class="sidebar__section sidebar__section--bottom">
     <div class="sidebar__foot">
-      <div class="sidebar__logo">
-        <ExternalLinkBaserowLogo />
-      </div>
+      <!-- ISRCAnalytics: Removed Baserow branding logo -->
       <div class="sidebar__foot-links">
         <a
           class="sidebar__foot-link"
@@ -42,11 +40,9 @@
 
 <script>
 import undoRedo from '@baserow/modules/core/mixins/undoRedo'
-import ExternalLinkBaserowLogo from '@baserow/modules/core/components/ExternalLinkBaserowLogo'
 
 export default {
   name: 'SidebarFoot',
-  components: { ExternalLinkBaserowLogo },
   mixins: [undoRedo],
   props: {
     collapsed: {

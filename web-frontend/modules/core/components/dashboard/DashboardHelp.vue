@@ -86,8 +86,9 @@ export default {
     }
   },
   computed: {
+    // ISRCAnalytics: Disabled "We need your help" popup
     displayAlert() {
-      return this.showAlert && !this.$cookies.get(helpDisplayCookieName)
+      return false
     },
   },
   methods: {
