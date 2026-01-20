@@ -62,33 +62,7 @@
           {{ $t('viewContext.duplicateView') }}
         </a>
       </li>
-      <li
-        v-for="(
-          changeViewOwnershipTypeComponent, index
-        ) in changeViewOwnershipTypeMenuItems"
-        :key="'view-ownership-type-' + index"
-      >
-        <component
-          :is="changeViewOwnershipTypeComponent"
-          :view="view"
-          :database="database"
-        ></component>
-      </li>
-      <li
-        v-if="
-          $hasPermission(
-            'database.table.create_webhook',
-            table,
-            database.workspace.id
-          )
-        "
-        class="context__menu-item"
-      >
-        <a class="context__menu-item-link" @click="openWebhookModal()">
-          <i class="context__menu-item-icon iconoir-globe"></i>
-          {{ $t('viewContext.webhooks') }}
-        </a>
-      </li>
+      <!-- ISRCAnalytics: Removed view ownership type change (To personal/collaborative) and Webhooks -->
       <li
         v-if="
           $hasPermission(
