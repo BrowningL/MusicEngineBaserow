@@ -1,49 +1,19 @@
 <template>
+  <!-- ISRCAnalytics: Removed "Hide Baserow Logo" toggle, only show export option -->
   <div>
     <div
-      v-tooltip="tooltipText"
-      class="view-sharing__option"
-      :class="{ 'view-sharing__option--disabled': !hasPremiumFeatures }"
-      @click="click"
-    >
-      <SwitchInput
-        small
-        :value="!view.show_logo"
-        :disabled="!hasPremiumFeatures"
-        @input="update('show_logo', !$event)"
-      >
-        <img src="@baserow/modules/core/static/img/baserow-icon.svg" />
-        <span>
-          {{ $t('shareLinkOptions.baserowLogo.label') }}
-        </span>
-        <i v-if="!hasPremiumFeatures" class="deactivated-label iconoir-lock" />
-      </SwitchInput>
-
-      <PaidFeaturesModal
-        v-if="!hasPremiumFeatures"
-        ref="paidFeaturesModal"
-        :workspace="workspace"
-        initial-selected-type="public_logo_removal"
-      ></PaidFeaturesModal>
-    </div>
-    <div
       v-if="hasValidExporter"
-      v-tooltip="tooltipText"
       class="view-sharing__option"
-      :class="{ 'view-sharing__option--disabled': !hasPremiumFeatures }"
-      @click="click"
     >
       <SwitchInput
         small
         :value="view.allow_public_export"
-        :disabled="!hasPremiumFeatures"
         @input="update('allow_public_export', $event)"
       >
         <i class="iconoir iconoir-share-ios"></i>
         <span>
           {{ $t('shareLinkOptions.allowPublicExportLabel') }}
         </span>
-        <i v-if="!hasPremiumFeatures" class="deactivated-label iconoir-lock" />
       </SwitchInput>
     </div>
   </div>

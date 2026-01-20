@@ -18,6 +18,9 @@ class LicensePlugin:
     """
     A collection of methods used to query for what licenses a user has access to and
     hence which features they can use.
+
+    ISRCAnalytics: Modified to always return True for all feature checks,
+    enabling all premium features without requiring a license.
     """
 
     def __init__(self, cache_queries: bool = False):
@@ -31,72 +34,30 @@ class LicensePlugin:
         workspace: Workspace,
     ) -> bool:
         """
-        Returns if the provided user has a feature enabled for a specific workspace from
-        an active license or if they have that feature enabled instance wide and hence
-        also for this workspace.
-
-        :param feature: A string identifying a particular feature or set of features
-            a license can grant a user.
-        :param user: The user to check to see if they have a license active granting
-            them the feature.
-        :param workspace: The workspace to check to see if the user has the feature for.
+        ISRCAnalytics: Always returns True to enable all premium features.
         """
-
-        return self.user_has_feature_instance_wide(feature, user) or (
-            self._has_license_feature_only_for_specific_workspace(
-                feature, user, workspace
-            )
-        )
+        return True
 
     def instance_has_feature(
         self,
         feature: str,
     ) -> bool:
         """
-        Checks if the Baserow instance has a particular feature granted by an active
-        instance wide license.
-
-        :param feature: The feature to check to see if active. Look for features.py
-            files for these constant strings to use.
-        :return: True if the feature is enabled globally for all users.
+        ISRCAnalytics: Always returns True to enable all premium features.
         """
-
-        return any(
-            feature in license_type.features
-            for license_type in self.get_active_instance_wide_license_types(user=None)
-        )
+        return True
 
     def workspace_has_feature(self, feature: str, workspace: Workspace) -> bool:
         """
-        Checks if the Baserow instance has a particular feature granted by an active
-        instance wide license.
-
-        :param feature: The feature to check to see if active. Look for features.py
-            files for these constant strings to use.
-        :param workspace: The workspace to get workspace wide features for.
-        :return: True if the feature is enabled globally for all users.
+        ISRCAnalytics: Always returns True to enable all premium features.
         """
-
-        return self.instance_has_feature(feature) or any(
-            feature in license_type.features
-            for license_type in self.get_active_workspace_licenses(workspace)
-        )
+        return True
 
     def user_has_feature_instance_wide(self, feature: str, user: AbstractUser) -> bool:
         """
-        Returns if the provided user has a feature enabled for the entire site,
-        and not only for one specific workspace from an active license.
-
-        :param feature: A string identifying a particular feature or set of features
-            a license can grant a user.
-        :param user: The user to check to see if they have a license active granting
-            them the feature.
+        ISRCAnalytics: Always returns True to enable all premium features.
         """
-
-        return any(
-            feature in license_type.features
-            for license_type in self.get_active_instance_wide_license_types(user)
-        )
+        return True
 
     def _has_license_feature_only_for_specific_workspace(
         self, feature: str, user: AbstractUser, workspace: Workspace

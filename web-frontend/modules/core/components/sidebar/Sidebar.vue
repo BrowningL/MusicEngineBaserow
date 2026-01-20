@@ -17,20 +17,8 @@
       <SidebarAdmin v-show="!collapsed"></SidebarAdmin>
     </template>
     <template v-if="!showAdmin">
-      <a
-        ref="workspaceContextAnchor"
-        class="sidebar__workspaces-selector"
-        data-highlight="workspaces"
-        @click="
-          $refs.workspacesContext.toggle(
-            $refs.workspaceContextAnchor,
-            'bottom',
-            'left',
-            8,
-            16
-          )
-        "
-      >
+      <!-- ISRCAnalytics: Removed workspace selector dropdown, just show workspace name -->
+      <div class="sidebar__workspaces-selector" style="cursor: default;">
         <Avatar
           :initials="selectedWorkspace.name || name | nameAbbreviation"
         ></Avatar>
@@ -39,22 +27,7 @@
           class="sidebar__workspaces-selector-selected-workspace"
           >{{ selectedWorkspace.name || name }}</span
         >
-        <span
-          v-show="!collapsed"
-          v-if="unreadNotificationsInOtherWorkspaces"
-          class="sidebar__unread-notifications-icon"
-        ></span>
-        <i
-          v-show="!collapsed"
-          class="sidebar__workspaces-selector-icon baserow-icon-up-down-arrows"
-        ></i>
-      </a>
-      <SidebarUserContext
-        ref="workspacesContext"
-        :workspaces="workspaces"
-        :selected-workspace="selectedWorkspace"
-        @toggle-admin="setShowAdmin($event)"
-      ></SidebarUserContext>
+      </div>
 
       <SidebarMenu
         v-show="!collapsed"
