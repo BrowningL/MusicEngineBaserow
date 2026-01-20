@@ -23,13 +23,9 @@ export class EnterprisePlugin extends BaserowPlugin {
   }
 
   getSidebarWorkspaceComponents(workspace) {
-    const sidebarItems = []
-    sidebarItems.push(AssistantSidebarItem)
-    if (!this.app.$config.BASEROW_DISABLE_SUPPORT) {
-      sidebarItems.push(ChatwootSupportSidebarWorkspace)
-    }
-    sidebarItems.push(AuditLogSidebarWorkspace)
-    return sidebarItems
+    // ISRCAnalytics: Removed Direct Support (Chatwoot) and Audit Log
+    // Users can contact support via Telegram @BrownieSE
+    return []
   }
 
   getAdditionalApplicationContextComponents(workspace, application) {

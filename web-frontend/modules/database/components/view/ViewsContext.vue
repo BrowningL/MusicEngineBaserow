@@ -62,21 +62,7 @@
     <div v-if="!isLoading && views.length == 0" class="context__description">
       {{ $t('viewsContext.noViews') }}
     </div>
-    <div
-      v-if="!readOnly && availableViewOwnershipTypesForCreation.length > 0"
-      class="select__footer"
-    >
-      <div class="select__footer-create">
-        <CreateViewLink
-          v-for="(viewType, type) in viewTypes"
-          :key="type"
-          :database="database"
-          :table="table"
-          :view-type="viewType"
-          @created="selectedView"
-        ></CreateViewLink>
-      </div>
-    </div>
+    <!-- ISRCAnalytics: Removed Grid/Gallery/Form view type creation links -->
   </Context>
 </template>
 

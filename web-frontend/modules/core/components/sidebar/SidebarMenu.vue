@@ -129,20 +129,7 @@
         :workspace="selectedWorkspace"
         :right-sidebar-open="rightSidebarOpen"
       ></component>
-      <li class="tree__item">
-        <div class="tree__action sidebar__action">
-          <a class="tree__link" @click="$refs.trashModal.show()">
-            <i class="tree__icon iconoir-bin"></i>
-            <span class="tree__link-text">
-              <span class="sidebar__item-name">{{ $t('sidebar.trash') }}</span>
-            </span>
-          </a>
-          <TrashModal
-            ref="trashModal"
-            :initial-workspace="selectedWorkspace"
-          ></TrashModal>
-        </div>
-      </li>
+      <!-- ISRCAnalytics: Removed Trash item -->
     </ul>
   </div>
 </template>
