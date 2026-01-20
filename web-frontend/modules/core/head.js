@@ -1,6 +1,7 @@
 export default {
-  title: 'Baserow',
-  titleTemplate: '%s | Baserow',
+  // ISRCAnalytics: Updated page titles
+  title: 'ISRCAnalytics',
+  titleTemplate: '%s | ISRCAnalytics',
   meta: [
     { charset: 'utf-8' },
     {

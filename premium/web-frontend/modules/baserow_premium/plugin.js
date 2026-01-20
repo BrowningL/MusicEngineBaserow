@@ -5,7 +5,7 @@ import {
   ExcelTableExporterType,
   FileTableExporter,
 } from '@baserow_premium/tableExporterTypes'
-import { LicensesAdminType } from '@baserow_premium/adminTypes'
+// ISRCAnalytics: Removed LicensesAdminType import
 import rowCommentsStore from '@baserow_premium/store/row_comments'
 // ISRCAnalytics: Removed Kanban, Calendar, Timeline view stores
 import impersonatingStore from '@baserow_premium/store/impersonating'
@@ -129,7 +129,7 @@ export default (context) => {
   app.$registry.registerNamespace('paidFeature')
 
   app.$registry.register('plugin', new PremiumPlugin(context))
-  app.$registry.register('admin', new LicensesAdminType(context))
+  // ISRCAnalytics: Removed Licenses admin page registration
   app.$registry.register('exporter', new JSONTableExporter(context))
   app.$registry.register('exporter', new XMLTableExporter(context))
   app.$registry.register('exporter', new ExcelTableExporterType(context))

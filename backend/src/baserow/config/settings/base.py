@@ -858,37 +858,12 @@ BASEROW_SEAT_USAGE_JOB_CRONTAB = get_crontab_from_env(
     "BASEROW_SEAT_USAGE_JOB_CRONTAB", default_crontab=ONE_AM_CRONTAB_STR
 )
 
-EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+# ISRCAnalytics: Disable all email functionality - use dummy backend that discards emails
+EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
+CELERY_EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
-if os.getenv("EMAIL_SMTP", ""):
-    CELERY_EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    # EMAIL_SMTP_USE_TLS OR EMAIL_SMTP_USE_TLS for backwards compatibility after
-    # fixing #448.
-    EMAIL_USE_TLS = bool(os.getenv("EMAIL_SMTP_USE_TLS", "")) or bool(
-        os.getenv("EMAIL_SMPT_USE_TLS", "")
-    )
-    EMAIL_HOST = os.getenv("EMAIL_SMTP_HOST", "localhost")
-    EMAIL_PORT = os.getenv("EMAIL_SMTP_PORT", "25")
-    EMAIL_HOST_USER = os.getenv("EMAIL_SMTP_USER", "")
-    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_SMTP_PASSWORD", "")
-
-    EMAIL_USE_SSL = bool(os.getenv("EMAIL_SMTP_USE_SSL", ""))
-    if EMAIL_USE_SSL and EMAIL_USE_TLS:
-        raise ImproperlyConfigured(
-            "EMAIL_SMTP_USE_SSL and EMAIL_SMTP_USE_TLS are "
-            "mutually exclusive and both cannot be set at once."
-        )
-
-    EMAIL_SSL_CERTFILE = os.getenv("EMAIL_SMTP_SSL_CERTFILE_PATH", None)
-    EMAIL_SSL_KEYFILE = os.getenv("EMAIL_SMTP_SSL_KEYFILE_PATH", None)
-else:
-    CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-# Enable email notifications globally. If disabled, tasks will reset the
-# email_scheduled field without sending any emails.
-EMAIL_NOTIFICATIONS_ENABLED = str_to_bool(
-    os.getenv("BASEROW_EMAIL_NOTIFICATIONS_ENABLED", "true")
-)
+# ISRCAnalytics: Disable email notifications globally
+EMAIL_NOTIFICATIONS_ENABLED = False
 # The maximum amount of email notifications that can be sent per task. This
 # equals the amount of users that will receive an email, since all the
 # notifications for a user are sent in one email. If you want to limit the
