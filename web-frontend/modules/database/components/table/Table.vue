@@ -2,11 +2,11 @@
   <div class="table-page-wrapper">
     <!-- ISRCAnalytics: Airtable-style database selector and table tabs -->
     <DatabaseSelector
-      v-if="!isPublic && database"
+      v-if="database && !isPublic"
       :database="database"
     />
     <TableTabsBar
-      v-if="!isPublic && database.tables"
+      v-if="database && database.tables && database.tables.length > 0 && !isPublic"
       :database="database"
       :tables="database.tables"
       :selected-table-id="table.id"
@@ -188,7 +188,6 @@
         "
       />
       <div v-if="viewLoading" class="loading-overlay"></div>
-    </div>
     </div>
   </div>
 </template>
@@ -424,8 +423,12 @@ export default {
       )
     },
     ...mapGetters({
-      isPublic: 'page/view/public/getIsPublic',
+      isPublicGetter: 'page/view/public/getIsPublic',
     }),
+    // ISRCAnalytics: Ensure isPublic defaults to false
+    isPublic() {
+      return this.isPublicGetter || false
+    },
   },
   watch: {
     tableLoading(value) {

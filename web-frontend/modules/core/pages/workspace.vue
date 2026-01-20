@@ -186,24 +186,29 @@ export default {
     }
 
     // ISRCAnalytics: Auto-redirect to first database's first table (server-side)
-    const applications = store.getters['application/getAllOfWorkspace'](workspace)
-    const databases = applications
-      .filter((a) => a.type === 'database')
-      .sort((a, b) => a.order - b.order)
+    try {
+      const applications = store.getters['application/getAllOfWorkspace'](workspace)
+      const databases = applications
+        .filter((a) => a.type === 'database')
+        .sort((a, b) => a.order - b.order)
 
-    if (databases.length > 0) {
-      const firstDatabase = databases[0]
-      const tables = firstDatabase.tables || []
-      if (tables.length > 0) {
-        const firstTable = [...tables].sort((a, b) => a.order - b.order)[0]
-        return redirect({
-          name: 'database-table',
-          params: {
-            databaseId: firstDatabase.id,
-            tableId: firstTable.id,
-          },
-        })
+      if (databases.length > 0) {
+        const firstDatabase = databases[0]
+        const tables = firstDatabase.tables || []
+        if (tables.length > 0) {
+          const firstTable = [...tables].sort((a, b) => a.order - b.order)[0]
+          return redirect({
+            name: 'database-table',
+            params: {
+              databaseId: firstDatabase.id,
+              tableId: firstTable.id,
+            },
+          })
+        }
       }
+    } catch (redirectError) {
+      // If redirect fails, continue to normal workspace page
+      console.error('ISRCAnalytics: Auto-redirect failed', redirectError)
     }
 
     try {
