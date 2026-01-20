@@ -1,21 +1,21 @@
 <template>
-  <!-- ISRCAnalytics: Airtable-style - show ViewsSidebar when table is selected -->
-  <div v-if="isTableViewMode && currentTable">
+  <div>
+    <!-- ISRCAnalytics: Airtable-style - show ViewsSidebar when table is selected -->
     <ViewsSidebar
+      v-if="isTableViewMode && currentTable"
       :database="application"
       :table="currentTable"
       :views="views"
       :read-only="false"
       @selected-view="navigateToView"
     />
-  </div>
-  <!-- Original database sidebar for non-table views -->
-  <SidebarApplication
-    v-else
-    :workspace="workspace"
-    :application="application"
-    @selected="selected"
-  >
+    <!-- Original database sidebar for non-table views -->
+    <SidebarApplication
+      v-else
+      :workspace="workspace"
+      :application="application"
+      @selected="selected"
+    >
     <template #context>
       <li class="context__menu-item">
         <nuxt-link
@@ -77,7 +77,8 @@
       </a>
       <CreateTableModal ref="createTableModal" :database="application" />
     </template>
-  </SidebarApplication>
+    </SidebarApplication>
+  </div>
 </template>
 
 <script>
