@@ -1,0 +1,13 @@
+// ISRCAnalytics: Table page layout with database selector and table tabs
+.table-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset: 0;
+}
+
+.table-page-content {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}

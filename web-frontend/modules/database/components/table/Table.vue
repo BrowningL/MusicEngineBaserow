@@ -1,5 +1,5 @@
 <template>
-  <div class="table-layout">
+  <div class="table-page-wrapper">
     <!-- ISRCAnalytics: Airtable-style database selector and table tabs -->
     <DatabaseSelector
       v-if="!isPublic && database"
@@ -13,10 +13,12 @@
       :read-only="readOnly"
     />
 
-    <!-- Toolbar header with filter/sort/group options -->
-    <header
-      ref="header"
-      class="layout__col-2-1 header"
+    <!-- Main table content area -->
+    <div class="table-page-content">
+      <!-- Toolbar header with filter/sort/group options -->
+      <header
+        ref="header"
+        class="layout__col-2-1 header"
       :class="[
         { 'header--overflow': headerOverflow },
         getViewHeaderClassNames(view),
@@ -186,6 +188,7 @@
         "
       />
       <div v-if="viewLoading" class="loading-overlay"></div>
+    </div>
     </div>
   </div>
 </template>
