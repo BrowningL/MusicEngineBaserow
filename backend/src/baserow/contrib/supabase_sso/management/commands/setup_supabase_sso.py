@@ -16,6 +16,7 @@ Or with environment variables:
 
 import os
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand, CommandError
 
 from baserow.contrib.supabase_sso.models import SupabaseAuthProviderModel
@@ -65,36 +66,36 @@ class Command(BaseCommand):
                 'Supabase anon key is required. Set SUPABASE_ANON_KEY env var or use --supabase-anon-key'
             )
 
-        # Get or create the provider
-        provider, created = SupabaseAuthProviderModel.objects.get_or_create(
-            defaults={
-                'name': 'Supabase SSO',
-                'enabled': not disable,
-                'supabase_url': supabase_url,
-                'supabase_anon_key': supabase_anon_key,
-                'auto_provision_workspace': True,
-                'template_workspace_id': template_workspace_id,
-                'default_workspace_name_template': "{name}'s Workspace",
-            }
-        )
+        # Get the content type for polymorphic model
+        content_type = ContentType.objects.get_for_model(SupabaseAuthProviderModel)
 
-        if not created:
+        # Try to find existing provider by supabase_url (there should only be one)
+        try:
+            provider = SupabaseAuthProviderModel.objects.get(supabase_url=supabase_url)
             # Update existing provider
-            provider.supabase_url = supabase_url
             provider.supabase_anon_key = supabase_anon_key
             provider.enabled = not disable
             if template_workspace_id:
                 provider.template_workspace_id = template_workspace_id
             provider.save()
             action = 'Updated'
-        else:
+        except SupabaseAuthProviderModel.DoesNotExist:
+            # Create new provider
+            provider = SupabaseAuthProviderModel.objects.create(
+                content_type=content_type,
+                enabled=not disable,
+                supabase_url=supabase_url,
+                supabase_anon_key=supabase_anon_key,
+                auto_provision_workspace=True,
+                template_workspace_id=template_workspace_id,
+                default_workspace_name_template="{name}'s Workspace",
+            )
             action = 'Created'
 
         self.stdout.write(
             self.style.SUCCESS(
                 f'{action} Supabase SSO provider:\n'
                 f'  - ID: {provider.id}\n'
-                f'  - Name: {provider.name}\n'
                 f'  - Enabled: {provider.enabled}\n'
                 f'  - Supabase URL: {provider.supabase_url}\n'
                 f'  - Template Workspace ID: {provider.template_workspace_id}\n'
