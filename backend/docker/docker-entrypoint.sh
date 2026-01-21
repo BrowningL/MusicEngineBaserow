@@ -201,6 +201,12 @@ run_setup_commands_if_configured(){
     echo "python /baserow/backend/src/baserow/manage.py $migration_command"
     OTEL_SERVICE_NAME=backend-migrate python /baserow/backend/src/baserow/manage.py "$migration_command"
   fi
+
+  # Set up Supabase SSO provider if configured via environment variables
+  if [ -n "${SUPABASE_URL:-}" ] && [ -n "${SUPABASE_ANON_KEY:-}" ]; then
+    echo "Setting up Supabase SSO provider..."
+    python /baserow/backend/src/baserow/manage.py setup_supabase_sso || echo "Warning: Failed to setup Supabase SSO (continuing anyway)"
+  fi
 }
 
 start_celery_worker(){
