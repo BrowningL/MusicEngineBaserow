@@ -169,8 +169,10 @@ class SupabaseHealthView(APIView):
             provider = SupabaseAuthProviderModel.objects.get(enabled=True)
             return Response({
                 'status': 'ok',
-                'provider_name': provider.name,
+                'provider_id': provider.id,
                 'supabase_url': provider.supabase_url,
+                'auto_provision_workspace': provider.auto_provision_workspace,
+                'template_workspace_id': provider.template_workspace_id,
             })
         except SupabaseAuthProviderModel.DoesNotExist:
             return Response(
