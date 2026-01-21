@@ -81,10 +81,11 @@ class SupabaseAuthenticateView(APIView):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
+        logger.info(f"SSO authenticate called with token length={len(supabase_token)}, provider={auth_provider.supabase_url}")
         user = provider_type.authenticate(auth_provider, supabase_token)
 
         if not user:
-            logger.warning("Supabase authentication failed - invalid token")
+            logger.error(f"SSO authentication returned None - token validation failed")
             return Response(
                 {'error': 'Invalid or expired Supabase token'},
                 status=status.HTTP_401_UNAUTHORIZED

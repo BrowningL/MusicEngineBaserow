@@ -74,7 +74,7 @@ class SupabaseAuthProviderType(AuthProviderType):
         try:
             # First, decode without verification to inspect the token
             unverified = jwt.decode(token, options={"verify_signature": False})
-            logger.debug(f"Unverified JWT claims: iss={unverified.get('iss')}, aud={unverified.get('aud')}, sub={unverified.get('sub')}")
+            logger.info(f"SSO JWT validation - claims: iss={unverified.get('iss')}, aud={unverified.get('aud')}, sub={unverified.get('sub')}, email={unverified.get('email')}")
 
             # Supabase JWTs are signed with HS256 using the JWT secret
             # The JWT secret can be derived from the anon key or set separately
@@ -112,14 +112,14 @@ class SupabaseAuthProviderType(AuthProviderType):
                 logger.warning("Supabase JWT missing required claims (sub or email)")
                 return None
 
-            logger.debug(f"Successfully validated Supabase JWT for sub={unverified.get('sub')}")
+            logger.info(f"SSO JWT validation SUCCESS for sub={unverified.get('sub')}, email={unverified.get('email')}")
             return unverified
 
         except jwt.InvalidTokenError as e:
-            logger.warning(f"Invalid Supabase JWT format: {e}")
+            logger.error(f"SSO JWT validation FAILED - Invalid format: {e}")
             return None
         except Exception as e:
-            logger.error(f"Error validating Supabase JWT: {e}")
+            logger.error(f"SSO JWT validation FAILED - Exception: {e}", exc_info=True)
             return None
 
     @transaction.atomic
