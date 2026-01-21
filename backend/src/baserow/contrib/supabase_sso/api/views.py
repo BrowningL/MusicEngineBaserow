@@ -179,3 +179,60 @@ class SupabaseHealthView(APIView):
                 {'status': 'not_configured'},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
+
+
+class DevLogoutView(APIView):
+    """
+    DEV ONLY: Simple logout page that clears localStorage tokens.
+    REMOVE THIS BEFORE PRODUCTION DEPLOYMENT.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Return an HTML page that clears localStorage and redirects to login
+        html = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logging out...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
+        .container { text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        p { color: #666; }
+        a { color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Logging out...</h1>
+        <p id="status">Clearing session...</p>
+    </div>
+    <script>
+        // Clear all Baserow tokens from localStorage
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('token');
+
+        // Clear any other auth-related items
+        for (let key of Object.keys(localStorage)) {
+            if (key.includes('token') || key.includes('auth') || key.includes('user')) {
+                localStorage.removeItem(key);
+            }
+        }
+
+        // Clear sessionStorage too
+        sessionStorage.clear();
+
+        document.getElementById('status').innerHTML = 'Session cleared! <a href="/login">Click here to login</a> or wait...';
+
+        // Redirect to login after a moment
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 2000);
+    </script>
+</body>
+</html>
+'''
+        from django.http import HttpResponse
+        return HttpResponse(html, content_type='text/html')
