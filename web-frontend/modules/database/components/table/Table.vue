@@ -1,35 +1,77 @@
 <template>
-  <div class="table-page-wrapper">
-    <!-- ISRCAnalytics: Airtable-style database selector and table tabs -->
-    <DatabaseSelector
-      v-if="database && !isPublic"
-      :database="database"
-    />
-    <TableTabsBar
-      v-if="database && database.tables && database.tables.length > 0 && !isPublic"
-      :database="database"
-      :tables="database.tables"
-      :selected-table-id="table.id"
-      :read-only="readOnly"
-    />
-
-    <!-- Main table content area -->
-    <div class="table-page-content">
-      <!-- Toolbar header with filter/sort/group options -->
-      <header
-        ref="header"
-        class="layout__col-2-1 header"
-        :class="[
-          { 'header--overflow': headerOverflow },
-          getViewHeaderClassNames(view),
-        ]"
-      >
+  <div>
+    <header
+      ref="header"
+      class="layout__col-2-1 header"
+      :class="[
+        { 'header--overflow': headerOverflow },
+        getViewHeaderClassNames(view),
+      ]"
+    >
       <div v-show="tableLoading" class="header__loading"></div>
       <ul v-if="!tableLoading" class="header__filter">
         <li v-if="showLogo" class="header__filter-item">
           <ExternalLinkBaserowLogo class="header__filter-logo" />
         </li>
-        <!-- ISRCAnalytics: Removed view selector dropdown - views now in sidebar -->
+        <li class="header__filter-item header__filter-item--grids">
+          <a
+            ref="viewsSelectToggle"
+            class="header__filter-link active"
+            :class="{ 'header__filter-link--disabled': views === null }"
+            data-highlight="views"
+            @click="views !== null && openTableViewsContext()"
+          >
+            <template v-if="hasSelectedView">
+              <i
+                class="header__filter-icon header-filter-icon--view"
+                :class="`${view._.type.colorClass} ${view._.type.iconClass}`"
+              ></i>
+              <span class="header__filter-name header__filter-name--forced">
+                <EditableViewName ref="rename" :view="view"></EditableViewName>
+              </span>
+              <i
+                v-if="views !== null"
+                class="header__sub-icon iconoir-nav-arrow-down"
+              ></i>
+            </template>
+            <template v-else-if="view !== null">
+              {{ $t('table.chooseView') }}
+              <i class="header__sub-icon iconoir-nav-arrow-down"></i>
+            </template>
+          </a>
+          <ViewsContext
+            v-if="views !== null"
+            ref="viewsContext"
+            :database="database"
+            :table="table"
+            :views="views"
+            :read-only="readOnly"
+            :header-overflow="headerOverflow"
+            @selected-view="$emit('selected-view', $event)"
+          ></ViewsContext>
+        </li>
+        <li
+          v-if="hasSelectedView && !readOnly && showViewContext"
+          class="header__filter-item header__filter-item--no-margin-left"
+        >
+          <a
+            ref="viewSelectToggle"
+            class="header__filter-link"
+            data-highlight="view-options"
+            @click="openTableViewContext"
+          >
+            <i class="header__filter-icon baserow-icon-more-vertical"></i>
+          </a>
+          <ViewContext
+            ref="viewContext"
+            :database="database"
+            :view="view"
+            :table="table"
+            :views="views"
+            @enable-rename="$refs.rename.edit()"
+          >
+          </ViewContext>
+        </li>
         <component
           :is="component"
           v-for="(component, index) in getAdditionalTableHeaderComponents(
@@ -210,8 +252,6 @@ import ExternalLinkBaserowLogo from '@baserow/modules/core/components/ExternalLi
 import ViewGroupBy from '@baserow/modules/database/components/view/ViewGroupBy'
 import DefaultErrorPage from '@baserow/modules/core/components/DefaultErrorPage'
 import { waitFor } from '@baserow/modules/core/utils/queue'
-import TableTabsBar from '@baserow/modules/database/components/table/TableTabsBar'
-import DatabaseSelector from '@baserow/modules/database/components/table/DatabaseSelector'
 
 /**
  * This page component is the skeleton for a table. Depending on the selected view it
@@ -230,8 +270,6 @@ export default {
     ViewSort,
     ViewSearch,
     ViewContext,
-    TableTabsBar,
-    DatabaseSelector,
   },
   /**
    * Because there is no hook that is called before the route changes, we need the
@@ -423,12 +461,8 @@ export default {
       )
     },
     ...mapGetters({
-      isPublicGetter: 'page/view/public/getIsPublic',
+      isPublic: 'page/view/public/getIsPublic',
     }),
-    // ISRCAnalytics: Ensure isPublic defaults to false
-    isPublic() {
-      return this.isPublicGetter || false
-    },
   },
   watch: {
     tableLoading(value) {
