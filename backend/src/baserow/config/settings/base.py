@@ -92,7 +92,7 @@ INSTALLED_APPS = [
     "baserow.contrib.builder",
     "baserow.contrib.dashboard",
     "baserow.contrib.automation",
-    # "baserow.contrib.supabase_sso",  # Temporarily disabled for debugging
+    "baserow.contrib.supabase_sso",
     *BASEROW_BUILT_IN_PLUGINS,
 ]
 
