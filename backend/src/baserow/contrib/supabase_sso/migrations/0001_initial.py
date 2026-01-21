@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('baserow_core_auth_provider', '0001_initial'),
+        ('core', '0035_add_auth_providers'),
     ]
 
     operations = [
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                     parent_link=True,
                     primary_key=True,
                     serialize=False,
-                    to='baserow_core_auth_provider.authprovidermodel'
+                    to='core.authprovidermodel'
                 )),
                 ('supabase_url', models.URLField(
                     help_text='Supabase project URL (e.g., https://xxx.supabase.co)'
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Supabase Auth Provider',
                 'verbose_name_plural': 'Supabase Auth Providers',
             },
-            bases=('baserow_core_auth_provider.authprovidermodel',),
+            bases=('core.authprovidermodel',),
         ),
         migrations.CreateModel(
             name='SupabaseUserMapping',
