@@ -247,24 +247,20 @@ class DevLogoutView(APIView):
         }
 
         function logout() {
-            setStatus('Clearing session...', 'info');
+            setStatus('Clearing ALL session data...', 'info');
 
-            // Clear all Baserow tokens from localStorage
-            localStorage.removeItem('jwt_token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('token');
-
-            // Clear any other auth-related items
-            for (let key of Object.keys(localStorage)) {
-                if (key.includes('token') || key.includes('auth') || key.includes('user')) {
-                    localStorage.removeItem(key);
-                }
-            }
+            // Clear EVERYTHING from localStorage - Baserow caches a lot
+            localStorage.clear();
 
             // Clear sessionStorage too
             sessionStorage.clear();
 
-            setStatus('Session cleared! You are now logged out.', 'success');
+            // Clear cookies by setting them expired
+            document.cookie.split(';').forEach(function(c) {
+                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+            });
+
+            setStatus('All session data cleared! You are now logged out.', 'success');
         }
 
         async function loginAsAdmin() {
@@ -311,11 +307,16 @@ class DevLogoutView(APIView):
                 // Also try the 'token' key that some Baserow versions use
                 localStorage.setItem('token', data.access_token || data.token);
 
-                setStatus('Login successful! Redirecting to dashboard...', 'success');
+                // Store user session if provided
+                if (data.user_session) {
+                    document.cookie = 'user_session=' + data.user_session + '; path=/';
+                }
 
-                // Redirect to dashboard after a moment
+                setStatus('Login successful! Redirecting to Live Catalogue template...', 'success');
+
+                // Redirect directly to the Live Catalogue database (ID 209) in workspace 133
                 setTimeout(() => {
-                    window.location.href = '/dashboard';
+                    window.location.href = '/database/209';
                 }, 1500);
 
             } catch (err) {
