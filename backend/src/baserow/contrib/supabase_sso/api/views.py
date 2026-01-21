@@ -189,47 +189,139 @@ class DevLogoutView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # Return an HTML page that clears localStorage and redirects to login
+        # Return an HTML page that clears localStorage and optionally logs in as admin
         html = '''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Logging out...</title>
+    <title>Dev Login Manager</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
-        .container { text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        p { color: #666; }
-        a { color: #2563eb; }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
+        .container { text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; }
+        h1 { color: #333; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 20px; }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button { padding: 12px 24px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-logout { background: #dc3545; color: white; }
+        .btn-admin { background: #28a745; color: white; }
+        .btn-logout:hover { background: #c82333; }
+        .btn-admin:hover { background: #218838; }
+        input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .form-group { text-align: left; margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; color: #333; }
+        hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Logging out...</h1>
-        <p id="status">Clearing session...</p>
-    </div>
-    <script>
-        // Clear all Baserow tokens from localStorage
-        localStorage.removeItem('jwt_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('token');
+        <h1>Dev Login Manager</h1>
+        <p>Manage your Baserow session for development</p>
 
-        // Clear any other auth-related items
-        for (let key of Object.keys(localStorage)) {
-            if (key.includes('token') || key.includes('auth') || key.includes('user')) {
-                localStorage.removeItem(key);
-            }
+        <div id="status" class="status info">Choose an action below</div>
+
+        <button class="btn-logout" onclick="logout()">Clear Session (Logout)</button>
+        <button class="btn-admin" onclick="loginAsAdmin()">Login as Admin</button>
+
+        <hr>
+
+        <h3>Or login with custom credentials:</h3>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="admin@isrcanalytics.com">
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <button class="btn-admin" onclick="loginCustom()">Login</button>
+    </div>
+
+    <script>
+        function setStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
         }
 
-        // Clear sessionStorage too
-        sessionStorage.clear();
+        function logout() {
+            setStatus('Clearing session...', 'info');
 
-        document.getElementById('status').innerHTML = 'Session cleared! <a href="/login">Click here to login</a> or wait...';
+            // Clear all Baserow tokens from localStorage
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('token');
 
-        // Redirect to login after a moment
-        setTimeout(() => {
-            window.location.href = '/login';
-        }, 2000);
+            // Clear any other auth-related items
+            for (let key of Object.keys(localStorage)) {
+                if (key.includes('token') || key.includes('auth') || key.includes('user')) {
+                    localStorage.removeItem(key);
+                }
+            }
+
+            // Clear sessionStorage too
+            sessionStorage.clear();
+
+            setStatus('Session cleared! You are now logged out.', 'success');
+        }
+
+        async function loginAsAdmin() {
+            await doLogin('admin@isrcanalytics.com', 'AdminPass123!');
+        }
+
+        async function loginCustom() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            if (!email || !password) {
+                setStatus('Please enter email and password', 'error');
+                return;
+            }
+            await doLogin(email, password);
+        }
+
+        async function doLogin(email, password) {
+            setStatus('Logging in...', 'info');
+
+            // First clear existing session
+            logout();
+
+            try {
+                const response = await fetch('/api/user/token-auth/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    setStatus('Login failed: ' + (error.error || error.detail || 'Invalid credentials'), 'error');
+                    return;
+                }
+
+                const data = await response.json();
+
+                // Store tokens in localStorage (Baserow format)
+                localStorage.setItem('jwt_token', data.access_token || data.token);
+                if (data.refresh_token) {
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                }
+
+                // Also try the 'token' key that some Baserow versions use
+                localStorage.setItem('token', data.access_token || data.token);
+
+                setStatus('Login successful! Redirecting to dashboard...', 'success');
+
+                // Redirect to dashboard after a moment
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+
+            } catch (err) {
+                setStatus('Login error: ' + err.message, 'error');
+            }
+        }
     </script>
 </body>
 </html>
