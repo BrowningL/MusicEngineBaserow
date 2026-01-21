@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema
 
 from baserow.core.user.utils import generate_session_tokens_for_user
-from baserow.core.auth_provider.registries import auth_provider_type_registry
+from baserow.core.registries import auth_provider_type_registry
 from baserow.contrib.database.models import Database, Table
 
 from ..models import SupabaseAuthProviderModel

@@ -8,7 +8,7 @@ from django.db import transaction
 from django.urls import path, include
 
 from baserow.core.auth_provider.auth_provider_types import AuthProviderType
-from baserow.core.auth_provider.registries import auth_provider_type_registry
+from baserow.core.registries import auth_provider_type_registry
 from baserow.core.handler import CoreHandler
 from baserow.core.models import Workspace
 from baserow.core.exceptions import WorkspaceDoesNotExist
