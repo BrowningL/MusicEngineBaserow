@@ -19,6 +19,7 @@ dependencies = [
     "django-cors-headers==4.3.1",
     "djangorestframework==3.15.1",
     "djangorestframework-simplejwt==5.3.1",
+    "PyJWT[crypto]>=2.8.0",  # Required for Supabase SSO (PyJWKClient)
     "psycopg2-binary==2.9.10",
     "Faker==25.0.1",
     "Twisted==24.11.0",
