@@ -69,7 +69,14 @@ class Command(BaseCommand):
         # Get the content type for polymorphic model
         content_type = ContentType.objects.get_for_model(SupabaseAuthProviderModel)
 
-        # Try to find existing provider by supabase_url (there should only be one)
+        # Disable ALL existing Supabase providers first (there should only be one active)
+        disabled_count = SupabaseAuthProviderModel.objects.exclude(
+            supabase_url=supabase_url
+        ).update(enabled=False)
+        if disabled_count > 0:
+            self.stdout.write(f"Disabled {disabled_count} other Supabase provider(s)")
+
+        # Try to find existing provider by supabase_url
         try:
             provider = SupabaseAuthProviderModel.objects.get(supabase_url=supabase_url)
             # Update existing provider
