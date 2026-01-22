@@ -1,0 +1,776 @@
+// ISRCAnalytics Theme System
+// Provides light and dark themes using CSS custom properties
+// Dark theme inspired by Airtable's dark mode
+
+// =============================================================================
+// CSS CUSTOM PROPERTIES
+// =============================================================================
+
+// Light theme (default - matches original Baserow colors)
+:root,
+body:not(.theme-dark) {
+  // Backgrounds
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+  --bg-elevated: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: rgba(7, 8, 16, 0.04);
+  --bg-selected: #fafafa;
+
+  // Text
+  --text-primary: #202128;
+  --text-secondary: #6a6b70;
+  --text-muted: #9c9c9f;
+  --text-disabled: #b5b5b7;
+
+  // Borders
+  --border-color: #ededed;
+  --border-strong: #d7d8d9;
+  --border-input: #d7d8d9;
+
+  // Grid specific
+  --grid-row-bg: #ffffff;
+  --grid-header-bg: #f5f5f5;
+  --grid-row-border: #ededed;
+  --grid-cell-selected-border: #689ef1;
+}
+
+// Dark theme (Airtable-inspired)
+body.theme-dark {
+  // Backgrounds
+  --bg-primary: #1f1f1f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #262626;
+  --bg-elevated: #2a2a2a;
+  --bg-input: #2a2a2a;
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-selected: #2d2d2d;
+
+  // Text
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted: #888888;
+  --text-disabled: #666666;
+
+  // Borders
+  --border-color: #333333;
+  --border-strong: #4a4a4a;
+  --border-input: #404040;
+
+  // Grid specific
+  --grid-row-bg: #1f1f1f;
+  --grid-header-bg: #262626;
+  --grid-row-border: #333333;
+  --grid-cell-selected-border: #5190ef;
+}
+
+// =============================================================================
+// DARK THEME COMPONENT OVERRIDES
+// =============================================================================
+
+body.theme-dark {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+
+  // -------------------------------------------------------------------------
+  // Sidebar
+  // -------------------------------------------------------------------------
+  .sidebar {
+    background-color: var(--bg-secondary);
+    border-right-color: var(--border-color);
+  }
+
+  .sidebar__section:not(:last-child) {
+    border-bottom-color: var(--border-color);
+  }
+
+  .sidebar__workspaces-selector {
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .sidebar__workspaces-selector-icon {
+    color: var(--text-muted);
+  }
+
+  .sidebar__user {
+    border-top-color: var(--border-color);
+    background-color: var(--bg-secondary);
+  }
+
+  .sidebar__user-email {
+    color: var(--text-secondary);
+  }
+
+  .sidebar__new {
+    color: var(--text-secondary);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .sidebar__new-icon {
+    color: var(--text-muted);
+  }
+
+  .sidebar__foot-link {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .sidebar__foot-separator {
+    background-color: var(--border-color);
+  }
+
+  .sidebar__head {
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .sidebar__back {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .sidebar__title {
+    color: var(--text-primary);
+  }
+
+  .sidebar__collapse-link {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .sidebar__search-input {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+  }
+
+  .sidebar__search-icon,
+  .sidebar__search-placeholder {
+    color: var(--text-muted);
+  }
+
+  .sidebar__search-shortcut kbd {
+    background-color: var(--bg-tertiary);
+    color: var(--text-muted);
+  }
+
+  // -------------------------------------------------------------------------
+  // Header
+  // -------------------------------------------------------------------------
+  .header {
+    background-color: var(--bg-primary);
+    border-bottom-color: var(--border-color);
+
+    &.header--dark-border {
+      border-bottom-color: var(--border-strong);
+    }
+  }
+
+  .header__loading {
+    background-color: var(--bg-tertiary);
+
+    &::before {
+      background-color: var(--bg-secondary);
+    }
+  }
+
+  .header__filter-link {
+    color: var(--text-secondary);
+
+    &:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    &.active {
+      color: var(--text-primary);
+    }
+  }
+
+  .header__filter-icon {
+    color: var(--text-secondary);
+
+    .header__filter-link.active & {
+      color: var(--text-primary);
+    }
+  }
+
+  .header__sub-icon {
+    color: var(--text-muted);
+  }
+
+  .header__info li {
+    border-right-color: var(--border-color);
+  }
+
+  .header__buttons--with-separator {
+    border-left-color: var(--border-color);
+  }
+
+  // -------------------------------------------------------------------------
+  // Table Tabs Bar
+  // -------------------------------------------------------------------------
+  .table-tabs-bar {
+    background-color: var(--bg-primary);
+    border-bottom-color: var(--border-color);
+  }
+
+  .table-tabs-bar__tab {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-secondary);
+      background-color: var(--bg-hover);
+    }
+
+    &--active {
+      color: var(--text-primary);
+
+      &:hover {
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .table-tabs-bar__divider {
+    background-color: var(--border-color);
+  }
+
+  .table-tabs-bar__add-btn,
+  .table-tabs-bar__more-btn {
+    color: var(--text-muted);
+
+    &:hover {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+
+    &:active {
+      background-color: var(--border-color);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Grid View
+  // -------------------------------------------------------------------------
+  .grid-view__left {
+    background-color: var(--bg-secondary);
+  }
+
+  .grid-view__divider {
+    border-left-color: var(--border-strong);
+  }
+
+  .grid-view__head {
+    background-color: var(--bg-secondary);
+    border-bottom-color: var(--border-strong);
+  }
+
+  .grid-view__head-row-identifier-dropdown {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-secondary);
+    }
+  }
+
+  .grid-view__body {
+    background-color: var(--bg-primary);
+  }
+
+  .grid-view__foot {
+    background-color: var(--bg-secondary);
+    border-top-color: var(--border-color);
+  }
+
+  .grid-view__placeholder {
+    background-color: var(--bg-primary);
+    background-image: linear-gradient(0deg, var(--border-color) 1px, var(--bg-primary) 1px 33px);
+  }
+
+  .grid-view__placeholder-groups {
+    background-color: var(--bg-secondary);
+  }
+
+  .grid-view__placeholder-column {
+    border-right-color: var(--border-color);
+  }
+
+  .grid-view__rows {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .grid-view__row {
+    &.grid-view__row--selected {
+      background-color: var(--bg-selected);
+    }
+  }
+
+  .grid-view__column {
+    border-right-color: var(--border-color);
+    border-bottom-color: var(--border-color);
+
+    .grid-view__head & {
+      background-color: var(--bg-tertiary);
+      border-right-color: var(--border-strong);
+    }
+  }
+
+  .grid-view__groups {
+    background-color: var(--bg-secondary);
+  }
+
+  .grid-view__group {
+    background-color: var(--bg-secondary);
+  }
+
+  .grid-view__group-span::after,
+  .grid-view__column--group-end::before {
+    background-color: var(--border-strong);
+  }
+
+  .grid-view__group-name {
+    color: var(--text-secondary);
+  }
+
+  .grid-view__group-count {
+    background-color: var(--border-color);
+  }
+
+  .grid-view__row-more {
+    color: var(--text-muted);
+
+    &:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+  }
+
+  .grid-view__cell {
+    color: var(--text-primary);
+
+    &.active::before {
+      border-color: var(--grid-cell-selected-border);
+    }
+
+    .grid-view__row--selected &.active {
+      background-color: var(--bg-primary);
+    }
+  }
+
+  .grid-view__description {
+    .grid-view__description-icon,
+    .grid-view__description-options {
+      color: var(--text-muted);
+    }
+
+    .grid-view__description-icon-trigger {
+      color: var(--text-muted);
+
+      &:hover {
+        color: var(--text-secondary);
+      }
+    }
+
+    .grid-view__description-name {
+      color: var(--text-secondary);
+    }
+  }
+
+  .grid-view__add-column {
+    color: var(--text-muted);
+  }
+
+  .grid-view__add-row {
+    color: var(--text-muted);
+    background-color: var(--bg-primary);
+
+    &.hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .grid-view__field-dragging {
+    background-color: var(--bg-hover);
+  }
+
+  .grid-view__field-target,
+  .grid-view__row-target {
+    border-color: var(--text-muted);
+  }
+
+  .grid-view__row-dragging {
+    background-color: var(--bg-hover);
+  }
+
+  // -------------------------------------------------------------------------
+  // Tree (sidebar items)
+  // -------------------------------------------------------------------------
+  .tree__sub-link {
+    color: var(--text-secondary);
+
+    &:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .tree__sub.active .tree__sub-link {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+  }
+
+  .tree__options {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .tree__action {
+    color: var(--text-secondary);
+
+    &:hover:not(.tree__action--disabled) {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+  }
+
+  .tree__sub-add {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Context Menu
+  // -------------------------------------------------------------------------
+  .context {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .context__menu-title {
+    color: var(--text-secondary);
+    border-bottom-color: var(--border-color);
+  }
+
+  .context__menu-item-link {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+
+    &--delete {
+      &:hover {
+        background-color: rgba(255, 90, 68, 0.1);
+      }
+    }
+  }
+
+  .context__menu-item-icon {
+    color: var(--text-muted);
+  }
+
+  .context__menu-item--with-separator {
+    border-top-color: var(--border-color);
+  }
+
+  // -------------------------------------------------------------------------
+  // Modal
+  // -------------------------------------------------------------------------
+  .modal__box {
+    background-color: var(--bg-elevated);
+  }
+
+  .modal__head {
+    border-bottom-color: var(--border-color);
+  }
+
+  .modal__head-title {
+    color: var(--text-primary);
+  }
+
+  .modal__close {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .modal__actions {
+    border-top-color: var(--border-color);
+  }
+
+  // -------------------------------------------------------------------------
+  // Box / Cards
+  // -------------------------------------------------------------------------
+  .box {
+    background-color: var(--bg-elevated);
+  }
+
+  .box__title {
+    color: var(--text-primary);
+  }
+
+  .box__description {
+    color: var(--text-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Form Elements
+  // -------------------------------------------------------------------------
+  input,
+  textarea,
+  select {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:focus {
+      border-color: var(--grid-cell-selected-border);
+    }
+  }
+
+  .input {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+
+    &:focus,
+    &.input--focused {
+      border-color: var(--grid-cell-selected-border);
+    }
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  .form-input__label {
+    color: var(--text-primary);
+  }
+
+  .form-input__description {
+    color: var(--text-secondary);
+  }
+
+  .control__label {
+    color: var(--text-primary);
+  }
+
+  .control__description {
+    color: var(--text-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Select / Dropdown
+  // -------------------------------------------------------------------------
+  .select__items {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .select__item {
+    color: var(--text-primary);
+
+    &:hover:not(.select__item--disabled) {
+      background-color: var(--bg-hover);
+    }
+
+    &.active {
+      background-color: var(--bg-selected);
+    }
+  }
+
+  .dropdown {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .dropdown__item {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Tooltip
+  // -------------------------------------------------------------------------
+  .tooltip__content {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Badge
+  // -------------------------------------------------------------------------
+  .badge {
+    &.badge--neutral {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Tabs
+  // -------------------------------------------------------------------------
+  .tabs__nav-item {
+    color: var(--text-secondary);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.active {
+      color: var(--text-primary);
+    }
+  }
+
+  .tabs__content {
+    background-color: var(--bg-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Settings Modal
+  // -------------------------------------------------------------------------
+  .settings-modal__nav {
+    background-color: var(--bg-secondary);
+    border-right-color: var(--border-color);
+  }
+
+  .settings-modal__nav-item {
+    color: var(--text-secondary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    &.active {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Alert
+  // -------------------------------------------------------------------------
+  .alert {
+    border-color: var(--border-color);
+    background-color: var(--bg-tertiary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Loading
+  // -------------------------------------------------------------------------
+  .loading-absolute-center::after,
+  .loading::after {
+    border-color: var(--border-color);
+    border-top-color: var(--text-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Scrollbars
+  // -------------------------------------------------------------------------
+  &::-webkit-scrollbar-track {
+    background-color: var(--bg-primary);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+
+    &:hover {
+      background-color: var(--text-muted);
+    }
+  }
+
+  * {
+    &::-webkit-scrollbar-track {
+      background-color: var(--bg-primary);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--border-strong);
+
+      &:hover {
+        background-color: var(--text-muted);
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Field Types (Grid cells)
+  // -------------------------------------------------------------------------
+  .grid-field-text,
+  .grid-field-long-text,
+  .grid-field-number,
+  .grid-field-url,
+  .grid-field-email,
+  .grid-field-phone-number,
+  .grid-field-formula,
+  .grid-field-lookup,
+  .grid-field-rollup,
+  .grid-field-count,
+  .grid-field-uuid,
+  .grid-field-autonumber {
+    color: var(--text-primary);
+  }
+
+  .grid-field-date {
+    color: var(--text-primary);
+  }
+
+  .grid-field-boolean {
+    .grid-field-boolean__checkbox {
+      border-color: var(--border-input);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Views sidebar
+  // -------------------------------------------------------------------------
+  .views-sidebar {
+    background-color: var(--bg-secondary);
+    border-right-color: var(--border-color);
+  }
+
+  .views-sidebar__view {
+    color: var(--text-secondary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    &.active {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+  }
+}

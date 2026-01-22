@@ -141,6 +141,9 @@ export default {
     }
   },
   mounted() {
+    // ISRCAnalytics: Apply saved theme on app load
+    this.initializeTheme()
+
     // Connect to the web socket so we can start receiving real time updates.
     this.$realtime.connect()
     this.$el.keydownEvent = (event) => this.keyDown(event)
@@ -162,6 +165,15 @@ export default {
     this.$bus.$off('toggle-right-sidebar', this.toggleRightSidebar)
   },
   methods: {
+    /**
+     * ISRCAnalytics: Initialize theme from localStorage on app load.
+     * This ensures the saved theme preference is applied immediately.
+     */
+    initializeTheme() {
+      const savedTheme = localStorage.getItem('isrc-theme') || 'light'
+      document.body.classList.remove('theme-light', 'theme-dark')
+      document.body.classList.add(`theme-${savedTheme}`)
+    },
     keyDown(event) {
       // Handle workspace search shortcut (Ctrl/Cmd + K) - only if feature enabled
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {

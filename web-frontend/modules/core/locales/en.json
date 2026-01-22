@@ -66,6 +66,23 @@
     "nameLabel": "Your name",
     "languageLabel": "Interface language"
   },
+  "settingType": {
+    "appearance": "Appearance",
+    "account": "Account",
+    "password": "Password",
+    "email": "Email",
+    "emailNotifications": "Email notifications",
+    "twoFactorAuth": "Two-factor authentication",
+    "mcpEndpoint": "MCP endpoint",
+    "deleteAccount": "Delete account"
+  },
+  "appearanceSettings": {
+    "title": "Appearance",
+    "description": "Customize the look and feel of your workspace.",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "accountSettings": {
     "title": "Account",
     "changedTitle": "Changed",
