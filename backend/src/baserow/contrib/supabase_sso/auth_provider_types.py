@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import jwt
 from jwt import PyJWKClient
@@ -46,6 +46,16 @@ class SupabaseAuthProviderType(AuthProviderType):
         return [
             path('', include(api_urls, namespace='supabase_sso')),
         ]
+
+    def get_login_options(self, **kwargs) -> Optional[Dict[str, Any]]:
+        """
+        Return login options for this provider.
+
+        We return None because Supabase SSO is handled externally via ISRCAnalytics.com,
+        not through the Baserow login page. Users authenticate through the main app
+        and get redirected with tokens.
+        """
+        return None
 
     def _get_jwks_client(self, jwks_url: str) -> PyJWKClient:
         """Get or create a cached JWKS client."""
