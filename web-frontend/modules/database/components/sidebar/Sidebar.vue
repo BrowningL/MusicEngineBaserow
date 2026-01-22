@@ -48,7 +48,28 @@
         >
         </component>
       </ul>
-      <!-- ISRCAnalytics: Hide "+ New table" for read-only databases (Live Catalogue) -->
+      <!-- ISRCAnalytics: Show Add Tracks/Playlists section for Live Catalogue -->
+      <div v-if="isReadOnlyDatabase" class="sidebar-add-section">
+        <div class="sidebar-add-section__title">Add to Catalogue</div>
+        <div class="sidebar-add-section__buttons">
+          <a
+            class="sidebar-add-section__button"
+            @click="$refs.addTracksModal.show()"
+          >
+            Tracks
+          </a>
+          <a
+            class="sidebar-add-section__button"
+            @click="$refs.addPlaylistsModal.show()"
+          >
+            Playlists
+          </a>
+        </div>
+      </div>
+      <AddTracksModal ref="addTracksModal" :database="application" />
+      <AddPlaylistsModal ref="addPlaylistsModal" :database="application" />
+
+      <!-- Show "+ New table" for non-read-only databases -->
       <a
         v-if="
           !isReadOnlyDatabase &&
@@ -76,6 +97,8 @@ import { notifyIf } from '@baserow/modules/core/utils/error'
 import SidebarItem from '@baserow/modules/database/components/sidebar/SidebarItem'
 import SidebarApplication from '@baserow/modules/core/components/sidebar/SidebarApplication'
 import CreateTableModal from '@baserow/modules/database/components/table/CreateTableModal'
+import AddTracksModal from '@baserow/modules/database/components/isrc/AddTracksModal'
+import AddPlaylistsModal from '@baserow/modules/database/components/isrc/AddPlaylistsModal'
 
 export default {
   name: 'Sidebar',
@@ -83,6 +106,8 @@ export default {
     CreateTableModal,
     SidebarApplication,
     SidebarItem,
+    AddTracksModal,
+    AddPlaylistsModal,
   },
   props: {
     application: {
@@ -141,3 +166,46 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.sidebar-add-section {
+  margin: 10px 0 10px 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-add-section__title {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-add-section__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sidebar-add-section__button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #e5e7eb;
+    color: #111827;
+    text-decoration: none;
+  }
+}
+
+</style>

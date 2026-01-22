@@ -29,6 +29,8 @@ from .user_files import urls as user_files_urls
 from .user_sources import urls as user_source_urls
 from .workspaces import urls as workspace_urls
 
+from baserow.contrib.isrc_analytics.api import urls as isrc_analytics_urls
+
 app_name = "baserow.api"
 
 
@@ -64,6 +66,7 @@ urlpatterns = (
             "",
             include(user_source_urls, namespace="user_sources"),
         ),
+        path("isrc/", include(isrc_analytics_urls, namespace="isrc_analytics")),
     ]
     + application_type_registry.api_urls
     + auth_provider_type_registry.api_urls

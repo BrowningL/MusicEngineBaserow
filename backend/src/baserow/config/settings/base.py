@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     "baserow.contrib.dashboard",
     "baserow.contrib.automation",
     "baserow.contrib.supabase_sso",
+    "baserow.contrib.isrc_analytics",
     *BASEROW_BUILT_IN_PLUGINS,
 ]
 
