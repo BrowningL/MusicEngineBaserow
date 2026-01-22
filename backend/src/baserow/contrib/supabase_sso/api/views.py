@@ -312,12 +312,20 @@ class DevLogoutView(APIView):
                     document.cookie = 'user_session=' + data.user_session + '; path=/';
                 }
 
-                setStatus('Login successful! Redirecting to Live Catalogue template...', 'success');
+                // Show token info since frontend may be broken
+                const tokenDisplay = document.createElement('div');
+                tokenDisplay.style.cssText = 'margin-top: 20px; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 4px; word-break: break-all; font-size: 12px;';
+                tokenDisplay.innerHTML = '<strong>Login successful!</strong><br><br>' +
+                    '<strong>Access Token:</strong><br><code style=\"font-size: 10px;\">' + (data.access_token || data.token) + '</code><br><br>' +
+                    '<strong>User ID:</strong> ' + (data.user ? data.user.id : 'unknown') + '<br>' +
+                    '<strong>Email:</strong> ' + (data.user ? data.user.email : email) + '<br><br>' +
+                    '<strong>Try these URLs:</strong><br>' +
+                    '<a href=\"/database/209/table/793\">Live Catalogue > Tracks</a><br>' +
+                    '<a href=\"/dashboard\">Dashboard</a><br><br>' +
+                    '<em>If frontend is broken, use the token with API calls via curl/Postman</em>';
+                document.querySelector('.container').appendChild(tokenDisplay);
 
-                // Redirect directly to the Live Catalogue database (ID 209) in workspace 133
-                setTimeout(() => {
-                    window.location.href = '/database/209';
-                }, 1500);
+                setStatus('Login successful! See token details below.', 'success');
 
             } catch (err) {
                 setStatus('Login error: ' + err.message, 'error');
