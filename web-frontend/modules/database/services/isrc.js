@@ -43,6 +43,30 @@ export default (client) => {
     },
 
     /**
+     * Enrich artist data from Spotify artist URL.
+     * Calls ISRCAnalytics.com API which fetches all artist tracks.
+     * @param {string} input - Spotify artist URL or URI
+     * @returns {Promise} Artist data with all tracks
+     */
+    async enrichArtist(input) {
+      const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/catalogue/enrich-artist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ input }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Failed to enrich artist: ${response.status}`)
+      }
+
+      return { data: await response.json() }
+    },
+
+    /**
      * Enrich playlist data from Spotify URL.
      * Calls ISRCAnalytics.com API which handles Spotify data fetching.
      * @param {string} input - Spotify playlist URL
