@@ -7,7 +7,8 @@
     <div class="context__menu-title">
       {{ application.name }} ({{ application.id }})
     </div>
-    <ul class="context__menu">
+    <!-- ISRCAnalytics: Hide entire context menu for read-only databases (Live Catalogue) -->
+    <ul v-if="!isReadOnlyDatabase" class="context__menu">
       <li
         v-for="(component, index) in additionalContextComponents"
         :key="index"
@@ -95,6 +96,11 @@
         </a>
       </li>
     </ul>
+    <!-- ISRCAnalytics: Show read-only notice for Live Catalogue -->
+    <div v-else class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
+      <i class="iconoir-lock" style="margin-right: 8px;"></i>
+      This database is read-only. Data is updated automatically by the system.
+    </div>
 
     <TrashModal
       ref="applicationTrashModal"
@@ -149,6 +155,14 @@ export default {
     },
     applicationType() {
       return this.$registry.get('application', this.application.type)
+    },
+    /**
+     * ISRCAnalytics: Check if this database should have its context menu hidden.
+     * Live Catalogue databases are read-only in the UI - users cannot rename,
+     * duplicate, or delete them. Only API/workers can modify data.
+     */
+    isReadOnlyDatabase() {
+      return this.application.name === 'Live Catalogue'
     },
   },
   methods: {

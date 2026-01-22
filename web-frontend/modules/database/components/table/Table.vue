@@ -45,13 +45,13 @@
             :database="database"
             :table="table"
             :views="views"
-            :read-only="readOnly"
+            :read-only="effectiveReadOnly"
             :header-overflow="headerOverflow"
             @selected-view="$emit('selected-view', $event)"
           ></ViewsContext>
         </li>
         <li
-          v-if="hasSelectedView && !readOnly && showViewContext"
+          v-if="hasSelectedView && !effectiveReadOnly && showViewContext"
           class="header__filter-item header__filter-item--no-margin-left"
         >
           <a
@@ -136,7 +136,7 @@
           v-if="
             hasSelectedView &&
             view._.type.canGroupBy &&
-            (readOnly ||
+            (effectiveReadOnly ||
               $hasPermission(
                 'database.table.view.create_group_by',
                 view,
@@ -149,7 +149,7 @@
           <ViewGroupBy
             :view="view"
             :fields="fields"
-            :read-only="readOnly"
+            :read-only="effectiveReadOnly"
             :disable-group-by="disableGroupBy"
             @changed="refresh()"
           ></ViewGroupBy>
@@ -158,7 +158,7 @@
           v-if="
             hasSelectedView &&
             view._.type.canShare &&
-            !readOnly &&
+            !effectiveReadOnly &&
             $hasPermission(
               'database.table.view.update_slug',
               view,
@@ -167,7 +167,7 @@
           "
           class="header__filter-item"
         >
-          <ShareViewLink :view="view" :read-only="readOnly"></ShareViewLink>
+          <ShareViewLink :view="view" :read-only="effectiveReadOnly"></ShareViewLink>
         </li>
         <li
           v-if="
@@ -200,7 +200,7 @@
         :table="table"
         :view="view"
         :fields="fields"
-        :read-only="readOnly"
+        :read-only="effectiveReadOnly"
         :store-prefix="storePrefix"
         @refresh="refresh"
       />
@@ -216,7 +216,7 @@
         :view="view"
         :loading="viewLoading"
         :fields="fields"
-        :read-only="readOnly"
+        :read-only="effectiveReadOnly"
         :store-prefix="storePrefix"
         @refresh="refresh"
         @selected-row="$emit('selected-row', $event)"
@@ -406,8 +406,19 @@ export default {
         )
       )
     },
+    /**
+     * ISRCAnalytics: Force read-only mode for Live Catalogue databases.
+     * Live Catalogue data can only be modified via API/workers, not through the UI.
+     * This ensures users can view their catalogue but not accidentally modify it.
+     */
+    effectiveReadOnly() {
+      if (this.database?.name === 'Live Catalogue') {
+        return true
+      }
+      return this.readOnly
+    },
     adhocFiltering() {
-      if (this.readOnly) {
+      if (this.effectiveReadOnly) {
         return true
       }
 
@@ -425,7 +436,7 @@ export default {
       )
     },
     adhocSorting() {
-      if (this.readOnly) {
+      if (this.effectiveReadOnly) {
         return true
       }
 
@@ -443,7 +454,7 @@ export default {
       )
     },
     adhocDecorations() {
-      if (this.readOnly) {
+      if (this.effectiveReadOnly) {
         return true
       }
 
