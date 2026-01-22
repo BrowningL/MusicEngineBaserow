@@ -5,7 +5,7 @@
     :max-height-if-outside-viewport="true"
   >
     <div class="context__menu-title">
-      {{ application.name }} ({{ application.id }})
+      {{ application.name }}
     </div>
     <!-- ISRCAnalytics: Hide entire context menu for read-only databases (Live Catalogue) -->
     <ul v-if="!isReadOnlyDatabase" class="context__menu">

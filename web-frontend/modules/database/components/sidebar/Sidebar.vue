@@ -48,8 +48,10 @@
         >
         </component>
       </ul>
+      <!-- ISRCAnalytics: Hide "+ New table" for read-only databases (Live Catalogue) -->
       <a
         v-if="
+          !isReadOnlyDatabase &&
           $hasPermission(
             'database.create_table',
             application,
@@ -93,6 +95,13 @@ export default {
     },
   },
   computed: {
+    /**
+     * ISRCAnalytics: Check if this is a read-only database.
+     * Live Catalogue databases should not allow adding new tables.
+     */
+    isReadOnlyDatabase() {
+      return this.application.name === 'Live Catalogue'
+    },
     orderedTables() {
       return this.application.tables
         .map((table) => table)

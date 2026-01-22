@@ -33,7 +33,7 @@
     </a>
 
     <Context ref="context" overflow-scroll max-height-if-outside-viewport>
-      <div class="context__menu-title">{{ table.name }} ({{ table.id }})</div>
+      <div class="context__menu-title">{{ table.name }}</div>
       <ul class="context__menu">
         <li
           v-for="(component, index) in additionalContextComponents"
@@ -219,7 +219,18 @@ export default {
     }
   },
   computed: {
+    /**
+     * ISRCAnalytics: Check if this table is in a read-only database.
+     * Tables in Live Catalogue databases should not show context menu options.
+     */
+    isReadOnlyDatabase() {
+      return this.database.name === 'Live Catalogue'
+    },
     showOptions() {
+      // ISRCAnalytics: Hide options for tables in Live Catalogue
+      if (this.isReadOnlyDatabase) {
+        return false
+      }
       return (
         this.$hasPermission(
           'database.table.run_export',
