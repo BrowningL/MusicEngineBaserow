@@ -171,6 +171,9 @@ export default {
      */
     initializeTheme() {
       const savedTheme = localStorage.getItem('isrc-theme') || 'light'
+      // Apply to both html and body for consistency
+      document.documentElement.classList.remove('theme-light', 'theme-dark')
+      document.documentElement.classList.add(`theme-${savedTheme}`)
       document.body.classList.remove('theme-light', 'theme-dark')
       document.body.classList.add(`theme-${savedTheme}`)
     },

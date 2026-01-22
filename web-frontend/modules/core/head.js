@@ -2,6 +2,18 @@ export default {
   // ISRCAnalytics: Updated page titles
   title: 'ISRCAnalytics',
   titleTemplate: '%s | ISRCAnalytics',
+  // ISRCAnalytics: Inline script to apply theme immediately before render to prevent FOUC
+  script: [
+    {
+      hid: 'theme-init',
+      innerHTML: `(function(){try{var t=localStorage.getItem('isrc-theme')||'light';document.documentElement.classList.add('theme-'+t)}catch(e){}})()`,
+      type: 'text/javascript',
+      charset: 'utf-8',
+    },
+  ],
+  __dangerouslyDisableSanitizersByTagID: {
+    'theme-init': ['innerHTML'],
+  },
   meta: [
     { charset: 'utf-8' },
     {

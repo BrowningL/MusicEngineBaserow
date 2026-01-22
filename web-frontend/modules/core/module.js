@@ -235,6 +235,11 @@ export default function CoreModule(options) {
   this.appendPlugin({ src: path.resolve(__dirname, 'plugins/router.js') })
   this.appendPlugin({ src: path.resolve(__dirname, 'plugins/version.js') })
   this.appendPlugin({ src: path.resolve(__dirname, 'plugins/routeMounted.js') })
+  // ISRCAnalytics: Theme initialization plugin (client-side only)
+  this.appendPlugin({
+    src: path.resolve(__dirname, 'plugins/theme.client.js'),
+    mode: 'client',
+  })
 
   this.extendRoutes((configRoutes) => {
     // Remove all the routes created by nuxt.

@@ -74,6 +74,9 @@ export default {
       this.applyTheme(theme)
     },
     applyTheme(theme) {
+      // Apply to both html and body for consistency
+      document.documentElement.classList.remove('theme-light', 'theme-dark')
+      document.documentElement.classList.add(`theme-${theme}`)
       document.body.classList.remove('theme-light', 'theme-dark')
       document.body.classList.add(`theme-${theme}`)
     },

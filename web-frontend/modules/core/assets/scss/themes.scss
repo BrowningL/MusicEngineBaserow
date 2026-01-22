@@ -37,6 +37,8 @@ body:not(.theme-dark) {
 }
 
 // Dark theme (Airtable-inspired)
+// Support class on both html (for early script) and body (for Vue component)
+html.theme-dark,
 body.theme-dark {
   // Backgrounds
   --bg-primary: #1f1f1f;
@@ -69,6 +71,8 @@ body.theme-dark {
 // DARK THEME COMPONENT OVERRIDES
 // =============================================================================
 
+// Support class on both html (for early script) and body (for Vue component)
+html.theme-dark body,
 body.theme-dark {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
