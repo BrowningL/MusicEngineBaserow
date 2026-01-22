@@ -12,7 +12,6 @@ import {
 } from '@baserow/modules/core/jobTypes'
 
 import {
-  AppearanceSettingsType,
   AccountSettingsType,
   PasswordSettingsType,
   EmailSettingsType,
@@ -193,7 +192,6 @@ export default (context, inject) => {
   registry.registerNamespace('onboarding')
   registry.registerNamespace('guidedTour')
 
-  registry.register('settings', new AppearanceSettingsType(context))
   registry.register('settings', new AccountSettingsType(context))
   registry.register('settings', new PasswordSettingsType(context))
   registry.register('settings', new EmailSettingsType(context))
