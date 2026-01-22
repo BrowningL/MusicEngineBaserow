@@ -2,6 +2,7 @@
   <SidebarApplication
     :workspace="workspace"
     :application="application"
+    :custom-icon-class="isReadOnlyDatabase ? 'iconoir-music-double-note' : null"
     @selected="selected"
   >
     <template #context>
@@ -169,30 +170,30 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-add-section {
-  margin: 10px 0 10px 6px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 6px 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .sidebar-add-section__title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  color: #6b7280;
-  margin-bottom: 8px;
+  color: #9ca3af;
+  margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .sidebar-add-section__buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .sidebar-add-section__button {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   font-size: 12px;
   font-weight: 500;
   color: #374151;

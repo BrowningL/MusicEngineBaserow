@@ -18,7 +18,7 @@
         :aria-label="application.name"
         @click="$emit('selected', application)"
       >
-        <i class="tree__icon" :class="application._.type.iconClass"></i>
+        <i class="tree__icon" :class="iconClass"></i>
         <span class="tree__link-text">
           <template v-if="application.name === ''">&nbsp;</template>
           <Editable
@@ -84,6 +84,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    customIconClass: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -107,6 +111,9 @@ export default {
     },
     applicationType() {
       return this.$registry.get('application', this.application.type)
+    },
+    iconClass() {
+      return this.customIconClass || this.application._.type.iconClass
     },
   },
 }
