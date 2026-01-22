@@ -66,6 +66,48 @@
             Playlists
           </a>
         </div>
+
+        <!-- Slot Usage Display -->
+        <div class="sidebar-slots">
+          <!-- Track Slots -->
+          <div class="sidebar-slots__row">
+            <span class="sidebar-slots__label">ISRC Slots</span>
+            <span class="sidebar-slots__value">
+              {{ trackSlots.used }} / {{ trackSlots.limit }}
+            </span>
+            <a
+              class="sidebar-slots__upgrade"
+              :class="{ 'sidebar-slots__upgrade--disabled': false }"
+              :href="upgradeUrl"
+              target="_blank"
+              title="Get more ISRC slots"
+            >
+              +
+            </a>
+          </div>
+
+          <!-- Playlist Slots -->
+          <div class="sidebar-slots__row">
+            <span class="sidebar-slots__label">Playlist Slots</span>
+            <span class="sidebar-slots__value">
+              <template v-if="playlistSlots.unlimited">
+                {{ playlistSlots.used }} / Unlimited
+              </template>
+              <template v-else>
+                {{ playlistSlots.used }} / {{ playlistSlots.limit }}
+              </template>
+            </span>
+            <a
+              class="sidebar-slots__upgrade"
+              :class="{ 'sidebar-slots__upgrade--disabled': playlistSlots.unlimited }"
+              :href="playlistSlots.unlimited ? null : upgradeUrl"
+              :target="playlistSlots.unlimited ? null : '_blank'"
+              :title="playlistSlots.unlimited ? 'Unlimited playlists' : 'Get more playlist slots'"
+            >
+              +
+            </a>
+          </div>
+        </div>
       </div>
       <AddTracksModal ref="addTracksModal" :database="application" />
       <AddPlaylistsModal ref="addPlaylistsModal" :database="application" />
@@ -100,6 +142,7 @@ import SidebarApplication from '@baserow/modules/core/components/sidebar/Sidebar
 import CreateTableModal from '@baserow/modules/database/components/table/CreateTableModal'
 import AddTracksModal from '@baserow/modules/database/components/isrc/AddTracksModal'
 import AddPlaylistsModal from '@baserow/modules/database/components/isrc/AddPlaylistsModal'
+import IsrcService from '@baserow/modules/database/services/isrc'
 
 export default {
   name: 'Sidebar',
@@ -119,6 +162,12 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      trackSlots: { used: 0, limit: 0 },
+      playlistSlots: { used: 0, limit: 0, unlimited: false },
+    }
   },
   computed: {
     /**
@@ -140,9 +189,35 @@ export default {
           .isJobPartOfApplication(job, this.application)
       )
     },
+    upgradeUrl() {
+      const baseUrl = process.env.ISRC_ANALYTICS_API_URL || ''
+      return `${baseUrl}/settings/billing`
+    },
     ...mapGetters({ isAppSelected: 'application/isSelected' }),
   },
+  watch: {
+    isReadOnlyDatabase: {
+      immediate: true,
+      handler(isReadOnly) {
+        if (isReadOnly) {
+          this.fetchSlots()
+        }
+      },
+    },
+  },
   methods: {
+    async fetchSlots() {
+      try {
+        const [trackResponse, playlistResponse] = await Promise.all([
+          IsrcService(this.$client).getTrackSlots(),
+          IsrcService(this.$client).getPlaylistSlots(),
+        ])
+        this.trackSlots = trackResponse.data
+        this.playlistSlots = playlistResponse.data
+      } catch (error) {
+        console.error('Failed to fetch slot usage:', error)
+      }
+    },
     async selected(application) {
       try {
         await this.$store.dispatch('application/select', application)
@@ -206,6 +281,61 @@ export default {
     background-color: #e5e7eb;
     color: #111827;
     text-decoration: none;
+  }
+}
+
+.sidebar-slots {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-slots__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.sidebar-slots__label {
+  color: #6b7280;
+  min-width: 70px;
+}
+
+.sidebar-slots__value {
+  color: #374151;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar-slots__upgrade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  background-color: #eff6ff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  margin-left: auto;
+
+  &:hover {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    text-decoration: none;
+  }
+
+  &--disabled {
+    color: #9ca3af;
+    background-color: #f3f4f6;
+    cursor: default;
+    pointer-events: none;
   }
 }
 

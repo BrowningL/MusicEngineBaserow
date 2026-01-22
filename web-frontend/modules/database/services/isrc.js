@@ -98,5 +98,41 @@ export default (client) => {
     addPlaylist(playlistData) {
       return client.post('/isrc/playlists/add/', playlistData)
     },
+
+    /**
+     * Get track (ISRC) slot usage and limits.
+     * @returns {Promise} { used, limit, remaining }
+     */
+    async getTrackSlots() {
+      const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/catalogue/slots`, {
+        method: 'GET',
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Failed to fetch track slots: ${response.status}`)
+      }
+
+      return { data: await response.json() }
+    },
+
+    /**
+     * Get playlist slot usage and limits.
+     * @returns {Promise} { used, limit, unlimited, remaining }
+     */
+    async getPlaylistSlots() {
+      const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/playlists/slots`, {
+        method: 'GET',
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Failed to fetch playlist slots: ${response.status}`)
+      }
+
+      return { data: await response.json() }
+    },
   }
 }
