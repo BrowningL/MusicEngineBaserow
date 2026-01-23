@@ -1027,4 +1027,136 @@ body.theme-dark {
       background-color: var(--bg-hover);
     }
   }
+
+  .button--secondary {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Grid Aggregation (Summarize buttons at footer)
+  // -------------------------------------------------------------------------
+
+  .grid-view-aggregation {
+    color: var(--text-secondary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .grid-view-aggregation__empty {
+    color: var(--text-muted);
+
+    &.grid-view-aggregation__empty--active,
+    .grid-view-aggregation:hover & {
+      color: var(--text-secondary);
+    }
+  }
+
+  .grid-view-aggregation__empty-icon {
+    color: var(--text-muted);
+
+    .grid-view-aggregation__empty--active &,
+    .grid-view-aggregation:hover & {
+      color: var(--text-secondary);
+    }
+  }
+
+  .grid-view-aggregation__generic-name {
+    color: var(--text-muted);
+  }
+
+  .grid-view-aggregation__generic-value {
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Grid Footer (bottom row with "+ Summarize" etc)
+  // -------------------------------------------------------------------------
+
+  .grid-view__foot {
+    background-color: var(--bg-secondary) !important;
+    border-top-color: var(--border-color);
+  }
+
+  .grid-view__foot-info {
+    color: var(--text-muted);
+    background-color: var(--bg-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Column Headers (ensure dark)
+  // -------------------------------------------------------------------------
+
+  .grid-view__head .grid-view__column {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary);
+    border-right-color: var(--border-strong);
+    border-bottom-color: var(--border-strong);
+  }
+
+  .grid-view__description-name {
+    color: var(--text-primary);
+  }
+
+  .grid-view__description-icon {
+    color: var(--text-muted);
+  }
+
+  // -------------------------------------------------------------------------
+  // Row Number Column (left sticky column)
+  // -------------------------------------------------------------------------
+
+  .grid-view__left {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .grid-view__left .grid-view__column {
+    background-color: var(--bg-tertiary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Tooltip / Popover
+  // -------------------------------------------------------------------------
+
+  .tooltip {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+
+  // -------------------------------------------------------------------------
+  // Select/Option highlighting in select dropdown
+  // -------------------------------------------------------------------------
+
+  .select-option,
+  .select__item {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+
+    &.active,
+    &--selected {
+      background-color: var(--bg-selected);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Popover / Context Menus
+  // -------------------------------------------------------------------------
+
+  .popover,
+  .popover__content {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
 }
