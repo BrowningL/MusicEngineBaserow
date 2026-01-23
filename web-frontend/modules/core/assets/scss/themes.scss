@@ -1159,4 +1159,138 @@ body.theme-dark {
     border-color: var(--border-color);
     color: var(--text-primary);
   }
+
+  // -------------------------------------------------------------------------
+  // Hide Fields / View Fields Context (dropdown menus)
+  // -------------------------------------------------------------------------
+
+  .hidings {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+
+  .hidings__search {
+    border-bottom-color: var(--border-color);
+  }
+
+  .hidings__search-icon {
+    color: var(--text-muted);
+  }
+
+  .hidings__search-input {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  .hidings__item {
+    color: var(--text-primary);
+  }
+
+  .hidings__item-handle {
+    background-image: radial-gradient(var(--text-muted) 40%, transparent 40%);
+
+    &:hover {
+      background-image: radial-gradient(var(--text-secondary) 40%, transparent 40%);
+    }
+  }
+
+  .hidings__item-name {
+    color: var(--text-primary);
+  }
+
+  .hidings__footer {
+    border-top-color: var(--border-color);
+  }
+
+  // Switch component inside hidings
+  .hidings .switch__icon {
+    color: var(--text-muted);
+  }
+
+  .hidings .switch__label {
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Dropdown Component
+  // -------------------------------------------------------------------------
+
+  .dropdown {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+  }
+
+  .dropdown__selected {
+    color: var(--text-primary);
+  }
+
+  .dropdown__items {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .dropdown__item {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+
+    &--active {
+      background-color: var(--bg-selected);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Context Menu Items
+  // -------------------------------------------------------------------------
+
+  .context {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .context__menu-item-link {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+  }
+
+  .context__menu-item-icon {
+    color: var(--text-muted);
+  }
+
+  // -------------------------------------------------------------------------
+  // Form Components
+  // -------------------------------------------------------------------------
+
+  .form-group__label {
+    color: var(--text-secondary);
+  }
+
+  .input {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Switch Toggle Component
+  // -------------------------------------------------------------------------
+
+  .switch__label {
+    color: var(--text-primary);
+  }
 }
