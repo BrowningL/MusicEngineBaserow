@@ -777,4 +777,254 @@ body.theme-dark {
       color: var(--text-primary);
     }
   }
+
+  // -------------------------------------------------------------------------
+  // Grid View - Additional Dark Mode Overrides
+  // -------------------------------------------------------------------------
+
+  // Force dark backgrounds on grid containers
+  .grid-view,
+  .grid-view__right {
+    background-color: var(--bg-primary) !important;
+  }
+
+  // Row backgrounds - critical fix for white cells
+  .grid-view__rows-inner {
+    background-color: var(--bg-primary);
+  }
+
+  .grid-view__row {
+    background-color: var(--bg-primary);
+
+    &:hover:not(.grid-view__row--selected) {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  // Individual cell backgrounds
+  .grid-view__cell {
+    background-color: var(--bg-primary);
+  }
+
+  // Row info column (left side with row numbers)
+  .grid-view__row-info {
+    background-color: var(--bg-secondary);
+    color: var(--text-muted);
+  }
+
+  .grid-view__row-count {
+    color: var(--text-muted);
+  }
+
+  // -------------------------------------------------------------------------
+  // Field Type Input Components
+  // -------------------------------------------------------------------------
+
+  // Text field editing
+  .grid-field-text__input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary);
+    border-color: var(--border-input);
+  }
+
+  // Long text / textarea
+  .grid-field-long-text__textarea {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary);
+  }
+
+  // Rich text field
+  .grid-field-rich-text,
+  .grid-field-rich-text__textarea {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .grid-field-rich-text__textarea-expand-icon {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-muted);
+  }
+
+  // Number field
+  .grid-field-number__input {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+  }
+
+  // Date field
+  .grid-field-date__date-input,
+  .grid-field-date__time-input {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+  }
+
+  // Duration field
+  .grid-field-duration__input {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+  }
+
+  // File field drag state
+  .grid-field-file__dragging {
+    background-color: var(--bg-input) !important;
+  }
+
+  .grid-field-file__drop {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+  }
+
+  // -------------------------------------------------------------------------
+  // Select Fields
+  // -------------------------------------------------------------------------
+
+  // Single select dropdown trigger
+  .grid-field-single-select__option {
+    color: var(--text-primary);
+  }
+
+  .grid-field-single-select__icon {
+    color: var(--text-secondary);
+  }
+
+  // Multiple select items
+  .grid-field-multiple-select__item {
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Link/Relation Fields
+  // -------------------------------------------------------------------------
+
+  .grid-field-link-row,
+  .grid-field-many-to-many {
+    color: var(--text-primary);
+  }
+
+  .grid-field-link-row__item,
+  .grid-field-many-to-many__item {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Simple Grid Component
+  // -------------------------------------------------------------------------
+
+  .simple-grid {
+    background-color: var(--bg-primary);
+  }
+
+  .simple-grid__cell {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .simple-grid__add-row {
+    background-color: var(--bg-primary);
+    color: var(--text-muted);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .simple-grid__field {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  .simple-grid__right-wrapper-footer {
+    background-color: var(--bg-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Data Table Component
+  // -------------------------------------------------------------------------
+
+  .data-table {
+    background-color: var(--bg-primary);
+  }
+
+  .data-table__table-cell {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .data-table__table-cell--sticky-left,
+  .data-table__table-cell--sticky-right {
+    background-color: var(--bg-primary);
+  }
+
+  .data-table__table-cell--header {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Row Expand Modal
+  // -------------------------------------------------------------------------
+
+  .row-modal,
+  .row-modal__box {
+    background-color: var(--bg-elevated);
+  }
+
+  .row-modal__head {
+    border-bottom-color: var(--border-color);
+  }
+
+  .row-modal__field {
+    border-color: var(--border-color);
+  }
+
+  .row-modal__field-name {
+    color: var(--text-secondary);
+  }
+
+  .row-modal__field-value {
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // View Filters/Sort/Group Panels
+  // -------------------------------------------------------------------------
+
+  .view-filter,
+  .view-sort,
+  .view-group-by {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .view-filter__item,
+  .view-sort__item,
+  .view-group-by__item {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Button Variants
+  // -------------------------------------------------------------------------
+
+  .button--ghost {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .button--light {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
 }
