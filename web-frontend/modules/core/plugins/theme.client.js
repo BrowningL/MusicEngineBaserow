@@ -21,8 +21,19 @@ export default function () {
 }
 
 function initializeTheme() {
-  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light'
-  applyTheme(savedTheme)
+  // Priority: URL param > localStorage > default 'light'
+  // URL param allows parent frame (ISRCAnalytics) to set theme for embedded iframe
+  const urlParams = new URLSearchParams(window.location.search)
+  const urlTheme = urlParams.get('theme')
+
+  if (urlTheme && (urlTheme === 'light' || urlTheme === 'dark')) {
+    // Save URL theme to localStorage for persistence
+    localStorage.setItem(THEME_STORAGE_KEY, urlTheme)
+    applyTheme(urlTheme)
+  } else {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light'
+    applyTheme(savedTheme)
+  }
 }
 
 function applyTheme(theme) {

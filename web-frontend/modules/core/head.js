@@ -6,7 +6,7 @@ export default {
   script: [
     {
       hid: 'theme-init',
-      innerHTML: `(function(){try{var t=localStorage.getItem('isrc-theme')||'light';document.documentElement.classList.add('theme-'+t)}catch(e){}})()`,
+      innerHTML: `(function(){try{var u=new URLSearchParams(window.location.search),p=u.get('theme');var t=(p==='light'||p==='dark')?p:(localStorage.getItem('isrc-theme')||'light');if(p)localStorage.setItem('isrc-theme',t);document.documentElement.classList.add('theme-'+t)}catch(e){}})()`,
       type: 'text/javascript',
       charset: 'utf-8',
     },
