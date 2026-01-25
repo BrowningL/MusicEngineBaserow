@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1.4
+# ISRCAnalytics Build: v1.0.2 - Manage members removal + dark mode fixes
 ARG UID="9999"
 ARG GID="9999"
 
