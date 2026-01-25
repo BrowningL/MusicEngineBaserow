@@ -523,6 +523,20 @@ body.theme-dark {
     border-top-color: var(--border-color);
   }
 
+  // Context form (used in create field, etc.)
+  .context__form {
+    background-color: var(--bg-elevated);
+  }
+
+  .context__form-container {
+    background-color: var(--bg-elevated);
+  }
+
+  .context__footer {
+    background-color: var(--bg-elevated);
+    border-top-color: var(--border-color);
+  }
+
   // -------------------------------------------------------------------------
   // Modal
   // -------------------------------------------------------------------------
@@ -607,12 +621,63 @@ body.theme-dark {
     color: var(--text-secondary);
   }
 
+  // FormInput component - fix white background in dark mode
+  .form-input {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-input);
+
+    &.form-input--disabled {
+      background-color: var(--bg-tertiary) !important;
+    }
+  }
+
+  .form-input__input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary);
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-input--disabled & {
+      background-color: var(--bg-tertiary) !important;
+      color: var(--text-muted);
+    }
+  }
+
+  .form-input__suffix {
+    background-color: var(--bg-tertiary);
+    border-left-color: var(--border-input);
+    color: var(--text-secondary);
+  }
+
+  .form-input__icon {
+    color: var(--text-muted);
+  }
+
+  // Field context (create/edit field form)
+  .field-context {
+    background-color: var(--bg-elevated);
+  }
+
+  .field-context__content {
+    background-color: var(--bg-elevated);
+  }
+
+  .field-context__tabs {
+    background-color: var(--bg-elevated);
+  }
+
   .control__label {
     color: var(--text-primary);
   }
 
   .control__description {
     color: var(--text-secondary);
+  }
+
+  .control__helper-text {
+    color: var(--text-muted);
   }
 
   // -------------------------------------------------------------------------
