@@ -7,9 +7,8 @@
 }
 
 {$BASEROW_CADDY_ADDRESSES} {
-    tls {
-        on_demand
-    }
+    # TLS is handled by Railway/cloud proxy - no TLS config needed here
+    # For self-hosted with custom domains, add: tls { on_demand }
 
     @is_baserow_tool {
         expression `
