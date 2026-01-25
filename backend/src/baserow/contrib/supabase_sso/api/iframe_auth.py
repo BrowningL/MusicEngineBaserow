@@ -50,6 +50,7 @@ class IframeLoginView(View):
     def get(self, request):
         token = request.GET.get('token', '')
         redirect_path = request.GET.get('redirect', '/dashboard')
+        theme = request.GET.get('theme', '')  # Optional: 'light' or 'dark'
 
         if not token:
             logger.warning("Iframe login called without token")
@@ -78,8 +79,10 @@ class IframeLoginView(View):
         # Escape for safe HTML embedding (prevent XSS)
         safe_token = escape(token)
         safe_redirect = escape(redirect_path)
+        # Validate theme - only allow 'light' or 'dark'
+        safe_theme = 'dark' if theme == 'dark' else ('light' if theme == 'light' else '')
 
-        logger.info(f"Iframe login: injecting token for user_id={user_id}, redirect={redirect_path}")
+        logger.info(f"Iframe login: injecting token for user_id={user_id}, redirect={redirect_path}, theme={safe_theme or 'default'}")
 
         # Return HTML page that injects token into localStorage and redirects
         html = f'''<!DOCTYPE html>
@@ -128,6 +131,7 @@ class IframeLoginView(View):
     (function() {{
         const token = "{safe_token}";
         const redirect = "{safe_redirect}";
+        const theme = "{safe_theme}";
 
         // Save to localStorage - this is where Baserow's Nuxt auth looks for the token
         try {{
@@ -142,6 +146,12 @@ class IframeLoginView(View):
             localStorage.setItem('token', token);
 
             console.log('[IframeAuth] Token saved to localStorage');
+
+            // Set theme preference if provided
+            if (theme) {{
+                localStorage.setItem('isrc-theme', theme);
+                console.log('[IframeAuth] Theme set to:', theme);
+            }}
         }} catch (e) {{
             console.warn('[IframeAuth] localStorage not available:', e);
         }}
