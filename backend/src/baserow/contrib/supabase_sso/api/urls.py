@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import SupabaseAuthenticateView, SupabaseHealthView, DevLogoutView
+from .iframe_auth import IframeLoginView
 
 app_name = 'supabase_sso'
 
@@ -14,6 +15,13 @@ urlpatterns = [
         'sso/supabase/health/',
         SupabaseHealthView.as_view(),
         name='health'
+    ),
+    # Iframe authentication endpoint for ISRCAnalytics integration
+    # Injects JWT token into localStorage and redirects to target page
+    path(
+        'auth/iframe-login/',
+        IframeLoginView.as_view(),
+        name='iframe_login'
     ),
     # DEV ONLY: Logout endpoint - REMOVE BEFORE PRODUCTION
     path(
