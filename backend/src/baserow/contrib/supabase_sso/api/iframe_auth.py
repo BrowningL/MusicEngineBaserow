@@ -16,6 +16,7 @@ import logging
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
 
@@ -26,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(xframe_options_exempt, name='dispatch')
 class IframeLoginView(View):
     """
     Token injection endpoint for iframe authentication.
