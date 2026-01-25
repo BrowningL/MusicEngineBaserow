@@ -1497,4 +1497,233 @@ body.theme-dark {
       background-color: var(--bg-hover);
     }
   }
+
+  // -------------------------------------------------------------------------
+  // Checkbox
+  // -------------------------------------------------------------------------
+  .checkbox__button {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+
+    .checkbox--disabled:not(.checkbox--checked) & {
+      background-color: var(--bg-tertiary);
+    }
+
+    .checkbox:active:not(.checkbox--checked) & {
+      background-color: var(--bg-tertiary);
+    }
+  }
+
+  .checkbox__label {
+    color: var(--text-primary);
+
+    .checkbox--disabled & {
+      color: var(--text-muted);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Radio Button
+  // -------------------------------------------------------------------------
+  .radio__button {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+
+    .radio--disabled & {
+      background-color: var(--bg-tertiary);
+    }
+  }
+
+  .radio__label {
+    color: var(--text-primary);
+
+    .radio--disabled & {
+      color: var(--text-muted);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Notification Panel
+  // -------------------------------------------------------------------------
+  .notification-panel {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .notification-panel__head {
+    border-bottom-color: var(--border-color);
+  }
+
+  .notification-panel__title {
+    color: var(--text-primary);
+  }
+
+  .notification-panel__notification {
+    border-bottom-color: var(--border-color);
+  }
+
+  .notification-panel__notification--unread {
+    background-color: var(--bg-tertiary);
+  }
+
+  .notification-panel__notification-time {
+    color: var(--text-muted);
+  }
+
+  .notification-panel__empty-text {
+    color: var(--text-secondary);
+  }
+
+  .notification-panel__refresh-hint {
+    background-color: var(--bg-tertiary);
+    border-bottom-color: var(--border-color);
+  }
+
+  // -------------------------------------------------------------------------
+  // Tabs (full component)
+  // -------------------------------------------------------------------------
+  .tabs {
+    background-color: var(--bg-elevated);
+  }
+
+  .tabs__header {
+    border-bottom-color: var(--border-color);
+  }
+
+  .tabs__link {
+    color: var(--text-secondary);
+
+    .tabs__item--active & {
+      color: var(--text-primary);
+    }
+
+    .tabs__item:not(.tabs__item--disabled) &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .tab {
+    background-color: var(--bg-elevated);
+  }
+
+  // -------------------------------------------------------------------------
+  // Trash Entry
+  // -------------------------------------------------------------------------
+  .trash-entry {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .trash-entry__name {
+    color: var(--text-primary);
+  }
+
+  .trash-entry__info {
+    color: var(--text-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Delete Section
+  // -------------------------------------------------------------------------
+  .delete-section {
+    background-color: var(--bg-elevated);
+  }
+
+  // -------------------------------------------------------------------------
+  // Call to Action
+  // -------------------------------------------------------------------------
+  .call-to-action {
+    background-color: var(--bg-elevated);
+  }
+
+  // -------------------------------------------------------------------------
+  // Dashboard
+  // -------------------------------------------------------------------------
+  .dashboard {
+    background-color: var(--bg-primary);
+  }
+
+  .dashboard__item {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+  }
+
+  .dashboard__item-name {
+    color: var(--text-primary);
+  }
+
+  .dashboard__item-description {
+    color: var(--text-secondary);
+  }
+
+  // -------------------------------------------------------------------------
+  // Row History
+  // -------------------------------------------------------------------------
+  .row-history__entry {
+    background-color: var(--bg-elevated);
+  }
+
+  .row-history__entry-time {
+    color: var(--text-muted);
+  }
+
+  // -------------------------------------------------------------------------
+  // Select Search
+  // -------------------------------------------------------------------------
+  .select__search {
+    background-color: var(--bg-elevated);
+    border-bottom-color: var(--border-color);
+  }
+
+  .select__search-input {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  .select__search-icon {
+    color: var(--text-muted);
+  }
+
+  // -------------------------------------------------------------------------
+  // Button Icon
+  // -------------------------------------------------------------------------
+  .button-icon {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Upload Files / File Field
+  // -------------------------------------------------------------------------
+  .upload-files__drop-zone {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+  }
+
+  .upload-files__preview {
+    background-color: var(--bg-tertiary);
+  }
+
+  // File field in grid
+  .grid-field-file__add {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .grid-field-file__item {
+    background-color: var(--bg-tertiary);
+  }
 }
