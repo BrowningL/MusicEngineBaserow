@@ -20,7 +20,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
 
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 logger = logging.getLogger(__name__)
@@ -55,9 +55,10 @@ class IframeLoginView(View):
             logger.warning("Iframe login called without token")
             return HttpResponseBadRequest('Missing token parameter')
 
-        # Validate the JWT token
+        # Validate the refresh token
+        # Baserow stores refresh tokens in the cookie, not access tokens
         try:
-            validated_token = AccessToken(token)
+            validated_token = RefreshToken(token)
             user_id = validated_token.get('user_id')
             if not user_id:
                 logger.warning("Iframe login: token missing user_id claim")
