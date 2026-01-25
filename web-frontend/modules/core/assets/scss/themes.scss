@@ -564,6 +564,54 @@ body.theme-dark {
     border-top-color: var(--border-color);
   }
 
+  // Modal sidebar (used in file upload, settings, etc.)
+  .modal__box-sidebar {
+    background-color: var(--bg-secondary) !important;
+
+    &.modal__box-sidebar--left {
+      border-right-color: var(--border-color);
+    }
+
+    &.modal__box-sidebar--right {
+      border-left-color: var(--border-color);
+    }
+  }
+
+  .modal__box-content {
+    background-color: var(--bg-elevated);
+  }
+
+  // Modal sidebar navigation (Upload from, my device, etc.)
+  .modal-sidebar__title {
+    color: var(--text-muted);
+  }
+
+  .modal-sidebar__head {
+    border-bottom-color: var(--border-color);
+  }
+
+  .modal-sidebar__head-name,
+  .modal-sidebar__head-icon-and-name {
+    color: var(--text-primary);
+  }
+
+  .modal-sidebar__nav-link {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+
+    &.active {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+  }
+
+  .modal-sidebar__nav-icon {
+    color: var(--text-muted);
+  }
+
   // -------------------------------------------------------------------------
   // Box / Cards
   // -------------------------------------------------------------------------
