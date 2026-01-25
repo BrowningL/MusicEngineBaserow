@@ -145,9 +145,10 @@ class IframeLoginView(View):
             console.warn('[IframeAuth] localStorage not available:', e);
         }}
 
-        // Also set cookie as backup (first-party cookie from this domain)
+        // Set the jwt_token cookie - this is what Baserow's frontend actually reads
+        // SameSite=None is required for cross-site iframe embedding
         try {{
-            document.cookie = 'jwt_token=' + token + '; path=/; max-age=604800; SameSite=Lax; Secure';
+            document.cookie = 'jwt_token=' + token + '; path=/; max-age=604800; SameSite=None; Secure';
             console.log('[IframeAuth] Token saved to cookie');
         }} catch (e) {{
             console.warn('[IframeAuth] Cookie not available:', e);
