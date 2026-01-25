@@ -1,11 +1,7 @@
 <template>
   <div class="sidebar__section" ph-autocapture="sidebar" data-highlight="menu">
     <ul class="tree">
-      <SidebarSearch
-        :selected-workspace="selectedWorkspace"
-        @open-workspace-search="openWorkspaceSearch"
-      />
-      <!-- ISRCAnalytics: Removed Home link -->
+      <!-- ISRCAnalytics: Removed SidebarSearch and Home link -->
 
       <li class="tree__item">
         <div class="tree__action tree__action--has-counter">
@@ -29,75 +25,7 @@
         <NotificationPanel ref="notificationPanel" />
       </li>
 
-      <nuxt-link
-        v-if="
-          $hasPermission(
-            'workspace.list_workspace_users',
-            selectedWorkspace,
-            selectedWorkspace.id
-          )
-        "
-        v-slot="{ href, navigate, isExactActive }"
-        :to="{
-          name: 'settings-members',
-          params: {
-            workspaceId: selectedWorkspace.id,
-          },
-        }"
-      >
-        <li
-          class="tree__item"
-          :class="{
-            active: isExactActive,
-          }"
-          data-highlight="members"
-        >
-          <div class="tree__action sidebar__action">
-            <a :href="href" class="tree__link" @click="navigate">
-              <i class="tree__icon iconoir-group"></i>
-              <span class="tree__link-text">
-                <span class="sidebar__item-name">{{
-                  $t('sidebar.members')
-                }}</span>
-              </span>
-              <span
-                v-if="selectedWorkspace.users.length"
-                class="sidebar__item-count"
-              >
-                {{ selectedWorkspace.users.length }}</span
-              >
-            </a>
-          </div>
-        </li>
-      </nuxt-link>
-
-      <li
-        v-if="
-          $hasPermission(
-            'workspace.create_invitation',
-            selectedWorkspace,
-            selectedWorkspace.id
-          )
-        "
-        class="tree__item"
-      >
-        <div class="tree__action sidebar__action">
-          <a class="tree__link" @click="$refs.inviteModal.show()">
-            <i class="tree__icon iconoir-add-user"></i>
-            <span class="tree__link-text">
-              <span class="sidebar__item-name">{{
-                $t('sidebar.inviteOthers')
-              }}</span>
-            </span>
-          </a>
-        </div>
-
-        <WorkspaceMemberInviteModal
-          ref="inviteModal"
-          :workspace="selectedWorkspace"
-          @invite-submitted="handleInvite"
-        />
-      </li>
+      <!-- ISRCAnalytics: Removed Members and Invite Others links -->
       <component
         :is="component"
         v-for="(component, index) in sidebarWorkspaceComponents"

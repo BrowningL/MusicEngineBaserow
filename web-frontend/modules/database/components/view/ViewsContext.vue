@@ -5,15 +5,7 @@
     max-height-if-outside-viewport
     @shown="shown"
   >
-    <div class="select__search">
-      <i class="select__search-icon iconoir-search"></i>
-      <input
-        v-model="query"
-        type="text"
-        class="select__search-input"
-        :placeholder="$t('viewsContext.searchView')"
-      />
-    </div>
+    <!-- ISRCAnalytics: Removed search bar -->
     <div v-if="isLoading" class="context--loading">
       <div class="loading"></div>
     </div>

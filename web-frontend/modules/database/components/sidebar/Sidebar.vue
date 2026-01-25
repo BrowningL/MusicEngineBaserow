@@ -247,13 +247,13 @@ export default {
 .sidebar-add-section {
   margin: 6px 0 0 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+  border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-add-section__title {
   font-size: 10px;
   font-weight: 500;
-  color: var(--text-muted, #9ca3af);
+  color: var(--text-muted);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -271,15 +271,15 @@ export default {
   padding: 5px 10px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-primary, #374151);
-  background-color: var(--bg-tertiary, #f3f4f6);
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    background-color: var(--bg-hover, #e5e7eb);
-    color: var(--text-primary, #111827);
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
     text-decoration: none;
   }
 }
@@ -299,12 +299,12 @@ export default {
 }
 
 .sidebar-slots__label {
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary);
   min-width: 70px;
 }
 
 .sidebar-slots__value {
-  color: var(--text-primary, #374151);
+  color: var(--text-primary);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
@@ -318,7 +318,7 @@ export default {
   font-size: 12px;
   font-weight: 600;
   color: #5190ef;
-  background-color: var(--bg-tertiary, #eff6ff);
+  background-color: var(--bg-tertiary);
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
@@ -326,14 +326,14 @@ export default {
   margin-left: auto;
 
   &:hover {
-    background-color: var(--bg-hover, #dbeafe);
+    background-color: var(--bg-hover);
     color: #5190ef;
     text-decoration: none;
   }
 
   &--disabled {
-    color: var(--text-muted, #9ca3af);
-    background-color: var(--bg-tertiary, #f3f4f6);
+    color: var(--text-muted);
+    background-color: var(--bg-tertiary);
     cursor: default;
     pointer-events: none;
   }

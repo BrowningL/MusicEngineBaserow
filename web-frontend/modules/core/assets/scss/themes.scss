@@ -366,14 +366,39 @@ body.theme-dark {
 
   .grid-view__cell {
     color: var(--text-primary);
+    background-color: var(--bg-primary);
 
-    &.active::before {
-      border-color: var(--grid-cell-selected-border);
+    &.active {
+      background-color: var(--bg-primary) !important;
+
+      &::before {
+        border-color: var(--grid-cell-selected-border);
+      }
+
+      // Fix selected cell input/textarea going white
+      input,
+      textarea,
+      .grid-field-text__input,
+      .grid-field-long-text__textarea,
+      .grid-field-number__input,
+      .grid-field-url__input,
+      .grid-field-email__input,
+      .grid-field-phone-number__input {
+        background-color: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+      }
     }
 
     .grid-view__row--selected &.active {
-      background-color: var(--bg-primary);
+      background-color: var(--bg-primary) !important;
     }
+  }
+
+  // Ensure active/editing cells have proper dark background
+  .grid-view__cell--active,
+  .grid-view__cell.active {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
   }
 
   .grid-view__description {
@@ -610,6 +635,16 @@ body.theme-dark {
     }
   }
 
+  // Fix "Grid", "Collaborative" etc. label text in select dropdowns
+  .select__item-label,
+  .select__item-name {
+    color: var(--text-primary) !important;
+  }
+
+  .select__item-description {
+    color: var(--text-secondary);
+  }
+
   .dropdown {
     background-color: var(--bg-elevated);
     border-color: var(--border-color);
@@ -820,17 +855,36 @@ body.theme-dark {
   // Field Type Input Components
   // -------------------------------------------------------------------------
 
-  // Text field editing
+  // Text field editing - ensure dark background when cell is selected/active
   .grid-field-text__input {
-    background-color: var(--bg-input) !important;
-    color: var(--text-primary);
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
     border-color: var(--border-input);
+
+    &:focus {
+      background-color: var(--bg-primary) !important;
+      color: var(--text-primary) !important;
+    }
   }
 
   // Long text / textarea
   .grid-field-long-text__textarea {
-    background-color: var(--bg-input) !important;
-    color: var(--text-primary);
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+
+    &:focus {
+      background-color: var(--bg-primary) !important;
+      color: var(--text-primary) !important;
+    }
+  }
+
+  // Generic cell editing override - catches all input scenarios in active cells
+  .grid-view__cell.active .cell__active-inner,
+  .grid-view__cell.active [contenteditable="true"],
+  .grid-view__cell.active input[type="text"],
+  .grid-view__cell.active textarea {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
   }
 
   // Rich text field
@@ -1292,5 +1346,42 @@ body.theme-dark {
 
   .switch__label {
     color: var(--text-primary);
+  }
+
+  // -------------------------------------------------------------------------
+  // ISRCAnalytics Sidebar Add Section
+  // -------------------------------------------------------------------------
+
+  .sidebar-add-section {
+    border-bottom-color: var(--border-color);
+  }
+
+  .sidebar-add-section__title {
+    color: var(--text-muted);
+  }
+
+  .sidebar-add-section__button {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .sidebar-slots__label {
+    color: var(--text-secondary);
+  }
+
+  .sidebar-slots__value {
+    color: var(--text-primary);
+  }
+
+  .sidebar-slots__upgrade {
+    background-color: var(--bg-tertiary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
   }
 }
