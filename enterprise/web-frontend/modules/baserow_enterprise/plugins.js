@@ -1,11 +1,11 @@
 import { BaserowPlugin } from '@baserow/modules/core/plugins'
-import MemberRolesDatabaseContextItem from '@baserow_enterprise/components/member-roles/MemberRolesDatabaseContextItem'
+// ISRCAnalytics: Removed MemberRolesDatabaseContextItem import (no longer used)
 import EnterpriseFeatures from '@baserow_enterprise/features'
 import SnapshotModalWarning from '@baserow_enterprise/components/SnapshotModalWarning'
 import EnterpriseSettings from '@baserow_enterprise/components/EnterpriseSettings'
 import EnterpriseSettingsOverrideDashboardHelp from '@baserow_enterprise/components/EnterpriseSettingsOverrideDashboardHelp'
 import EnterpriseLogo from '@baserow_enterprise/components/EnterpriseLogo'
-import { DatabaseApplicationType } from '@baserow/modules/database/applicationTypes'
+// ISRCAnalytics: Removed DatabaseApplicationType import (no longer used)
 import AssistantPanel from '@baserow_enterprise/components/assistant/AssistantPanel'
 import DateDependencyFieldTypeIcon from '@baserow_enterprise/components/dateDependency/DateDependencyFieldTypeIcon'
 import ExportWorkspaceModalWarning from '@baserow_enterprise/components/ExportWorkspaceModalWarning'
@@ -22,19 +22,9 @@ export class EnterprisePlugin extends BaserowPlugin {
   }
 
   getAdditionalApplicationContextComponents(workspace, application) {
-    const additionalComponents = []
-    const hasReadRolePermission = this.app.$hasPermission(
-      'application.read_role',
-      application,
-      workspace.id
-    )
-    if (
-      hasReadRolePermission &&
-      application.type === DatabaseApplicationType.getType()
-    ) {
-      additionalComponents.push(MemberRolesDatabaseContextItem)
-    }
-    return additionalComponents
+    // ISRCAnalytics: Removed MemberRolesDatabaseContextItem (Manage members)
+    // All users are in individual workspaces, member roles not needed
+    return []
   }
 
   getRightSidebarWorkspaceComponents(workspace) {
