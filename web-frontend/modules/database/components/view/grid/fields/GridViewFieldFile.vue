@@ -208,8 +208,11 @@ export default {
       this.inspirationDownloading = true
 
       try {
-        // Get the table ID from the store
-        const tableId = this.$store.getters[`${this.storePrefix}view/grid/getTableId`]
+        // Get the table ID from the field object (more reliable than store getter)
+        const tableId = this.field.table_id
+        if (!tableId) {
+          throw new Error('Could not determine table ID for this field')
+        }
         // Get database and workspace info from the application store
         const application = this.$store.getters['application/getSelected']
         const workspaceId = application?.workspace?.id || application?.group?.id || 0
