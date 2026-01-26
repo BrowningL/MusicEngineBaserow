@@ -170,3 +170,21 @@
   margin-right: 4px;
   font-size: 10px;
 }
+
+// Inspiration Download Button - distinct teal/cyan color to indicate automation
+.grid-field-file__inspiration-download {
+  background-color: #e0f7fa;
+  color: #00838f;
+
+  &:hover {
+    background-color: #b2ebf2;
+  }
+
+  .grid-view__column--matches-search & {
+    background-color: #b2ebf2;
+
+    &:hover {
+      background-color: #80deea;
+    }
+  }
+}
