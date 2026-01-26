@@ -114,7 +114,14 @@ export default {
       loadings: [],
       dragTarget: null,
       inspirationDownloading: false,
+      inspirationRefreshTimeouts: [],
     }
+  },
+  beforeDestroy() {
+    // Clean up any pending refresh timeouts
+    this.inspirationRefreshTimeouts.forEach((timeoutId) => {
+      clearTimeout(timeoutId)
+    })
   },
   computed: {
     /**
@@ -274,18 +281,16 @@ export default {
           message: 'The file is being downloaded. It will appear shortly.',
         })
 
-        // Refresh the row after a delay to pick up the new file
+        // Refresh the row after delays to pick up the new file
         // The download typically takes 10-30 seconds
-        setTimeout(() => {
-          this.$emit('refresh-row')
-        }, 5000)
-
-        // Set up additional refresh attempts
-        const refreshAttempts = [15000, 30000, 60000]
-        refreshAttempts.forEach((delay) => {
-          setTimeout(() => {
+        // Store timeout IDs so they can be cleared if component is destroyed
+        this.inspirationRefreshTimeouts = []
+        const refreshDelays = [5000, 15000, 30000, 60000]
+        refreshDelays.forEach((delay) => {
+          const timeoutId = setTimeout(() => {
             this.$emit('refresh-row')
           }, delay)
+          this.inspirationRefreshTimeouts.push(timeoutId)
         })
       } catch (error) {
         console.error('Inspiration download error:', error)
