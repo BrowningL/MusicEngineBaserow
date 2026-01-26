@@ -16,7 +16,7 @@
         class="grid-field-long-text__acr-btn"
         @click.prevent="triggerAcrScan()"
       >
-        <i class="iconoir-search"></i>
+        <i class="iconoir-fingerprint"></i>
       </a>
       <div v-else class="grid-field-long-text__acr-loading">
         <div class="loading"></div>
@@ -62,6 +62,11 @@ export default {
 
       // Don't show in read-only mode
       if (this.readOnly) {
+        return false
+      }
+
+      // Don't show if there's already text/output in the cell
+      if (this.value && this.value.trim() !== '') {
         return false
       }
 
@@ -216,7 +221,7 @@ export default {
 .grid-field-long-text__acr-controls {
   position: absolute;
   top: 4px;
-  right: 4px;
+  left: 4px;
   z-index: 1;
 }
 
