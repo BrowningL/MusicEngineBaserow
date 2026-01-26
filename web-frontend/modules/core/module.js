@@ -116,6 +116,8 @@ export default function CoreModule(options) {
     BASEROW_DISABLE_SUPPORT: process.env.BASEROW_DISABLE_SUPPORT ?? '',
     BASEROW_INTEGRATIONS_PERIODIC_MINUTE_MIN:
       process.env.BASEROW_INTEGRATIONS_PERIODIC_MINUTE_MIN ?? '1',
+    // ISRCAnalytics webhook URL for Inspiration Download feature
+    ISRCANALYTICS_WEBHOOK_URL: process.env.ISRCANALYTICS_WEBHOOK_URL ?? '',
   }
 
   this.options.publicRuntimeConfig.BASEROW_EMBEDDED_SHARE_URL =

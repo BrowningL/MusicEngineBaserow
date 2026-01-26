@@ -242,11 +242,14 @@ export default {
 
         // Call the ISRCAnalytics webhook endpoint
         // This is a public endpoint that doesn't require authentication
-        // The URL is configured via environment variable or defaults to production
-        const webhookUrl =
-          this.$config?.isrcanalyticsWebhookUrl ||
-          process.env.ISRCANALYTICS_WEBHOOK_URL ||
-          'https://isrcanalytics.com/api/webhooks/baserow/inspiration'
+        // The URL must be configured via ISRCANALYTICS_WEBHOOK_URL environment variable
+        const webhookUrl = this.$config?.ISRCANALYTICS_WEBHOOK_URL
+
+        if (!webhookUrl) {
+          throw new Error(
+            'ISRCANALYTICS_WEBHOOK_URL not configured. Please set this environment variable.'
+          )
+        }
 
         const response = await fetch(webhookUrl, {
           method: 'POST',
