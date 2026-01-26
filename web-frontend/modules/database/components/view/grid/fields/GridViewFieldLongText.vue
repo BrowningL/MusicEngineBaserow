@@ -16,7 +16,7 @@
         class="grid-field-long-text__acr-btn"
         @click.prevent="triggerAcrScan()"
       >
-        <i class="iconoir-sound-high"></i>
+        <i class="iconoir-search"></i>
       </a>
       <div v-else class="grid-field-long-text__acr-loading">
         <div class="loading"></div>
@@ -212,7 +212,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .grid-field-long-text__acr-controls {
   position: absolute;
   top: 4px;
@@ -224,20 +224,20 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  background-color: $color-primary-500;
-  color: white;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: $color-primary-600;
+    background-color: #c8e6c9;
   }
 
   i {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
@@ -245,7 +245,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 </style>
