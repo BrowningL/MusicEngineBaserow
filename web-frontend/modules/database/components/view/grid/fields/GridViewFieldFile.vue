@@ -234,6 +234,7 @@ export default {
           workspace_id: workspaceId,
           event_id: `manual-${Date.now()}`,
           event_type: 'rows.updated',
+          user_jwt_token: this.$store.state.auth.token, // Pass user's token for row updates
           items: [
             {
               id: rowId,
