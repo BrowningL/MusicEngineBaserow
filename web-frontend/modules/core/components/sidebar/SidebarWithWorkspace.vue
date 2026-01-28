@@ -30,25 +30,36 @@
                 }"
                 data-highlight="applications"
               >
-                <component
-                  :is="getApplicationComponent(application)"
-                  v-for="application in applicationGroup.applications"
-                  :key="application.id"
-                  v-sortable="{
-                    id: application.id,
-                    update: orderApplications,
-                    handle: '[data-sortable-handle]',
-                    marginTop: -1.5,
-                    enabled: $hasPermission(
-                      'workspace.order_applications',
-                      selectedWorkspace,
-                      selectedWorkspace.id
-                    ),
-                  }"
-                  :application="application"
-                  :pending-jobs="pendingJobs[application.type]"
-                  :workspace="selectedWorkspace"
-                ></component>
+                <template
+                  v-for="(application, index) in sortedApplications(applicationGroup.applications)"
+                >
+                  <component
+                    :is="getApplicationComponent(application)"
+                    :key="application.id"
+                    v-sortable="{
+                      id: application.id,
+                      update: orderApplications,
+                      handle: '[data-sortable-handle]',
+                      marginTop: -1.5,
+                      enabled: $hasPermission(
+                        'workspace.order_applications',
+                        selectedWorkspace,
+                        selectedWorkspace.id
+                      ),
+                    }"
+                    :application="application"
+                    :pending-jobs="pendingJobs[application.type]"
+                    :workspace="selectedWorkspace"
+                  ></component>
+                  <!-- ISRCAnalytics: Arrow separator between Production Pipeline and Live Catalogue -->
+                  <div
+                    v-if="shouldShowPipelineArrow(application, index, applicationGroup.applications)"
+                    :key="'arrow-' + application.id"
+                    class="sidebar__pipeline-arrow"
+                  >
+                    <i class="iconoir-arrow-down"></i>
+                  </div>
+                </template>
               </ul>
               <ul v-if="pendingJobs[applicationGroup.type].length" class="tree">
                 <component
@@ -143,6 +154,34 @@ export default {
     },
     getPendingJobComponent(job) {
       return this.$registry.get('job', job.type).getSidebarComponent()
+    },
+    /**
+     * ISRCAnalytics: Sort databases so Production Pipeline comes before Live Catalogue.
+     */
+    sortedApplications(applications) {
+      return [...applications].sort((a, b) => {
+        // Production Pipeline (or Production Catalogue for legacy) should come first
+        const isPipelineA = a.name === 'Production Pipeline' || a.name === 'Production Catalogue'
+        const isPipelineB = b.name === 'Production Pipeline' || b.name === 'Production Catalogue'
+        const isLiveCatalogueA = a.name === 'Live Catalogue'
+        const isLiveCatalogueB = b.name === 'Live Catalogue'
+
+        if (isPipelineA && !isPipelineB) return -1
+        if (isPipelineB && !isPipelineA) return 1
+        if (isLiveCatalogueA && !isLiveCatalogueB) return 1
+        if (isLiveCatalogueB && !isLiveCatalogueA) return -1
+
+        return a.order - b.order
+      })
+    },
+    /**
+     * ISRCAnalytics: Show arrow between Production Pipeline and Live Catalogue.
+     */
+    shouldShowPipelineArrow(application, index, applications) {
+      const sorted = this.sortedApplications(applications)
+      const isPipeline = application.name === 'Production Pipeline' || application.name === 'Production Catalogue'
+      const nextApp = sorted[index + 1]
+      return isPipeline && nextApp && nextApp.name === 'Live Catalogue'
     },
     async orderApplications(order, oldOrder) {
       try {

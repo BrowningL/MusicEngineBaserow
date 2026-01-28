@@ -21,7 +21,7 @@
         </nuxt-link>
       </li>
     </template>
-    <template v-if="isAppSelected(application)" #body>
+    <template v-if="isAppSelected(application) || shouldAutoExpand" #body>
       <ul class="tree__subs">
         <SidebarItem
           v-for="table in orderedTables"
@@ -176,6 +176,13 @@ export default {
      */
     isReadOnlyDatabase() {
       return this.application.name === 'Live Catalogue'
+    },
+    /**
+     * ISRCAnalytics: Auto-expand Production Pipeline and Live Catalogue databases.
+     */
+    shouldAutoExpand() {
+      const dbName = this.application.name
+      return dbName === 'Production Pipeline' || dbName === 'Live Catalogue' || dbName === 'Production Catalogue'
     },
     orderedTables() {
       return this.application.tables

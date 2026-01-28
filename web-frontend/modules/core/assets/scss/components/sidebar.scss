@@ -380,3 +380,16 @@
     text-align: center;
   }
 }
+
+// ISRCAnalytics: Pipeline arrow separator between Production Pipeline and Live Catalogue
+.sidebar__pipeline-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  color: $palette-neutral-500;
+
+  i {
+    font-size: 18px;
+  }
+}
