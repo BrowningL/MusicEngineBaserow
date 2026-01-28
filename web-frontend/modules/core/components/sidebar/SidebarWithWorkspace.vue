@@ -20,7 +20,8 @@
             :key="applicationGroup.type"
           >
             <template v-if="applicationGroup.applications.length > 0">
-              <div class="tree__heading">
+              <!-- ISRCAnalytics: Hide "Databases" heading to save space -->
+              <div v-if="applicationGroup.name !== 'Databases'" class="tree__heading">
                 {{ applicationGroup.name }}
               </div>
               <ul

@@ -112,10 +112,10 @@
       <AddTracksModal ref="addTracksModal" :database="application" />
       <AddPlaylistsModal ref="addPlaylistsModal" :database="application" />
 
-      <!-- Show "+ New table" for non-read-only databases -->
+      <!-- ISRCAnalytics: Hide "+ New table" for managed databases -->
       <a
         v-if="
-          !isReadOnlyDatabase &&
+          !shouldHideAddTable &&
           $hasPermission(
             'database.create_table',
             application,
@@ -167,6 +167,8 @@ export default {
     return {
       trackSlots: { used: 0, limit: 0 },
       playlistSlots: { used: 0, limit: 0, unlimited: false },
+      // ISRCAnalytics: Track manual collapse state for auto-expand databases
+      manuallyCollapsed: false,
     }
   },
   computed: {
@@ -178,9 +180,19 @@ export default {
       return this.application.name === 'Live Catalogue'
     },
     /**
+     * ISRCAnalytics: Check if we should hide the "Add table" button.
+     * Both Live Catalogue and Production Pipeline should not allow adding new tables.
+     */
+    shouldHideAddTable() {
+      const dbName = this.application.name
+      return dbName === 'Live Catalogue' || dbName === 'Production Pipeline' || dbName === 'Production Catalogue'
+    },
+    /**
      * ISRCAnalytics: Auto-expand Production Pipeline and Live Catalogue databases.
+     * Respects manual collapse state to allow users to collapse these databases.
      */
     shouldAutoExpand() {
+      if (this.manuallyCollapsed) return false
       const dbName = this.application.name
       return dbName === 'Production Pipeline' || dbName === 'Live Catalogue' || dbName === 'Production Catalogue'
     },
@@ -226,6 +238,12 @@ export default {
       }
     },
     async selected(application) {
+      // ISRCAnalytics: Toggle collapse state for auto-expand databases
+      const isAutoExpandDb = ['Production Pipeline', 'Live Catalogue', 'Production Catalogue'].includes(application.name)
+      if (isAutoExpandDb) {
+        // If already expanded, collapse it; if collapsed, expand it
+        this.manuallyCollapsed = !this.manuallyCollapsed
+      }
       try {
         await this.$store.dispatch('application/select', application)
       } catch (error) {
