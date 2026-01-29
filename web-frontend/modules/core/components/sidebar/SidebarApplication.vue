@@ -7,7 +7,11 @@
   >
     <div
       class="tree__action tree__action--has-options"
-      :class="{ 'tree__action--highlighted': highlighted }"
+      :class="{
+        'tree__action--highlighted': highlighted,
+        'tree__action--no-hover': isManagedDatabase,
+        'tree__action--always-show-options': isManagedDatabase
+      }"
       data-sortable-handle
       :data-highlight="`sidebar-application-${application.id}`"
     >
@@ -145,5 +149,15 @@ export default {
   &:hover {
     background-color: transparent;
   }
+}
+
+/* ISRCAnalytics: Remove hover background for managed databases */
+.tree__action--no-hover:hover {
+  background-color: transparent !important;
+}
+
+/* ISRCAnalytics: Always show three dots for managed databases */
+.tree__action--always-show-options :deep(.tree__options) {
+  display: flex;
 }
 </style>
