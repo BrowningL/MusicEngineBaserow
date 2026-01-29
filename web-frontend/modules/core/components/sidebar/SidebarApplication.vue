@@ -140,6 +140,7 @@ export default {
 /* ISRCAnalytics: Disabled link style for managed databases */
 .tree__link--disabled {
   cursor: default;
+  pointer-events: none;  /* Completely prevents click events */
 
   &:hover {
     background-color: transparent;
