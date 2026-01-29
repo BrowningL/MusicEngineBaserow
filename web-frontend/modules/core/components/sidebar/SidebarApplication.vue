@@ -151,13 +151,18 @@ export default {
   }
 }
 
-/* ISRCAnalytics: Remove hover background for managed databases */
-.tree__action--no-hover:hover {
-  background-color: transparent !important;
+/* ISRCAnalytics: Remove hover and ALL clicks for managed databases */
+.tree__action--no-hover {
+  pointer-events: none;  /* Disable clicks on entire row including sortable handle */
+
+  &:hover {
+    background-color: transparent !important;
+  }
 }
 
-/* ISRCAnalytics: Always show three dots for managed databases */
+/* ISRCAnalytics: Always show three dots and re-enable clicks on them */
 .tree__action--always-show-options :deep(.tree__options) {
   display: flex;
+  pointer-events: auto;  /* Re-enable clicks on three dots only */
 }
 </style>
