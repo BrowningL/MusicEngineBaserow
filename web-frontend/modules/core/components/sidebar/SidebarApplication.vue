@@ -13,10 +13,13 @@
     >
       <a
         class="tree__link"
-        :class="{ 'tree__link--empty': application.name === '' }"
+        :class="{
+          'tree__link--empty': application.name === '',
+          'tree__link--disabled': isManagedDatabase
+        }"
         :title="application.name"
         :aria-label="application.name"
-        @click="$emit('selected', application)"
+        @click="isManagedDatabase ? null : $emit('selected', application)"
       >
         <i class="tree__icon" :class="iconClass"></i>
         <span class="tree__link-text">
@@ -88,6 +91,11 @@ export default {
       type: String,
       default: null,
     },
+    // ISRCAnalytics: Disable clicking for managed databases
+    isManagedDatabase: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -118,3 +126,14 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+/* ISRCAnalytics: Disabled link style for managed databases */
+.tree__link--disabled {
+  cursor: default;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+</style>

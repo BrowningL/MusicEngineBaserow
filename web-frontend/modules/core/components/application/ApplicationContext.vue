@@ -7,8 +7,8 @@
     <div class="context__menu-title">
       {{ application.name }}
     </div>
-    <!-- ISRCAnalytics: Hide entire context menu for read-only databases (Live Catalogue) -->
-    <ul v-if="!isReadOnlyDatabase" class="context__menu">
+    <!-- ISRCAnalytics: Hide entire context menu for managed databases -->
+    <ul v-if="!isReadOnlyDatabase && !isProductionPipeline" class="context__menu">
       <li
         v-for="(component, index) in additionalContextComponents"
         :key="index"
@@ -97,9 +97,14 @@
       </li>
     </ul>
     <!-- ISRCAnalytics: Show read-only notice for Live Catalogue -->
-    <div v-else class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
+    <div v-else-if="isReadOnlyDatabase" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
       <i class="iconoir-lock" style="margin-right: 8px;"></i>
       This database is read-only. Data is updated automatically by the system.
+    </div>
+    <!-- ISRCAnalytics: Show production workspace notice for Production Pipeline -->
+    <div v-else-if="isProductionPipeline" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
+      <i class="iconoir-lock-open" style="margin-right: 8px;"></i>
+      Your production workspace. Add releases, manage distribution accounts, and track your music production workflow.
     </div>
 
     <TrashModal
@@ -163,6 +168,13 @@ export default {
      */
     isReadOnlyDatabase() {
       return this.application.name === 'Live Catalogue'
+    },
+    /**
+     * ISRCAnalytics: Check if this is the Production Pipeline database.
+     * Production Pipeline is editable but should not be renamed/deleted.
+     */
+    isProductionPipeline() {
+      return this.application.name === 'Production Pipeline' || this.application.name === 'Production Catalogue'
     },
   },
   methods: {

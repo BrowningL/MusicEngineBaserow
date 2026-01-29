@@ -122,8 +122,10 @@
             :table="table"
           ></ConfigureDataSyncModal>
         </li>
+        <!-- ISRCAnalytics: Hide rename for managed databases -->
         <li
           v-if="
+            !isManagedDatabase &&
             $hasPermission(
               'database.table.update',
               table,
@@ -137,8 +139,10 @@
             {{ $t('action.rename') }}
           </a>
         </li>
+        <!-- ISRCAnalytics: Hide duplicate for managed databases -->
         <li
           v-if="
+            !isManagedDatabase &&
             $hasPermission(
               'database.table.duplicate',
               table,
@@ -154,8 +158,10 @@
             @click="$refs.context.hide()"
           ></SidebarDuplicateTableContextItem>
         </li>
+        <!-- ISRCAnalytics: Hide delete for managed databases -->
         <li
           v-if="
+            !isManagedDatabase &&
             $hasPermission(
               'database.table.delete',
               table,
@@ -220,16 +226,22 @@ export default {
   },
   computed: {
     /**
-     * ISRCAnalytics: Check if this table is in a read-only database.
-     * Tables in Live Catalogue databases should not show context menu options.
+     * ISRCAnalytics: Check if this table is in a managed database.
+     * Tables in Live Catalogue and Production Pipeline should only show export option.
      */
-    isReadOnlyDatabase() {
-      return this.database.name === 'Live Catalogue'
+    isManagedDatabase() {
+      return this.database.name === 'Live Catalogue' ||
+             this.database.name === 'Production Pipeline' ||
+             this.database.name === 'Production Catalogue'
     },
     showOptions() {
-      // ISRCAnalytics: Hide options for tables in Live Catalogue
-      if (this.isReadOnlyDatabase) {
-        return false
+      // ISRCAnalytics: Show options for managed databases (only export visible)
+      if (this.isManagedDatabase) {
+        return this.$hasPermission(
+          'database.table.run_export',
+          this.table,
+          this.database.workspace.id
+        )
       }
       return (
         this.$hasPermission(

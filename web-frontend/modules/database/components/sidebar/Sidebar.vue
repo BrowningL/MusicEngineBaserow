@@ -2,7 +2,8 @@
   <SidebarApplication
     :workspace="workspace"
     :application="application"
-    :custom-icon-class="isReadOnlyDatabase ? 'iconoir-music-double-note' : null"
+    :custom-icon-class="customIconClass"
+    :is-managed-database="isManagedDatabase"
     @selected="selected"
   >
     <template #context>
@@ -178,6 +179,26 @@ export default {
      */
     isReadOnlyDatabase() {
       return this.application.name === 'Live Catalogue'
+    },
+    /**
+     * ISRCAnalytics: Check if this is a managed database (disables clicking).
+     */
+    isManagedDatabase() {
+      const dbName = this.application.name
+      return dbName === 'Live Catalogue' || dbName === 'Production Pipeline' || dbName === 'Production Catalogue'
+    },
+    /**
+     * ISRCAnalytics: Custom icon for managed databases.
+     * Lock icon for read-only Live Catalogue, unlock icon for editable Production Pipeline.
+     */
+    customIconClass() {
+      if (this.application.name === 'Live Catalogue') {
+        return 'iconoir-lock'
+      }
+      if (this.application.name === 'Production Pipeline' || this.application.name === 'Production Catalogue') {
+        return 'iconoir-lock-open'
+      }
+      return null
     },
     /**
      * ISRCAnalytics: Check if we should hide the "Add table" button.
