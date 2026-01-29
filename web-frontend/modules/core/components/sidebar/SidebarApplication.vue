@@ -19,7 +19,7 @@
         }"
         :title="application.name"
         :aria-label="application.name"
-        @click="isManagedDatabase ? null : $emit('selected', application)"
+        @click="handleClick"
       >
         <i class="tree__icon" :class="iconClass"></i>
         <span class="tree__link-text">
@@ -122,6 +122,15 @@ export default {
     },
     iconClass() {
       return this.customIconClass || this.application._.type.iconClass
+    },
+  },
+  methods: {
+    // ISRCAnalytics: Proper click handler that does nothing for managed databases
+    handleClick() {
+      if (!this.isManagedDatabase) {
+        this.$emit('selected', this.application)
+      }
+      // Do nothing for managed databases - no event, no action
     },
   },
 }

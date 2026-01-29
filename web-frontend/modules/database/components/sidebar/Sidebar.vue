@@ -168,8 +168,6 @@ export default {
     return {
       trackSlots: { used: 0, limit: 0 },
       playlistSlots: { used: 0, limit: 0, unlimited: false },
-      // ISRCAnalytics: Track manual collapse state for auto-expand databases
-      manuallyCollapsed: false,
     }
   },
   computed: {
@@ -188,15 +186,12 @@ export default {
       return dbName === 'Live Catalogue' || dbName === 'Production Pipeline' || dbName === 'Production Catalogue'
     },
     /**
-     * ISRCAnalytics: Custom icon for managed databases.
-     * Lock icon for read-only Live Catalogue, unlock icon for editable Production Pipeline.
+     * ISRCAnalytics: Custom icon for Live Catalogue (music note).
+     * Production Pipeline uses the default database icon.
      */
     customIconClass() {
       if (this.application.name === 'Live Catalogue') {
-        return 'iconoir-lock'
-      }
-      if (this.application.name === 'Production Pipeline' || this.application.name === 'Production Catalogue') {
-        return 'iconoir-lock-open'
+        return 'iconoir-music-double-note'
       }
       return null
     },
@@ -210,10 +205,9 @@ export default {
     },
     /**
      * ISRCAnalytics: Auto-expand Production Pipeline and Live Catalogue databases.
-     * Respects manual collapse state to allow users to collapse these databases.
+     * These databases are always expanded (not collapsible).
      */
     shouldAutoExpand() {
-      if (this.manuallyCollapsed) return false
       const dbName = this.application.name
       return dbName === 'Production Pipeline' || dbName === 'Live Catalogue' || dbName === 'Production Catalogue'
     },
@@ -259,11 +253,10 @@ export default {
       }
     },
     async selected(application) {
-      // ISRCAnalytics: Toggle collapse state for auto-expand databases
-      const isAutoExpandDb = ['Production Pipeline', 'Live Catalogue', 'Production Catalogue'].includes(application.name)
-      if (isAutoExpandDb) {
-        // If already expanded, collapse it; if collapsed, expand it
-        this.manuallyCollapsed = !this.manuallyCollapsed
+      // ISRCAnalytics: Managed databases don't need selection handling - they're always expanded
+      const isManagedDb = ['Production Pipeline', 'Live Catalogue', 'Production Catalogue'].includes(application.name)
+      if (isManagedDb) {
+        return // Do nothing - clicking is handled by SidebarApplication
       }
       try {
         await this.$store.dispatch('application/select', application)

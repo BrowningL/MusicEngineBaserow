@@ -103,7 +103,7 @@
     </div>
     <!-- ISRCAnalytics: Show production workspace notice for Production Pipeline -->
     <div v-else-if="isProductionPipeline" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
-      <i class="iconoir-lock-open" style="margin-right: 8px;"></i>
+      <i class="iconoir-unlock" style="margin-right: 8px;"></i>
       Your production workspace. Add releases, manage distribution accounts, and track your music production workflow.
     </div>
 
