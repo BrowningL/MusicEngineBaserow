@@ -14,6 +14,7 @@
       }"
       data-sortable-handle
       :data-highlight="`sidebar-application-${application.id}`"
+      @mousedown="handleMousedown"
     >
       <a
         class="tree__link"
@@ -129,6 +130,13 @@ export default {
     },
   },
   methods: {
+    // ISRCAnalytics: Stop mousedown for managed databases to prevent sortable pixel shift
+    handleMousedown(event) {
+      if (this.isManagedDatabase) {
+        event.stopPropagation()
+        event.preventDefault()
+      }
+    },
     // ISRCAnalytics: Proper click handler that does nothing for managed databases
     handleClick() {
       if (!this.isManagedDatabase) {
