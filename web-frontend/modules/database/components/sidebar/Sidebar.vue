@@ -211,9 +211,22 @@ export default {
       const dbName = this.application.name
       return dbName === 'Production Pipeline' || dbName === 'Live Catalogue' || dbName === 'Production Catalogue'
     },
+    /**
+     * ISRCAnalytics: Hidden junction tables that should not be shown in the sidebar.
+     * These are internal tables used for many-to-many relationships.
+     */
+    hiddenTableNames() {
+      return ['Track_Artists', 'Playlist_Tracks']
+    },
     orderedTables() {
       return this.application.tables
-        .map((table) => table)
+        .filter((table) => {
+          // ISRCAnalytics: Hide junction tables from Live Catalogue sidebar
+          if (this.isReadOnlyDatabase && this.hiddenTableNames.includes(table.name)) {
+            return false
+          }
+          return true
+        })
         .sort((a, b) => a.order - b.order)
     },
     pendingJobs() {
