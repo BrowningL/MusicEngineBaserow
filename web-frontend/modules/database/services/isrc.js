@@ -2,12 +2,18 @@
  * ISRC Analytics API service.
  * - Enrichment calls go to ISRCAnalytics.com API (which uses workers)
  * - Add calls go to Baserow backend API (which inserts rows)
+ * - Slots calls use Baserow JWT token for authentication
  */
 
 // ISRCAnalytics.com API base URL for enrichment
 const ISRC_ANALYTICS_API_BASE = process.env.ISRC_ANALYTICS_API_URL || ''
 
-export default (client) => {
+/**
+ * Create ISRC Analytics service
+ * @param {Object} client - Baserow API client
+ * @param {string} accessToken - Optional Baserow JWT access token for authenticated requests
+ */
+export default (client, accessToken = null) => {
   return {
     /**
      * Enrich track data from ISRC or Spotify URL.
@@ -101,12 +107,19 @@ export default (client) => {
 
     /**
      * Get track (ISRC) slot usage and limits.
+     * Uses Baserow JWT token for authentication if provided.
      * @returns {Promise} { used, limit, remaining }
      */
     async getTrackSlots() {
+      const headers = {}
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
+
       const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/catalogue/slots`, {
         method: 'GET',
-        credentials: 'include',
+        headers,
+        credentials: accessToken ? 'omit' : 'include',
       })
 
       if (!response.ok) {
@@ -119,12 +132,19 @@ export default (client) => {
 
     /**
      * Get playlist slot usage and limits.
+     * Uses Baserow JWT token for authentication if provided.
      * @returns {Promise} { used, limit, unlimited, remaining }
      */
     async getPlaylistSlots() {
+      const headers = {}
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
+
       const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/playlists/slots`, {
         method: 'GET',
-        credentials: 'include',
+        headers,
+        credentials: accessToken ? 'omit' : 'include',
       })
 
       if (!response.ok) {

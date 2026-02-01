@@ -334,23 +334,51 @@ export const actions = {
   },
 }
 
+// ISRCAnalytics: Filter out admin invitation notifications
+// These are created when the automation admin is added to user workspaces
+function isHiddenNotification(notification) {
+  if (notification.type === 'workspace_invitation_created') {
+    // Hide invitations from admin (automation system)
+    const senderEmail = notification.sender?.email || ''
+    const senderName = notification.sender?.first_name || ''
+    if (
+      senderEmail.toLowerCase().includes('admin') ||
+      senderEmail.toLowerCase().includes('isrcanalytics') ||
+      senderName.toLowerCase().includes('isrc') ||
+      senderName.toLowerCase().includes('admin')
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 export const getters = {
   getWorkspaceId(state) {
     return state.currentWorkspaceId
   },
   getAll(state) {
-    return state.items
+    // ISRCAnalytics: Filter out admin invitation notifications
+    return state.items.filter((notification) => !isHiddenNotification(notification))
   },
   getUnreadCount(state) {
+    // ISRCAnalytics: Exclude hidden notifications from unread count
+    const hiddenUnreadCount = state.items.filter(
+      (n) => !n.read && isHiddenNotification(n)
+    ).length
     const workspaceCount =
       state.perWorkspaceUnreadCount[state.currentWorkspaceId] || 0
-    return state.userUnreadCount + workspaceCount
+    return Math.max(0, state.userUnreadCount + workspaceCount - hiddenUnreadCount)
   },
   getCurrentCount(state) {
-    return state.currentCount
+    // ISRCAnalytics: Exclude hidden notifications from count
+    const hiddenCount = state.items.filter(isHiddenNotification).length
+    return Math.max(0, state.currentCount - hiddenCount)
   },
   getTotalCount(state) {
-    return state.totalCount
+    // ISRCAnalytics: Exclude hidden notifications from total count
+    const hiddenCount = state.items.filter(isHiddenNotification).length
+    return Math.max(0, state.totalCount - hiddenCount)
   },
   getLoading(state) {
     return state.loading

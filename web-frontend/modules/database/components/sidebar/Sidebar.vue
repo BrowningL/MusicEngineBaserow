@@ -240,7 +240,10 @@ export default {
       const baseUrl = process.env.ISRC_ANALYTICS_API_URL || ''
       return `${baseUrl}/settings/billing`
     },
-    ...mapGetters({ isAppSelected: 'application/isSelected' }),
+    ...mapGetters({
+      isAppSelected: 'application/isSelected',
+      authToken: 'auth/token',
+    }),
   },
   watch: {
     isReadOnlyDatabase: {
@@ -255,9 +258,11 @@ export default {
   methods: {
     async fetchSlots() {
       try {
+        // ISRCAnalytics: Pass auth token for cross-origin authentication
+        const token = this.authToken
         const [trackResponse, playlistResponse] = await Promise.all([
-          IsrcService(this.$client).getTrackSlots(),
-          IsrcService(this.$client).getPlaylistSlots(),
+          IsrcService(this.$client, token).getTrackSlots(),
+          IsrcService(this.$client, token).getPlaylistSlots(),
         ])
         this.trackSlots = trackResponse.data
         this.playlistSlots = playlistResponse.data
