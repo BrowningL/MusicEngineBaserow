@@ -237,11 +237,11 @@ export default {
       )
     },
     upgradeUrl() {
-      const baseUrl = this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
+      const baseUrl = this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
       return `${baseUrl}/settings/billing`
     },
     isrcApiBaseUrl() {
-      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
     },
     ...mapGetters({
       isAppSelected: 'application/isSelected',

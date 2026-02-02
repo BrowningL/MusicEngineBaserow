@@ -152,7 +152,7 @@ export default {
   },
   computed: {
     isrcApiBaseUrl() {
-      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
     },
     playlistsPageUrl() {
       // TODO: Configure this via environment or settings

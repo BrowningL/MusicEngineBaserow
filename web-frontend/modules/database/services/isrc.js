@@ -12,8 +12,8 @@
  * @param {string} apiBaseUrl - Optional API base URL (from runtime config)
  */
 export default (client, accessToken = null, apiBaseUrl = '') => {
-  // Use provided URL, fall back to build-time env, then empty string
-  const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || ''
+  // Use provided URL, fall back to build-time env, then production URL
+  const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
   return {
     /**
      * Enrich track data from ISRC or Spotify URL.
