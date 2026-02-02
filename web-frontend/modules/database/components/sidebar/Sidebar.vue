@@ -237,8 +237,11 @@ export default {
       )
     },
     upgradeUrl() {
-      const baseUrl = process.env.ISRC_ANALYTICS_API_URL || ''
+      const baseUrl = this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
       return `${baseUrl}/settings/billing`
+    },
+    isrcApiBaseUrl() {
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
     },
     ...mapGetters({
       isAppSelected: 'application/isSelected',
@@ -260,9 +263,10 @@ export default {
       try {
         // ISRCAnalytics: Pass auth token for cross-origin authentication
         const token = this.authToken
+        const apiUrl = this.isrcApiBaseUrl
         const [trackResponse, playlistResponse] = await Promise.all([
-          IsrcService(this.$client, token).getTrackSlots(),
-          IsrcService(this.$client, token).getPlaylistSlots(),
+          IsrcService(this.$client, token, apiUrl).getTrackSlots(),
+          IsrcService(this.$client, token, apiUrl).getPlaylistSlots(),
         ])
         this.trackSlots = trackResponse.data
         this.playlistSlots = playlistResponse.data

@@ -37,6 +37,9 @@ export default function (
     env: {
       ISRC_ANALYTICS_API_URL: process.env.ISRC_ANALYTICS_API_URL || '',
     },
+    publicRuntimeConfig: {
+      isrcAnalyticsApiUrl: process.env.ISRC_ANALYTICS_API_URL || '',
+    },
     modules,
     buildModules: [
       '@nuxtjs/stylelint-module',

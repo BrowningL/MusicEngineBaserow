@@ -5,15 +5,15 @@
  * - Slots calls use Baserow JWT token for authentication
  */
 
-// ISRCAnalytics.com API base URL for enrichment
-const ISRC_ANALYTICS_API_BASE = process.env.ISRC_ANALYTICS_API_URL || ''
-
 /**
  * Create ISRC Analytics service
  * @param {Object} client - Baserow API client
  * @param {string} accessToken - Optional Baserow JWT access token for authenticated requests
+ * @param {string} apiBaseUrl - Optional API base URL (from runtime config)
  */
-export default (client, accessToken = null) => {
+export default (client, accessToken = null, apiBaseUrl = '') => {
+  // Use provided URL, fall back to build-time env, then empty string
+  const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || ''
   return {
     /**
      * Enrich track data from ISRC or Spotify URL.

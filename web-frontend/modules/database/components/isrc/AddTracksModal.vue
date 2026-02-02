@@ -356,6 +356,9 @@ export default {
     }
   },
   computed: {
+    isrcApiBaseUrl() {
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
+    },
     cataloguePageUrl() {
       // TODO: Configure this via environment or settings
       return '/catalogue'
@@ -379,7 +382,7 @@ export default {
       this.success = false
 
       try {
-        const { data } = await IsrcService(this.$client).enrichTrack(
+        const { data } = await IsrcService(this.$client, null, this.isrcApiBaseUrl).enrichTrack(
           this.manualInput
         )
         this.enrichedTrack = data
@@ -400,7 +403,7 @@ export default {
       this.error = null
 
       try {
-        await IsrcService(this.$client).addTrack(this.enrichedTrack)
+        await IsrcService(this.$client, null, this.isrcApiBaseUrl).addTrack(this.enrichedTrack)
 
         this.success = true
         this.enrichedTrack = null
@@ -432,7 +435,7 @@ export default {
       this.artistError = null
 
       try {
-        const { data } = await IsrcService(this.$client).enrichArtist(this.artistInput)
+        const { data } = await IsrcService(this.$client, null, this.isrcApiBaseUrl).enrichArtist(this.artistInput)
 
         this.artistData = data.artist
         this.trackSelections = data.tracks.map(track => ({
@@ -495,7 +498,7 @@ export default {
           const results = await Promise.allSettled(
             batch.map(async (track) => {
               try {
-                await IsrcService(this.$client).addTrack(track)
+                await IsrcService(this.$client, null, this.isrcApiBaseUrl).addTrack(track)
                 return { success: true, track }
               } catch (err) {
                 return {

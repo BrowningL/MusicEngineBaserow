@@ -151,6 +151,9 @@ export default {
     }
   },
   computed: {
+    isrcApiBaseUrl() {
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || ''
+    },
     playlistsPageUrl() {
       // TODO: Configure this via environment or settings
       return '/playlists'
@@ -165,7 +168,7 @@ export default {
       this.success = false
 
       try {
-        const { data } = await IsrcService(this.$client).enrichPlaylist(
+        const { data } = await IsrcService(this.$client, null, this.isrcApiBaseUrl).enrichPlaylist(
           this.manualInput
         )
         this.enrichedPlaylist = data
@@ -186,7 +189,7 @@ export default {
       this.error = null
 
       try {
-        await IsrcService(this.$client).addPlaylist(this.enrichedPlaylist)
+        await IsrcService(this.$client, null, this.isrcApiBaseUrl).addPlaylist(this.enrichedPlaylist)
 
         this.success = true
         this.enrichedPlaylist = null
