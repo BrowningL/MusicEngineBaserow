@@ -5,7 +5,7 @@
     max-height-if-outside-viewport
     @shown="shown"
   >
-    <!-- ISRCAnalytics: Removed search bar -->
+    <SelectSearch v-model="query" />
     <div v-if="isLoading" class="context--loading">
       <div class="loading"></div>
     </div>
@@ -54,7 +54,16 @@
     <div v-if="!isLoading && views.length == 0" class="context__description">
       {{ $t('viewsContext.noViews') }}
     </div>
-    <!-- ISRCAnalytics: Removed Grid/Gallery/Form view type creation links -->
+    <ul v-if="!readOnly" class="select__footer">
+      <CreateViewLink
+        v-for="viewType in Object.values(viewTypes)"
+        :key="viewType.getType()"
+        :database="database"
+        :table="table"
+        :view-type="viewType"
+        @created="$emit('selected-view', $event)"
+      ></CreateViewLink>
+    </ul>
   </Context>
 </template>
 
@@ -67,12 +76,14 @@ import context from '@baserow/modules/core/mixins/context'
 import dropdownHelpers from '@baserow/modules/core/mixins/dropdownHelpers'
 import ViewsContextItem from '@baserow/modules/database/components/view/ViewsContextItem'
 import CreateViewLink from '@baserow/modules/database/components/view/CreateViewLink'
+import SelectSearch from '@baserow/modules/core/components/SelectSearch'
 
 export default {
   name: 'ViewsContext',
   components: {
     ViewsContextItem,
     CreateViewLink,
+    SelectSearch,
   },
   mixins: [context, dropdownHelpers],
   props: {
