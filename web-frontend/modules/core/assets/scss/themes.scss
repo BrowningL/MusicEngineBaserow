@@ -569,6 +569,23 @@ body.theme-dark {
   .context__footer {
     background-color: var(--bg-elevated);
     border-top-color: var(--border-color);
+
+    // Fix "Add filter" and "Add filter group" button text visibility in dark mode
+    .button-text {
+      color: var(--text-primary);
+
+      &:hover:not(.button-text--loading):not([disabled]) {
+        color: var(--text-primary);
+      }
+    }
+
+    .button-text__icon {
+      color: var(--text-secondary);
+
+      .button-text:hover:not(.button-text--loading):not([disabled]) & {
+        color: var(--text-primary);
+      }
+    }
   }
 
   // -------------------------------------------------------------------------
@@ -1206,6 +1223,66 @@ body.theme-dark {
   .view-group-by__item {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
+  }
+
+  // Filter group styling (nested filter groups)
+  .filters__group-item {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+  }
+
+  .filters__group-item-wrapper--inner .filters__group-item {
+    background-color: var(--bg-secondary);
+  }
+
+  .filters__group-item-actions {
+    border-top-color: var(--border-color);
+
+    // Fix "Add filter" text visibility inside filter groups
+    .button-text {
+      color: var(--text-primary);
+
+      &:hover:not(.button-text--loading):not([disabled]) {
+        color: var(--text-primary);
+      }
+    }
+
+    .button-text__icon {
+      color: var(--text-secondary);
+
+      .button-text:hover:not(.button-text--loading):not([disabled]) & {
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .filters__none-title {
+    color: var(--text-primary);
+  }
+
+  .filters__none-description {
+    color: var(--text-secondary);
+  }
+
+  .filters__remove {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .filters__value-link-row {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+
+    &.filters__value-link-row--disabled {
+      background-color: var(--bg-tertiary);
+      color: var(--text-muted);
+    }
   }
 
   // -------------------------------------------------------------------------
