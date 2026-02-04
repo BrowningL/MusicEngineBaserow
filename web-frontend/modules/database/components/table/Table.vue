@@ -418,6 +418,11 @@ export default {
       return this.readOnly
     },
     adhocFiltering() {
+      // ISRCAnalytics: Allow filtering for Live Catalogue even though data is read-only
+      // Users should be able to filter/search their catalogue without being able to edit it
+      if (this.database?.name === 'Live Catalogue') {
+        return false
+      }
       if (this.effectiveReadOnly) {
         return true
       }
@@ -436,6 +441,10 @@ export default {
       )
     },
     adhocSorting() {
+      // ISRCAnalytics: Allow sorting for Live Catalogue even though data is read-only
+      if (this.database?.name === 'Live Catalogue') {
+        return false
+      }
       if (this.effectiveReadOnly) {
         return true
       }
