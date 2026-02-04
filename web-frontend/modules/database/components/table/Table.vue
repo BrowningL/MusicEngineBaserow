@@ -39,13 +39,14 @@
               <i class="header__sub-icon iconoir-nav-arrow-down"></i>
             </template>
           </a>
+          <!-- ISRCAnalytics: Allow view creation for Live Catalogue (data still read-only) -->
           <ViewsContext
             v-if="views !== null"
             ref="viewsContext"
             :database="database"
             :table="table"
             :views="views"
-            :read-only="effectiveReadOnly"
+            :read-only="effectiveReadOnly && !isLiveCatalogue"
             :header-overflow="headerOverflow"
             @selected-view="$emit('selected-view', $event)"
           ></ViewsContext>

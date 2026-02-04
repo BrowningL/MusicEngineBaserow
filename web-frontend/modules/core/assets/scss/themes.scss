@@ -1837,4 +1837,33 @@ body.theme-dark {
   .grid-field-file__item {
     background-color: var(--bg-tertiary);
   }
+
+  // -------------------------------------------------------------------------
+  // Choice Items (Export modal format selection, etc.)
+  // -------------------------------------------------------------------------
+  .choice-items__link {
+    color: var(--text-primary);
+
+    &:hover:not(.disabled):not(.active) {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    &.disabled {
+      color: var(--text-disabled);
+    }
+
+    &.active {
+      background-color: rgba(104, 158, 241, 0.2);
+      color: #93bbf7;
+    }
+  }
+
+  .choice-items__name {
+    color: var(--text-primary);
+  }
+
+  .choice-items__description {
+    color: var(--text-secondary);
+  }
 }
