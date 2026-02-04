@@ -130,7 +130,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=allinone
           cache-to: type=gha,mode=max,scope=allinone
-          target: prod
+          target: prod-lite
           build-args: |
             BACKEND_IMAGE=${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-backend
             WEBFRONTEND_IMAGE=${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}-webfrontend
