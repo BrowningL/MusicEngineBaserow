@@ -463,6 +463,10 @@ export default {
       )
     },
     adhocDecorations() {
+      // ISRCAnalytics: Allow decorations (row height, etc.) for Live Catalogue
+      if (this.database?.name === 'Live Catalogue') {
+        return false
+      }
       if (this.effectiveReadOnly) {
         return true
       }
