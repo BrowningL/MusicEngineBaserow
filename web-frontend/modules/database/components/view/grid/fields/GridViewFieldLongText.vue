@@ -55,8 +55,8 @@ export default {
      * "Inspiration File" with a file in the same row.
      */
     showAcrScanButton() {
-      // Only show for "ACR Report" field
-      if (this.field.name !== 'ACR Report') {
+      // Only show for "Fingerprint Report" field (formerly "ACR Report")
+      if (this.field.name !== 'Fingerprint Report') {
         return false
       }
 
