@@ -188,3 +188,21 @@
     }
   }
 }
+
+// Stem Split Button - purple color to indicate AI audio processing
+.grid-field-file__stem-split {
+  background-color: #ede7f6;
+  color: #5e35b1;
+
+  &:hover {
+    background-color: #d1c4e9;
+  }
+
+  .grid-view__column--matches-search & {
+    background-color: #d1c4e9;
+
+    &:hover {
+      background-color: #b39ddb;
+    }
+  }
+}

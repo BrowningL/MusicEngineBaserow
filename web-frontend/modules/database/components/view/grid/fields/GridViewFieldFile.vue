@@ -64,6 +64,26 @@
       >
         <div class="grid-field-file__loading"></div>
       </li>
+      <!-- Stem Split Button - shows only when file is empty and Inspiration File exists -->
+      <li
+        v-if="!readOnly && showStemSplitButton && !stemSplitProcessing"
+        class="grid-field-file__item"
+      >
+        <a
+          v-tooltip="'Split stems from Inspiration File'"
+          class="grid-field-file__item-add grid-field-file__stem-split"
+          @click.prevent="triggerStemSplit()"
+        >
+          <i class="iconoir-git-fork"></i>
+        </a>
+      </li>
+      <!-- Stem Split Loading State -->
+      <li
+        v-if="stemSplitProcessing"
+        class="grid-field-file__item"
+      >
+        <div class="grid-field-file__loading"></div>
+      </li>
       <li v-if="!readOnly" v-show="selected" class="grid-field-file__item">
         <a class="grid-field-file__item-add" @click.prevent="showUploadModal()">
           <i class="iconoir-plus"></i>
@@ -115,11 +135,16 @@ export default {
       dragTarget: null,
       inspirationDownloading: false,
       inspirationRefreshTimeouts: [],
+      stemSplitProcessing: false,
+      stemSplitRefreshTimeouts: [],
     }
   },
   beforeDestroy() {
     // Clean up any pending refresh timeouts
     this.inspirationRefreshTimeouts.forEach((timeoutId) => {
+      clearTimeout(timeoutId)
+    })
+    this.stemSplitRefreshTimeouts.forEach((timeoutId) => {
       clearTimeout(timeoutId)
     })
   },
@@ -148,6 +173,26 @@ export default {
 
       // Validate it's a supported URL
       return this.isValidInspirationUrl(inspirationUrl)
+    },
+    /**
+     * Check if this is a stem field and if the Inspiration File exists.
+     * Only show the split button if the stem field is empty.
+     */
+    showStemSplitButton() {
+      // Only show for stem fields
+      const stemFields = ['Inspiration Instrumental Stem', 'Inspiration Vocal Stem']
+      if (!stemFields.includes(this.field.name)) {
+        return false
+      }
+
+      // Don't show if file field already has files
+      if (Array.isArray(this.value) && this.value.length > 0) {
+        return false
+      }
+
+      // Check if Inspiration File exists
+      const inspirationFile = this.getInspirationFileValue()
+      return inspirationFile && inspirationFile.length > 0
     },
   },
   methods: {
@@ -196,6 +241,122 @@ export default {
         return supportedDomains.some((domain) => urlObj.hostname.includes(domain))
       } catch {
         return false
+      }
+    },
+    /**
+     * Get the Inspiration File value from the same row.
+     * Returns the file array or null if not found.
+     */
+    getInspirationFileValue() {
+      if (!this.row || !this.allFieldsInTable) {
+        return null
+      }
+
+      // Find the "Inspiration File" field in the table
+      const inspirationFileField = this.allFieldsInTable.find(
+        (f) => f.name === 'Inspiration File' && f.type === 'file'
+      )
+      if (!inspirationFileField) {
+        return null
+      }
+
+      // Get the value from the row
+      const fieldKey = `field_${inspirationFileField.id}`
+      const value = this.row[fieldKey]
+
+      return Array.isArray(value) && value.length > 0 ? value : null
+    },
+    /**
+     * Trigger stem splitting via the ISRCAnalytics webhook API.
+     * Splits the Inspiration File into vocal and instrumental stems using Demucs.
+     */
+    async triggerStemSplit() {
+      if (this.stemSplitProcessing || this.readOnly) {
+        return
+      }
+
+      const inspirationFile = this.getInspirationFileValue()
+      if (!inspirationFile || inspirationFile.length === 0) {
+        return
+      }
+
+      this.stemSplitProcessing = true
+
+      try {
+        // Get the table ID from the field object
+        const tableId = this.field.table_id
+        if (!tableId) {
+          throw new Error('Could not determine table ID for this field')
+        }
+
+        // Get database and workspace info from the application store
+        const application = this.$store.getters['application/getSelected']
+        const workspaceId = application?.workspace?.id || application?.group?.id || 0
+        const databaseId = application?.id || 0
+        const rowId = this.row.id
+
+        // Get file URL and name from Inspiration File
+        const fileUrl = inspirationFile[0].url
+        const fileName = inspirationFile[0].name || 'audio.mp3'
+
+        // Prepare the stem split request payload
+        const payload = {
+          table_id: tableId,
+          database_id: databaseId,
+          workspace_id: workspaceId,
+          row_id: rowId,
+          file_url: fileUrl,
+          file_name: fileName,
+          user_jwt_token: this.$store.state.auth.token,
+        }
+
+        // Call the ISRCAnalytics stem-split webhook endpoint
+        const webhookUrl = this.$config?.ISRCANALYTICS_WEBHOOK_URL
+
+        if (!webhookUrl) {
+          throw new Error(
+            'ISRCANALYTICS_WEBHOOK_URL not configured. Please set this environment variable.'
+          )
+        }
+
+        const response = await fetch(`${webhookUrl}/stem-split`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok || data.status === 'error') {
+          throw new Error(data.message || 'Failed to trigger stem split')
+        }
+
+        // Show success notification
+        this.$store.dispatch('toast/success', {
+          title: 'Stem split started',
+          message: 'Both vocal and instrumental stems are being generated. This may take a few minutes.',
+        })
+
+        // Refresh the row after delays to pick up the new stems
+        // Stem splitting typically takes 3-5 minutes
+        this.stemSplitRefreshTimeouts = []
+        const refreshDelays = [5000, 15000, 30000, 60000, 120000, 180000, 240000, 300000]
+        refreshDelays.forEach((delay) => {
+          const timeoutId = setTimeout(() => {
+            this.$emit('refresh-row')
+          }, delay)
+          this.stemSplitRefreshTimeouts.push(timeoutId)
+        })
+      } catch (error) {
+        console.error('Stem split error:', error)
+        this.$store.dispatch('toast/error', {
+          title: 'Stem split failed',
+          message: error.message || 'Failed to start stem splitting. Please try again.',
+        })
+      } finally {
+        this.stemSplitProcessing = false
       }
     },
     /**
