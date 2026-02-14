@@ -816,8 +816,8 @@ export default {
 
 <style lang="scss" scoped>
 // ── Variables ──
-$primary: #6c5ce7;
-$primary-hover: #5a4bd1;
+$primary: #3b82f6;
+$primary-hover: #2563eb;
 $danger: #e74c3c;
 $success: #00b894;
 $warning: #fdcb6e;
@@ -849,8 +849,8 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   border-radius: $radius;
   box-shadow: $shadow;
   width: 95vw;
-  max-width: 1200px;
-  max-height: 90vh;
+  max-width: 1400px;
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease;
@@ -907,7 +907,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   // ── Body ──
   &__body {
     display: flex;
-    gap: 28px;
+    gap: 24px;
     padding: 24px 28px;
     overflow-y: auto;
     flex: 1;
@@ -920,7 +920,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   }
 
   &__sidebar {
-    width: 280px;
+    width: 320px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
