@@ -9,13 +9,6 @@
       'grid-view--row-height-' + view.row_height_size,
     ]"
   >
-    <!-- Add Release button for Releases table -->
-    <div v-if="isReleasesTable" class="grid-view__add-release-bar">
-      <button class="grid-view__add-release-btn" @click="openCreateReleaseModal">
-        <i class="iconoir-plus"></i>
-        Add Release
-      </button>
-    </div>
     <Scrollbars
       ref="scrollbars"
       horizontal="getHorizontalScrollbarElement"
@@ -1774,37 +1767,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.grid-view__add-release-bar {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e2e8f0;
-  flex-shrink: 0;
-  z-index: 3;
-  position: relative;
-}
-
-.grid-view__add-release-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 20px;
-  background: #6c5ce7;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-
-  &:hover {
-    background: #5a4bd1;
-  }
-
-  i {
-    font-size: 14px;
-  }
-}
+/* Styles removed - moved "+ Add Release" button to sidebar */
 </style>

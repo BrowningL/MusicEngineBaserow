@@ -50,6 +50,16 @@
         >
         </component>
       </ul>
+      <!-- ISRCAnalytics: Show Add Release section for Production Pipeline -->
+      <div v-if="isProductionPipelineDatabase" class="sidebar-add-section">
+        <div class="sidebar-add-section__title">Releases</div>
+        <button
+          class="sidebar-add-section__button sidebar-add-section__button--full"
+          @click="openCreateReleaseModal"
+        >
+          <i class="iconoir-plus"></i> Add Release
+        </button>
+      </div>
       <!-- ISRCAnalytics: Show Add Tracks/Playlists section for Live Catalogue -->
       <div v-if="isReadOnlyDatabase" class="sidebar-add-section">
         <div class="sidebar-add-section__title">Add to Catalogue</div>
@@ -171,6 +181,12 @@ export default {
     }
   },
   computed: {
+    /**
+     * ISRCAnalytics: Check if this is the Production Pipeline database.
+     */
+    isProductionPipelineDatabase() {
+      return this.application.name === 'Production Pipeline'
+    },
     /**
      * ISRCAnalytics: Check if this is a read-only database.
      * Live Catalogue databases should not allow adding new tables.
@@ -300,6 +316,10 @@ export default {
     getPendingJobComponent(job) {
       return this.$registry.get('job', job.type).getSidebarComponent()
     },
+    openCreateReleaseModal() {
+      // Emit event to parent component (e.g., DatabaseContext) to open the release modal
+      this.$emit('open-release-modal')
+    },
   },
 }
 </script>
@@ -337,11 +357,27 @@ export default {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
+  border: none;
 
   &:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
     text-decoration: none;
+  }
+
+  &--full {
+    width: 100%;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    font-weight: 600;
+    padding: 8px 12px;
+
+    &:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
   }
 }
 
