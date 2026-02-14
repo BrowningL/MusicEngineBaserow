@@ -666,6 +666,9 @@ export default {
       'scroll',
       this.$el.horizontalScrollEvent
     )
+    // ISRCAnalytics: Listen for sidebar button to open Release modal
+    this.$root.$on('open-release-modal', this.openCreateReleaseModal)
+    
     this.$store.dispatch(
       this.storePrefix + 'view/grid/fetchAllFieldAggregationData',
       { view: this.view }
@@ -683,6 +686,8 @@ export default {
     window.removeEventListener('paste', this.pasteFromMultipleCellSelection)
     window.removeEventListener('click', this.cancelMultiSelectIfActive)
     window.removeEventListener('mouseup', this.multiSelectStop)
+    // ISRCAnalytics: Clean up global event listener
+    this.$root.$off('open-release-modal', this.openCreateReleaseModal)
     this.$bus.$off('field-deleted', this.fieldDeleted)
 
     this.$store.dispatch(

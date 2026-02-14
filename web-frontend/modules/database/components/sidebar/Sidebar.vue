@@ -317,8 +317,8 @@ export default {
       return this.$registry.get('job', job.type).getSidebarComponent()
     },
     openCreateReleaseModal() {
-      // Emit event to parent component (e.g., DatabaseContext) to open the release modal
-      this.$emit('open-release-modal')
+      // Emit global event that GridView listens to
+      this.$root.$emit('open-release-modal')
     },
   },
 }
@@ -368,16 +368,7 @@ export default {
   &--full {
     width: 100%;
     justify-content: center;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
-    font-weight: 600;
     padding: 8px 12px;
-
-    &:hover {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-    }
   }
 }
 
