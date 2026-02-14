@@ -513,9 +513,16 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleEscape)
+    // Move modal to document.body to render as a portal (escape grid overflow)
+    this.$el.parentNode.removeChild(this.$el)
+    document.body.appendChild(this.$el)
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleEscape)
+    // Clean up portal
+    if (this.$el.parentNode === document.body) {
+      document.body.removeChild(this.$el)
+    }
   },
   methods: {
     getDefaultFormData() {
@@ -833,14 +840,18 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 // ── Overlay ──
 .release-modal-overlay {
   position: fixed;
-  inset: 0;
-  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.2s ease;
+  overflow: hidden;
 }
 
 // ── Modal Container ──
