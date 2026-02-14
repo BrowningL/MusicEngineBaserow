@@ -408,6 +408,15 @@
       @navigate-next="$emit('navigate-next', $event, activeSearchTerm)"
       @refresh-row="refreshRow"
     ></RowEditModal>
+    <ReleaseFormModal
+      ref="releaseFormModal"
+      :database="database"
+      :table="table"
+      :all-fields-in-table="fields"
+      :rows="allRows"
+      @saved="refreshAndHideReleaseModal"
+      @hidden="rowEditModalHidden"
+    />
   </div>
 </template>
 
@@ -420,6 +429,7 @@ import GridViewSection from '@baserow/modules/database/components/view/grid/Grid
 import HorizontalResize from '@baserow/modules/core/components/HorizontalResize'
 import GridViewRowDragging from '@baserow/modules/database/components/view/grid/GridViewRowDragging'
 import RowEditModal from '@baserow/modules/database/components/row/RowEditModal'
+import ReleaseFormModal from '@baserow/modules/database/components/release/ReleaseFormModal'
 import gridViewHelpers from '@baserow/modules/database/mixins/gridViewHelpers'
 import {
   filterHiddenFieldsFunction,
@@ -448,6 +458,7 @@ export default {
     GridViewSection,
     GridViewRowDragging,
     RowEditModal,
+    ReleaseFormModal,
   },
   mixins: [viewHelpers, gridViewHelpers, viewDecoration, copyPasteHelper],
   props: {
@@ -496,6 +507,12 @@ export default {
     ...mapGetters({
       row: 'rowModalNavigation/getRow',
     }),
+    /**
+     * Detect if the current table is a Releases table (by name).
+     */
+    isReleasesTable() {
+      return this.table && this.table.name && this.table.name.toLowerCase().includes('release')
+    },
     /**
      * Returns all visible fields no matter in what section they
      * belong.
@@ -1136,6 +1153,13 @@ export default {
         return
       }
 
+      // Intercept for Releases table → open custom Release form
+      if (this.isReleasesTable) {
+        this.$refs.releaseFormModal.show(row.id, row)
+        this.$emit('selected-row', row)
+        return
+      }
+
       this.$refs.rowEditModal.show(row.id)
       this.$emit('selected-row', row)
     },
@@ -1145,7 +1169,14 @@ export default {
      */
     populateAndEditRow(row) {
       const rowClone = populateRow(clone(row))
+      if (this.isReleasesTable) {
+        this.$refs.releaseFormModal.show(row.id, rowClone)
+        return
+      }
       this.$refs.rowEditModal.show(row.id, rowClone)
+    },
+    refreshAndHideReleaseModal() {
+      this.$emit('refresh')
     },
     /**
      * When a cell is selected we want to make sure it is visible in the viewport, so
