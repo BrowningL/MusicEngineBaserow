@@ -242,6 +242,11 @@ export default function CoreModule(options) {
     src: path.resolve(__dirname, 'plugins/theme.client.js'),
     mode: 'client',
   })
+  // ISRCAnalytics: Cross-iframe messaging plugin (client-side only)
+  this.appendPlugin({
+    src: path.resolve(__dirname, 'plugins/iframe-messages.client.js'),
+    mode: 'client',
+  })
 
   this.extendRoutes((configRoutes) => {
     // Remove all the routes created by nuxt.

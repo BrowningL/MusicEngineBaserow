@@ -53,14 +53,29 @@
                 :key="p.value"
                 class="account-modal__platform-btn"
                 :class="{
-                  'account-modal__platform-btn--selected': formData.platform === p.value,
+                  'account-modal__platform-btn--selected': !customPlatformMode && formData.platform === p.value,
                 }"
-                @click="formData.platform = p.value"
+                @click="selectPlatform(p.value)"
               >
-                <i :class="p.icon"></i>
                 {{ p.label }}
               </button>
+              <button
+                class="account-modal__platform-btn"
+                :class="{ 'account-modal__platform-btn--selected': customPlatformMode }"
+                @click="enableCustomPlatform"
+              >
+                Other...
+              </button>
             </div>
+            <input
+              v-if="customPlatformMode"
+              v-model="customPlatformName"
+              type="text"
+              class="account-modal__input"
+              placeholder="Enter platform name"
+              style="margin-top: 8px"
+              @input="formData.platform = customPlatformName.toLowerCase().replace(/[^a-z0-9]/g, '')"
+            />
           </div>
 
           <!-- Phone & Address row -->
@@ -143,10 +158,17 @@ export default {
       formData: this.getDefaultFormData(),
       errors: {},
       fieldMap: {},
+      customPlatformMode: false,
+      customPlatformName: '',
+      // Canonical list lives in ISRCAnalytics.com/components/workspace/distribution/distribution-constants.ts
       platformOptions: [
-        { value: 'distrokid', label: 'DistroKid', icon: 'iconoir-music-double-note' },
-        { value: 'tunecore', label: 'TuneCore', icon: 'iconoir-music-note' },
-        { value: 'cdbaby', label: 'CD Baby', icon: 'iconoir-compact-disc' },
+        { value: 'distrokid', label: 'DistroKid' },
+        { value: 'tunecore', label: 'TuneCore' },
+        { value: 'cdbaby', label: 'CD Baby' },
+        { value: 'routenote', label: 'RouteNote' },
+        { value: 'landr', label: 'LANDR' },
+        { value: 'sonosuite', label: 'SonoSuite' },
+        { value: 'gyrostream', label: 'GYROStream' },
       ],
     }
   },
@@ -272,8 +294,20 @@ export default {
         this.saving = false
       }
     },
+    selectPlatform(value) {
+      this.customPlatformMode = false
+      this.customPlatformName = ''
+      this.formData.platform = value
+    },
+    enableCustomPlatform() {
+      this.customPlatformMode = true
+      this.customPlatformName = ''
+      this.formData.platform = ''
+    },
     cancel() {
       this.open = false
+      this.customPlatformMode = false
+      this.customPlatformName = ''
       this.$emit('hidden')
     },
   },
@@ -451,11 +485,12 @@ export default {
 
 .account-modal__platform-grid {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .account-modal__platform-btn {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
