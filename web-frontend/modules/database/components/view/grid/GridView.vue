@@ -417,6 +417,14 @@
       @saved="refreshAndHideReleaseModal"
       @hidden="rowEditModalHidden"
     />
+    <AccountFormModal
+      ref="accountFormModal"
+      :database="database"
+      :table="table"
+      :all-fields-in-table="fields"
+      @saved="refreshAndHideReleaseModal"
+      @hidden="rowEditModalHidden"
+    />
   </div>
 </template>
 
@@ -430,6 +438,7 @@ import HorizontalResize from '@baserow/modules/core/components/HorizontalResize'
 import GridViewRowDragging from '@baserow/modules/database/components/view/grid/GridViewRowDragging'
 import RowEditModal from '@baserow/modules/database/components/row/RowEditModal'
 import ReleaseFormModal from '@baserow/modules/database/components/release/ReleaseFormModal'
+import AccountFormModal from '@baserow/modules/database/components/release/AccountFormModal'
 import gridViewHelpers from '@baserow/modules/database/mixins/gridViewHelpers'
 import {
   filterHiddenFieldsFunction,
@@ -459,6 +468,7 @@ export default {
     GridViewRowDragging,
     RowEditModal,
     ReleaseFormModal,
+    AccountFormModal,
   },
   mixins: [viewHelpers, gridViewHelpers, viewDecoration, copyPasteHelper],
   props: {
@@ -666,8 +676,9 @@ export default {
       'scroll',
       this.$el.horizontalScrollEvent
     )
-    // ISRCAnalytics: Listen for sidebar button to open Release modal
+    // ISRCAnalytics: Listen for sidebar buttons to open Release/Account modals
     this.$root.$on('open-release-modal', this.openCreateReleaseModal)
+    this.$root.$on('open-account-modal', this.openCreateAccountModal)
     
     this.$store.dispatch(
       this.storePrefix + 'view/grid/fetchAllFieldAggregationData',
@@ -686,8 +697,9 @@ export default {
     window.removeEventListener('paste', this.pasteFromMultipleCellSelection)
     window.removeEventListener('click', this.cancelMultiSelectIfActive)
     window.removeEventListener('mouseup', this.multiSelectStop)
-    // ISRCAnalytics: Clean up global event listener
+    // ISRCAnalytics: Clean up global event listeners
     this.$root.$off('open-release-modal', this.openCreateReleaseModal)
+    this.$root.$off('open-account-modal', this.openCreateAccountModal)
     this.$bus.$off('field-deleted', this.fieldDeleted)
 
     this.$store.dispatch(
@@ -1156,6 +1168,9 @@ export default {
      */
     openCreateReleaseModal() {
       this.$refs.releaseFormModal.show(null, null)
+    },
+    openCreateAccountModal() {
+      this.$refs.accountFormModal.show(null, null)
     },
     openRowEditModal(row) {
       // The row edit modal doesn't support a row that doesn't yet have a row ID, so we

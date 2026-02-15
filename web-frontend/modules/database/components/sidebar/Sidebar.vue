@@ -60,6 +60,16 @@
           <i class="iconoir-plus"></i> Add Release
         </button>
       </div>
+      <!-- ISRCAnalytics: Show Add Account section for Production Pipeline -->
+      <div v-if="isProductionPipelineDatabase" class="sidebar-add-section">
+        <div class="sidebar-add-section__title">Accounts</div>
+        <button
+          class="sidebar-add-section__button sidebar-add-section__button--full"
+          @click="openCreateAccountModal"
+        >
+          <i class="iconoir-plus"></i> Add Account
+        </button>
+      </div>
       <!-- ISRCAnalytics: Show Add Tracks/Playlists section for Live Catalogue -->
       <div v-if="isReadOnlyDatabase" class="sidebar-add-section">
         <div class="sidebar-add-section__title">Add to Catalogue</div>
@@ -319,6 +329,10 @@ export default {
     openCreateReleaseModal() {
       // Emit global event that GridView listens to
       this.$root.$emit('open-release-modal')
+    },
+    openCreateAccountModal() {
+      // Emit global event that GridView listens to
+      this.$root.$emit('open-account-modal')
     },
   },
 }
