@@ -286,9 +286,16 @@
                       <button class="release-modal__icon-btn" title="Edit track" @click="editTrack(index)">
                         <i class="iconoir-edit-pencil"></i>
                       </button>
-                      <button class="release-modal__icon-btn release-modal__icon-btn--danger" title="Remove track" @click="removeTrack(index)">
-                        <i class="iconoir-bin"></i>
-                      </button>
+                      <template v-if="confirmingDeleteTrackIndex !== index">
+                        <button class="release-modal__icon-btn release-modal__icon-btn--danger" title="Remove track" @click="confirmingDeleteTrackIndex = index">
+                          <i class="iconoir-bin"></i>
+                        </button>
+                      </template>
+                      <span v-else class="release-modal__confirm-delete">
+                        Delete?
+                        <button class="release-modal__confirm-btn release-modal__confirm-btn--yes" @click="removeTrack(index)">Yes</button>
+                        <button class="release-modal__confirm-btn release-modal__confirm-btn--no" @click="confirmingDeleteTrackIndex = -1">No</button>
+                      </span>
                     </span>
                   </template>
 
@@ -451,6 +458,7 @@ export default {
       saving: false,
       rowId: null,
       editingTrackIndex: -1,
+      confirmingDeleteTrackIndex: -1,
       artistSearch: '',
       artistResults: [],
       showArtistDropdown: false,
@@ -719,6 +727,10 @@ export default {
         }
 
         this.$emit('saved')
+        this.$store.dispatch('toast/success', {
+          title: this.rowId ? 'Release Updated' : 'Release Created',
+          message: `"${this.formData.release_title}" has been saved successfully.`,
+        })
         this.open = false
       } catch (err) {
         console.error('Failed to save release:', err)
@@ -754,6 +766,7 @@ export default {
     removeTrack(index) {
       this.formData.tracks.splice(index, 1)
       if (this.editingTrackIndex === index) this.editingTrackIndex = -1
+      this.confirmingDeleteTrackIndex = -1
       // Renumber
       this.formData.tracks.forEach((t, i) => { t.track_number = i + 1 })
     },
@@ -828,11 +841,6 @@ $primary-hover: #2563eb;
 $danger: #e74c3c;
 $success: #00b894;
 $warning: #fdcb6e;
-$bg: #f8f9fa;
-$surface: #ffffff;
-$border: #e2e8f0;
-$text: #2d3748;
-$text-muted: #a0aec0;
 $radius: 12px;
 $radius-sm: 8px;
 $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
@@ -852,11 +860,12 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   justify-content: center;
   animation: fadeIn 0.2s ease;
   overflow: hidden;
+  color: var(--text-primary);
 }
 
 // ── Modal Container ──
 .release-modal {
-  background: $surface;
+  background: var(--bg-elevated);
   border-radius: $radius;
   box-shadow: $shadow;
   width: 95vw;
@@ -871,7 +880,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     align-items: center;
     justify-content: space-between;
     padding: 20px 28px;
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
 
     &-left {
@@ -890,7 +899,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   &__title {
     font-size: 20px;
     font-weight: 700;
-    color: $text;
+    color: var(--text-primary);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -941,7 +950,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   // ── Sections ──
   &__section {
     margin-bottom: 16px;
-    border: 1px solid $border;
+    border: 1px solid var(--border-color);
     border-radius: $radius-sm;
     overflow: hidden;
 
@@ -950,22 +959,22 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       align-items: center;
       gap: 10px;
       padding: 14px 18px;
-      background: $bg;
+      background: var(--bg-tertiary);
       cursor: pointer;
       user-select: none;
       transition: background 0.15s;
 
-      &:hover { background: darken($bg, 2%); }
+      &:hover { background: var(--bg-hover); }
 
       h2 {
         margin: 0;
         font-size: 14px;
         font-weight: 600;
-        color: $text;
+        color: var(--text-primary);
         flex: 1;
       }
 
-      i { color: $text-muted; font-size: 16px; }
+      i { color: var(--text-muted); font-size: 16px; }
     }
 
     &-body {
@@ -1008,7 +1017,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     display: block;
     font-size: 12px;
     font-weight: 600;
-    color: $text;
+    color: var(--text-primary);
     margin-bottom: 5px;
     letter-spacing: 0.3px;
 
@@ -1023,16 +1032,16 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   }
 
   &__required { color: $danger; }
-  &__optional { color: $text-muted; font-weight: 400; }
+  &__optional { color: var(--text-muted); font-weight: 400; }
 
   &__input, &__select {
     width: 100%;
     padding: 9px 12px;
-    border: 1.5px solid $border;
+    border: 1.5px solid var(--border-color);
     border-radius: 6px;
     font-size: 13px;
-    color: $text;
-    background: $surface;
+    color: var(--text-primary);
+    background: var(--bg-elevated);
     transition: border-color 0.15s, box-shadow 0.15s;
     outline: none;
     box-sizing: border-box;
@@ -1047,7 +1056,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       &:focus { box-shadow: 0 0 0 3px rgba($danger, 0.1); }
     }
 
-    &::placeholder { color: $text-muted; }
+    &::placeholder { color: var(--text-muted); }
   }
 
   &__select {
@@ -1067,7 +1076,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   &__hint {
     display: block;
     font-size: 11px;
-    color: $text-muted;
+    color: var(--text-muted);
     margin-top: 4px;
   }
 
@@ -1081,7 +1090,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   &__sub-label {
     font-size: 12px;
     font-weight: 600;
-    color: $text-muted;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0 0 10px;
@@ -1090,7 +1099,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   &__credit-group {
     margin-bottom: 18px;
     padding-bottom: 18px;
-    border-bottom: 1px solid lighten($border, 3%);
+    border-bottom: 1px solid var(--border-color);
 
     &:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   }
@@ -1105,8 +1114,8 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     top: 100%;
     left: 0;
     right: 0;
-    background: $surface;
-    border: 1px solid $border;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     z-index: 10;
@@ -1120,7 +1129,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     transition: background 0.1s;
 
-    &:hover { background: $bg; }
+    &:hover { background: var(--bg-tertiary); }
   }
 
   &__tags {
@@ -1159,38 +1168,38 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     padding: 8px 12px;
     font-size: 11px;
     font-weight: 600;
-    color: $text-muted;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid var(--border-color);
   }
 
   &__track-row {
     display: flex;
     align-items: center;
     padding: 10px 12px;
-    border-bottom: 1px solid lighten($border, 3%);
+    border-bottom: 1px solid var(--border-color);
     font-size: 13px;
     transition: background 0.1s;
 
-    &:hover { background: $bg; }
+    &:hover { background: var(--bg-tertiary); }
 
     &--editing {
       display: block;
-      background: $bg;
+      background: var(--bg-tertiary);
       padding: 16px;
     }
   }
 
   &__track-col {
-    &--num { width: 40px; color: $text-muted; font-weight: 600; }
+    &--num { width: 40px; color: var(--text-muted); font-weight: 600; }
     &--title { flex: 2; font-weight: 500; }
-    &--isrc { flex: 1; code { font-size: 11px; background: $bg; padding: 2px 6px; border-radius: 3px; } }
-    &--duration { width: 60px; text-align: right; color: $text-muted; }
-    &--actions { width: 60px; text-align: right; display: flex; gap: 4px; justify-content: flex-end; }
+    &--isrc { flex: 1; code { font-size: 11px; background: var(--bg-tertiary); padding: 2px 6px; border-radius: 3px; } }
+    &--duration { width: 60px; text-align: right; color: var(--text-muted); }
+    &--actions { min-width: 60px; text-align: right; display: flex; gap: 4px; justify-content: flex-end; flex-shrink: 0; }
   }
 
-  &__muted { color: $text-muted; }
+  &__muted { color: var(--text-muted); }
 
   &__track-edit {
     width: 100%;
@@ -1205,7 +1214,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   &__empty-tracks {
     text-align: center;
     padding: 32px 16px;
-    color: $text-muted;
+    color: var(--text-muted);
 
     i { font-size: 32px; display: block; margin-bottom: 8px; }
     p { margin: 0; font-size: 13px; }
@@ -1217,7 +1226,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       position: relative;
       border-radius: $radius-sm;
       overflow: hidden;
-      border: 1px solid $border;
+      border: 1px solid var(--border-color);
 
       img {
         width: 100%;
@@ -1248,7 +1257,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     }
 
     &-placeholder {
-      border: 2px dashed $border;
+      border: 2px dashed var(--border-color);
       border-radius: $radius-sm;
       padding: 36px 20px;
       text-align: center;
@@ -1263,14 +1272,14 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       i {
         display: block;
         font-size: 40px;
-        color: $text-muted;
+        color: var(--text-muted);
         margin-bottom: 8px;
       }
 
       span {
         display: block;
         font-size: 13px;
-        color: $text-muted;
+        color: var(--text-muted);
         font-weight: 500;
       }
     }
@@ -1278,7 +1287,7 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 
   // ── Quick Stats ──
   &__quick-stats {
-    background: $bg;
+    background: var(--bg-tertiary);
     border-radius: $radius-sm;
     padding: 16px;
   }
@@ -1289,13 +1298,13 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     align-items: center;
     padding: 6px 0;
 
-    &:not(:last-child) { border-bottom: 1px solid $border; }
+    &:not(:last-child) { border-bottom: 1px solid var(--border-color); }
 
-    &-label { font-size: 12px; color: $text-muted; }
+    &-label { font-size: 12px; color: var(--text-muted); }
     &-value {
       font-size: 13px;
       font-weight: 600;
-      color: $text;
+      color: var(--text-primary);
 
       &--mono { font-family: monospace; font-size: 11px; }
     }
@@ -1324,14 +1333,14 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 
     &--ghost {
       background: transparent;
-      color: $text-muted;
-      &:hover { color: $text; background: $bg; }
+      color: var(--text-muted);
+      &:hover { color: var(--text-primary); background: var(--bg-tertiary); }
     }
 
     &--outline {
       background: transparent;
-      border: 1.5px solid $border;
-      color: $text;
+      border: 1.5px solid var(--border-color);
+      color: var(--text-primary);
       &:hover { border-color: $primary; color: $primary; }
     }
 
@@ -1350,10 +1359,10 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $text-muted;
+    color: var(--text-muted);
     transition: all 0.1s;
 
-    &:hover { background: $bg; color: $text; }
+    &:hover { background: var(--bg-tertiary); color: var(--text-primary); }
     &--danger:hover { color: $danger; background: rgba($danger, 0.08); }
   }
 
@@ -1373,6 +1382,38 @@ $shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 
   &__spin {
     animation: spin 1s linear infinite;
+  }
+
+  &__confirm-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: $danger;
+    white-space: nowrap;
+  }
+
+  &__confirm-btn {
+    padding: 2px 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s;
+
+    &--yes {
+      background: rgba($danger, 0.1);
+      color: $danger;
+      &:hover { background: rgba($danger, 0.2); }
+    }
+
+    &--no {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      &:hover { background: var(--bg-hover); }
+    }
   }
 }
 

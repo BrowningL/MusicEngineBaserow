@@ -88,7 +88,7 @@
 .select-row-modal__rows {
   position: relative;
   height: 33px + (33px * 11) + 44px;
-  background-color: $color-neutral-100;
+  background-color: var(--bg-tertiary, $color-neutral-100);
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   overflow: hidden;

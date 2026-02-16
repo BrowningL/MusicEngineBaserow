@@ -19,7 +19,7 @@
 .select__search {
   flex: 0 0;
   position: relative;
-  border-bottom: 1px solid $palette-neutral-200;
+  border-bottom: 1px solid var(--border-color, $palette-neutral-200);
 
   @include flex-align-items;
 }
@@ -29,6 +29,8 @@
   width: 100%;
   border: none;
   padding: 0 12px 0 0;
+  background-color: var(--bg-elevated, $white);
+  color: var(--text-primary, inherit);
 
   @include rounded($rounded);
   @include fixed-height(36px, 12px);
@@ -124,11 +126,11 @@
 
   &:hover,
   &.hover {
-    background-color: $palette-neutral-100;
+    background-color: var(--bg-hover, $palette-neutral-100);
   }
 
   &--selected {
-    background-color: $palette-neutral-100;
+    background-color: var(--bg-selected, $palette-neutral-100);
   }
 
   &--indented {
@@ -262,7 +264,7 @@
 
 .select__footer {
   flex: 0 0;
-  border-top: 1px solid $palette-neutral-200;
+  border-top: 1px solid var(--border-color, $palette-neutral-200);
   padding: 4px 4px 0;
 }
 

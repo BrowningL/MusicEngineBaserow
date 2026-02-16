@@ -286,6 +286,10 @@ export default {
         }
 
         this.$emit('saved')
+        this.$store.dispatch('toast/success', {
+          title: this.rowId ? 'Account Updated' : 'Account Created',
+          message: 'Distributor account has been saved successfully.',
+        })
         this.open = false
       } catch (err) {
         console.error('Failed to save account:', err)
@@ -327,12 +331,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text-primary);
 }
 
 .account-modal {
   width: 540px;
   max-height: 80vh;
-  background: var(--color-neutral-0, #fff);
+  background: var(--bg-elevated);
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -345,7 +350,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--color-neutral-200, #e5e7eb);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .account-modal__header-left {
@@ -358,7 +363,7 @@ export default {
   font-size: 18px;
   font-weight: 700;
   margin: 0;
-  color: var(--color-neutral-900, #111);
+  color: var(--text-primary);
 }
 
 .account-modal__header-actions {
@@ -380,10 +385,10 @@ export default {
 
   &--ghost {
     background: transparent;
-    color: var(--color-neutral-500, #6b7280);
+    color: var(--text-muted);
 
     &:hover {
-      background: var(--color-neutral-100, #f3f4f6);
+      background: var(--bg-hover);
     }
   }
 
@@ -441,7 +446,7 @@ export default {
 .account-modal__label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-neutral-600, #4b5563);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -454,10 +459,10 @@ export default {
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
-  border: 1px solid var(--color-neutral-200, #e5e7eb);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: var(--color-neutral-0, #fff);
-  color: var(--color-neutral-900, #111);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   transition: all 0.15s ease;
   box-sizing: border-box;
 
@@ -475,7 +480,7 @@ export default {
 
 .account-modal__hint {
   font-size: 11px;
-  color: var(--color-neutral-400, #9ca3af);
+  color: var(--text-muted);
 }
 
 .account-modal__error {
@@ -496,18 +501,18 @@ export default {
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  border: 2px solid var(--color-neutral-200, #e5e7eb);
+  border: 2px solid var(--border-color);
   border-radius: 10px;
-  background: var(--color-neutral-0, #fff);
-  color: var(--color-neutral-700, #374151);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    border-color: var(--color-neutral-300, #d1d5db);
-    background: var(--color-neutral-50, #f9fafb);
+    border-color: var(--border-color);
+    background: var(--bg-tertiary);
   }
 
   &--selected {

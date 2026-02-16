@@ -1,5 +1,5 @@
 .select-options__dropdown-item.hover {
-  background-color: $color-neutral-100;
+  background-color: var(--bg-hover, $color-neutral-100);
 }
 
 .select-options__dropdown-link {

@@ -1,6 +1,6 @@
 .dropdown {
   position: relative;
-  background-color: $white;
+  background-color: var(--bg-elevated, $white);
 
   @include elevation($elevation-low);
   @include rounded($rounded);
@@ -10,10 +10,10 @@
   position: relative;
   display: block;
   width: 100%;
-  border: 1px solid $palette-neutral-400;
+  border: 1px solid var(--border-input, $palette-neutral-400);
   padding: 12px;
   box-sizing: border-box;
-  color: $palette-neutral-1200;
+  color: var(--text-primary, $palette-neutral-1200);
 
   @include fixed-height(36px, 13px);
   @include rounded($rounded);
@@ -35,8 +35,8 @@
   }
 
   .dropdown--disabled & {
-    background-color: $palette-neutral-100;
-    color: $palette-neutral-900;
+    background-color: var(--bg-tertiary, $palette-neutral-100);
+    color: var(--text-muted, $palette-neutral-900);
     cursor: not-allowed;
     border-color: $palette-neutral-600;
   }
@@ -62,12 +62,12 @@
 
 .dropdown__toggle-icon {
   margin-left: auto;
-  color: $palette-neutral-600;
+  color: var(--text-muted, $palette-neutral-600);
 }
 
 .dropdown__items {
-  border: 1px solid $palette-neutral-400;
-  background-color: $white;
+  border: 1px solid var(--border-input, $palette-neutral-400);
+  background-color: var(--bg-elevated, $white);
   z-index: $z-index-dropdown-items;
 
   @include absolute(0, 0, auto, 0);
@@ -97,7 +97,7 @@
 .dropdown__selected-placeholder {
   @extend %ellipsis;
 
-  color: $palette-neutral-700;
+  color: var(--text-muted, $palette-neutral-700);
 }
 
 .dropdown__items--max-width {

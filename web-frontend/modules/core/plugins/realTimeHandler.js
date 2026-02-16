@@ -35,11 +35,10 @@ export class RealTimeHandler {
       return
     }
 
-    // Stop connecting if we have already tried more than 10 times, if we do not have
-    // an authentication token or if the server has already responded with a failed
-    // authentication error and the token has not changed.
+    // Stop connecting if we do not have an authentication token or if the server
+    // has already responded with a failed authentication error and the token has
+    // not changed. For transient network issues, keep retrying with backoff.
     if (
-      this.attempts > 10 ||
       token === null ||
       (!this.authenticationSuccess && token === this.lastToken)
     ) {
@@ -116,12 +115,17 @@ export class RealTimeHandler {
     this.attempts++
     this.context.store.dispatch('toast/setConnecting', true)
 
+    // Exponential backoff: 0s, 5s, 10s, 20s, 30s (capped at 30s)
+    let delay = 0
+    if (this.attempts > 1) {
+      delay = Math.min(5000 * Math.pow(2, this.attempts - 2), 30000)
+    }
+
     this.reconnectTimeout = setTimeout(
       () => {
         this.connect(true, this.anonymous)
       },
-      // After the first try, we want to try again every 5 seconds.
-      this.attempts > 1 ? 5000 : 0
+      delay
     )
   }
 

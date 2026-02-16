@@ -2,8 +2,8 @@
 %context {
   position: absolute;
   z-index: $z-index-context;
-  background-color: $white;
-  border: 1px solid $palette-neutral-400;
+  background-color: var(--bg-elevated, $white);
+  border: 1px solid var(--border-color, $palette-neutral-400);
 
   @include elevation($elevation-medium);
   @include rounded($rounded-md);
@@ -56,7 +56,7 @@
 
 .context__menu-item-icon {
   position: relative;
-  color: $palette-neutral-800;
+  color: var(--text-muted, $palette-neutral-800);
   text-align: left;
   width: 16px;
   font-size: 16px;
@@ -80,7 +80,7 @@
 
 .context__menu-item-link {
   position: relative;
-  color: $palette-neutral-1300;
+  color: var(--text-primary, $palette-neutral-1300);
   padding: 8px 10px;
   user-select: none;
 
@@ -90,15 +90,15 @@
   &.disabled {
     cursor: not-allowed;
     box-shadow: none;
-    color: $palette-neutral-700;
+    color: var(--text-muted, $palette-neutral-700);
 
     .context__menu-item-description {
-      color: $palette-neutral-700;
+      color: var(--text-muted, $palette-neutral-700);
     }
   }
 
   &:hover {
-    background-color: $palette-neutral-100;
+    background-color: var(--bg-hover, $palette-neutral-100);
     text-decoration: none;
 
     &.disabled {

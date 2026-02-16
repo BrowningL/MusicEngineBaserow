@@ -52,20 +52,19 @@
       </ul>
       <!-- ISRCAnalytics: Add Release & Account buttons for Production Pipeline -->
       <div v-if="isProductionPipelineDatabase" class="sidebar-add-section">
+        <div class="sidebar-add-section__title">Add to Pipeline</div>
         <div class="sidebar-add-section__buttons">
           <button
             class="sidebar-add-section__button"
             @click="openCreateReleaseModal"
           >
             <i class="iconoir-plus"></i> Release
-            <span v-if="releaseCount > 0" class="sidebar-add-section__count">{{ releaseCount }}</span>
           </button>
           <button
             class="sidebar-add-section__button"
             @click="openCreateAccountModal"
           >
             <i class="iconoir-plus"></i> Account
-            <span v-if="accountCount > 0" class="sidebar-add-section__count">{{ accountCount }}</span>
           </button>
         </div>
       </div>
@@ -187,8 +186,6 @@ export default {
     return {
       trackSlots: { used: 0, limit: 0 },
       playlistSlots: { used: 0, limit: 0, unlimited: false },
-      releaseCount: 0,
-      accountCount: 0,
     }
   },
   computed: {
@@ -284,14 +281,6 @@ export default {
         }
       },
     },
-    isProductionPipelineDatabase: {
-      immediate: true,
-      handler(isPipeline) {
-        if (isPipeline) {
-          this.fetchProductionCounts()
-        }
-      },
-    },
   },
   methods: {
     async fetchSlots() {
@@ -307,34 +296,6 @@ export default {
         this.playlistSlots = playlistResponse.data
       } catch (error) {
         console.error('Failed to fetch slot usage:', error)
-      }
-    },
-    async fetchProductionCounts() {
-      try {
-        const tables = this.application.tables || []
-        const releasesTable = tables.find((t) => t.name === 'Releases')
-        const accountsTable = tables.find((t) => t.name === 'Distributor Accounts')
-
-        const fetches = []
-        if (releasesTable) {
-          fetches.push(
-            this.$client
-              .get(`/database/rows/table/${releasesTable.id}/`, { params: { size: 1 } })
-              .then((res) => { this.releaseCount = res.data.count || 0 })
-              .catch(() => {})
-          )
-        }
-        if (accountsTable) {
-          fetches.push(
-            this.$client
-              .get(`/database/rows/table/${accountsTable.id}/`, { params: { size: 1 } })
-              .then((res) => { this.accountCount = res.data.count || 0 })
-              .catch(() => {})
-          )
-        }
-        await Promise.all(fetches)
-      } catch (error) {
-        console.error('Failed to fetch production counts:', error)
       }
     },
     async selected(application) {
@@ -380,6 +341,7 @@ export default {
   margin: 6px 0 0 20px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
 }
 
 .sidebar-add-section__title {
@@ -394,6 +356,8 @@ export default {
 .sidebar-add-section__buttons {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
 .sidebar-add-section__button {
@@ -409,6 +373,8 @@ export default {
   cursor: pointer;
   transition: all 0.15s ease;
   border: none;
+  white-space: nowrap;
+  min-width: 0;
 
   &:hover {
     background-color: var(--bg-hover);
@@ -421,22 +387,6 @@ export default {
     justify-content: center;
     padding: 8px 12px;
   }
-}
-
-.sidebar-add-section__count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  background-color: var(--bg-primary);
-  border-radius: 9px;
-  margin-left: auto;
-  font-variant-numeric: tabular-nums;
 }
 
 .sidebar-slots {

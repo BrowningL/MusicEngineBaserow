@@ -42,12 +42,12 @@
     text-decoration: none;
 
     &::before {
-      background-color: $color-neutral-100;
+      background-color: var(--bg-hover, $color-neutral-100);
     }
   }
 
   &.active::before {
-    background-color: $color-neutral-200;
+    background-color: var(--bg-selected, $color-neutral-200);
   }
 }
 
