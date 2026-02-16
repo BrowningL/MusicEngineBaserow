@@ -17,6 +17,14 @@ export default {
   components: { Login },
   layout: 'login',
   async asyncData({ app, route, store, redirect }) {
+    // Redirect to ISRCAnalytics unless admin escape hatch is used
+    if (!route.query.admin && process.server) {
+      return redirect(301, 'https://isrcanalytics.com/login')
+    }
+    if (!route.query.admin && process.client) {
+      window.location.href = 'https://isrcanalytics.com/login'
+      return
+    }
     if (store.getters['settings/get'].show_admin_signup_page === true) {
       return redirect({ name: 'signup' })
     } else if (store.getters['auth/isAuthenticated']) {

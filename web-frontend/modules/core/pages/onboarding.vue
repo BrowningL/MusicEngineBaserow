@@ -105,12 +105,33 @@ export default {
   components: { Toasts, CircleProgressBar },
   mixins: [error, jobProgress],
   middleware: ['settings', 'authenticated'],
-  asyncData({ store, redirect }) {
-    // If the user has completed the onboarding, then redirect to the on-boarding page
-    // so that the user can create their first one.
+  async asyncData({ store, redirect, app }) {
     const user = store.getters['auth/getUserObject']
     if (user.completed_onboarding) {
       return redirect({ name: 'dashboard' })
+    }
+
+    // Safety net: if ISRCAnalytics already provisioned a workspace, skip onboarding
+    try {
+      if (!store.getters['workspace/isLoaded']) {
+        await store.dispatch('workspace/fetchAll')
+      }
+      const workspaces = store.getters['workspace/getAll']
+      if (workspaces.length > 0) {
+        // Mark onboarding complete and redirect to dashboard
+        try {
+          const AuthService = require('@baserow/modules/core/services/auth').default
+          await AuthService(app.$client).update({ completed_onboarding: true })
+          await store.dispatch('auth/forceUpdateUserData', {
+            user: { ...user, completed_onboarding: true },
+          })
+        } catch (e) {
+          // Non-critical — proceed to dashboard anyway
+        }
+        return redirect({ name: 'dashboard' })
+      }
+    } catch (e) {
+      // If workspace fetch fails, fall through to normal onboarding
     }
   },
   data() {
