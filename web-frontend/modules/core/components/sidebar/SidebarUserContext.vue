@@ -37,10 +37,6 @@
               :initials="workspace.name | nameAbbreviation"
             ></Avatar>
             {{ workspace.name }}
-            <span
-              v-if="hasUnreadNotifications(workspace.id)"
-              class="sidebar__unread-notifications-icon"
-            ></span>
           </div>
         </a>
       </li>
@@ -212,9 +208,6 @@ export default {
       try {
         await this.$router.push({ name: activatedAdminTypes[0].routeName })
       } catch {}
-    },
-    hasUnreadNotifications(workspaceId) {
-      return this.$store.getters['notification/workspaceHasUnread'](workspaceId)
     },
     async selectWorkspace(workspace) {
       if (workspace._.selected) {
