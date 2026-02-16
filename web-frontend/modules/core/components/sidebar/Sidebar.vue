@@ -17,15 +17,7 @@
       <SidebarAdmin v-show="!collapsed"></SidebarAdmin>
     </template>
     <template v-if="!showAdmin">
-      <!-- ISRCAnalytics: Removed workspace selector entirely -->
-
-      <SidebarMenu
-        v-show="!collapsed"
-        v-if="hasSelectedWorkspace"
-        :selected-workspace="selectedWorkspace"
-        :right-sidebar-open="rightSidebarOpen"
-        @open-workspace-search="$emit('open-workspace-search')"
-      ></SidebarMenu>
+      <!-- ISRCAnalytics: Removed workspace selector and SidebarMenu (notifications, search, etc.) -->
 
       <SidebarWithWorkspace
         v-show="!collapsed"
