@@ -110,15 +110,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix=
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
+      - name: Compute all-in-one tags
+        id: allinone_tags
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}"
+          {
+            echo "tags<<EOF"
+            echo "${IMAGE}:${{ github.sha }}"
+            echo "${IMAGE}:${{ github.ref_name }}"
+            if [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+              echo "${IMAGE}:latest"
+            fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Build and push all-in-one image
         uses: docker/build-push-action@v5
@@ -126,8 +130,7 @@ jobs:
           context: .
           file: ./deploy/all-in-one/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.allinone_tags.outputs.tags }}
           cache-from: type=gha,scope=allinone
           cache-to: type=gha,mode=max,scope=allinone
           target: prod-lite
