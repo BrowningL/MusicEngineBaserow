@@ -8,7 +8,7 @@
       {{ application.name }}
     </div>
     <!-- ISRCAnalytics: Hide entire context menu for managed databases -->
-    <ul v-if="!isReadOnlyDatabase && !isProductionPipeline" class="context__menu">
+    <ul v-if="!isReadOnlyDatabase && !isDistributionPipeline" class="context__menu">
       <li
         v-for="(component, index) in additionalContextComponents"
         :key="index"
@@ -101,9 +101,9 @@
       <i class="iconoir-lock" style="margin-right: 8px;"></i>
       This database is read-only. Data is updated automatically by the system.
     </div>
-    <!-- ISRCAnalytics: Show production workspace notice for Production Pipeline -->
-    <div v-else-if="isProductionPipeline" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
-      Your production workspace. Add releases, manage distribution accounts, and track your music production workflow.
+    <!-- ISRCAnalytics: Show distribution workspace notice for Distribution Pipeline -->
+    <div v-else-if="isDistributionPipeline" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
+      Your distribution workspace. Add releases, manage distribution accounts, and track your music release workflow.
     </div>
 
     <TrashModal
@@ -143,6 +143,9 @@ export default {
     }
   },
   computed: {
+    normalizedApplicationName() {
+      return (this.application.name || '').trim().toLowerCase()
+    },
     additionalContextComponents() {
       return Object.values(this.$registry.getAll('plugin'))
         .reduce(
@@ -166,14 +169,16 @@ export default {
      * duplicate, or delete them. Only API/workers can modify data.
      */
     isReadOnlyDatabase() {
-      return this.application.name === 'Live Catalogue'
+      return this.normalizedApplicationName === 'live catalogue'
     },
     /**
-     * ISRCAnalytics: Check if this is the Production Pipeline database.
-     * Production Pipeline is editable but should not be renamed/deleted.
+     * ISRCAnalytics: Check if this is the Distribution Pipeline database.
+     * Distribution Pipeline is editable but should not be renamed/deleted.
      */
-    isProductionPipeline() {
-      return this.application.name === 'Production Pipeline' || this.application.name === 'Production Catalogue'
+    isDistributionPipeline() {
+      return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+        this.normalizedApplicationName
+      )
     },
   },
   methods: {

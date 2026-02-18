@@ -225,14 +225,20 @@ export default {
     }
   },
   computed: {
+    normalizedDatabaseName() {
+      return (this.database.name || '').trim().toLowerCase()
+    },
     /**
      * ISRCAnalytics: Check if this table is in a managed database.
-     * Tables in Live Catalogue and Production Pipeline should only show export option.
+     * Tables in Live Catalogue and Distribution Pipeline should only show export option.
      */
     isManagedDatabase() {
-      return this.database.name === 'Live Catalogue' ||
-             this.database.name === 'Production Pipeline' ||
-             this.database.name === 'Production Catalogue'
+      return [
+        'live catalogue',
+        'distribution pipeline',
+        'production pipeline',
+        'production catalogue',
+      ].includes(this.normalizedDatabaseName)
     },
     showOptions() {
       // ISRCAnalytics: Show options for managed databases (only export visible)

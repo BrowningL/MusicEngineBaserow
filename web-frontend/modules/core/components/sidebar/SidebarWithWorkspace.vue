@@ -52,7 +52,7 @@
                     :pending-jobs="pendingJobs[application.type]"
                     :workspace="selectedWorkspace"
                   ></component>
-                  <!-- ISRCAnalytics: Arrow separator between Production Pipeline and Live Catalogue -->
+                  <!-- ISRCAnalytics: Arrow separator between Distribution Pipeline and Live Catalogue -->
                   <div
                     v-if="shouldShowPipelineArrow(application, index, applicationGroup.applications)"
                     :key="'arrow-' + application.id"
@@ -157,15 +157,15 @@ export default {
       return this.$registry.get('job', job.type).getSidebarComponent()
     },
     /**
-     * ISRCAnalytics: Sort databases so Production Pipeline comes before Live Catalogue.
+     * ISRCAnalytics: Sort databases so Distribution Pipeline comes before Live Catalogue.
      */
     sortedApplications(applications) {
       return [...applications].sort((a, b) => {
-        // Production Pipeline (or Production Catalogue for legacy) should come first
-        const isPipelineA = a.name === 'Production Pipeline' || a.name === 'Production Catalogue'
-        const isPipelineB = b.name === 'Production Pipeline' || b.name === 'Production Catalogue'
-        const isLiveCatalogueA = a.name === 'Live Catalogue'
-        const isLiveCatalogueB = b.name === 'Live Catalogue'
+        // Distribution Pipeline (or Production Catalogue for legacy) should come first
+        const isPipelineA = this.isPipelineApplication(a.name)
+        const isPipelineB = this.isPipelineApplication(b.name)
+        const isLiveCatalogueA = this.normalizeAppName(a.name) === 'live catalogue'
+        const isLiveCatalogueB = this.normalizeAppName(b.name) === 'live catalogue'
 
         if (isPipelineA && !isPipelineB) return -1
         if (isPipelineB && !isPipelineA) return 1
@@ -176,13 +176,25 @@ export default {
       })
     },
     /**
-     * ISRCAnalytics: Show arrow between Production Pipeline and Live Catalogue.
+     * ISRCAnalytics: Show arrow between Distribution Pipeline and Live Catalogue.
      */
     shouldShowPipelineArrow(application, index, applications) {
       const sorted = this.sortedApplications(applications)
-      const isPipeline = application.name === 'Production Pipeline' || application.name === 'Production Catalogue'
+      const isPipeline = this.isPipelineApplication(application.name)
       const nextApp = sorted[index + 1]
-      return isPipeline && nextApp && nextApp.name === 'Live Catalogue'
+      return (
+        isPipeline &&
+        nextApp &&
+        this.normalizeAppName(nextApp.name) === 'live catalogue'
+      )
+    },
+    normalizeAppName(name) {
+      return (name || '').trim().toLowerCase()
+    },
+    isPipelineApplication(name) {
+      return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+        this.normalizeAppName(name)
+      )
     },
     async orderApplications(order, oldOrder) {
       try {

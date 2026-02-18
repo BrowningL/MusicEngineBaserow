@@ -50,8 +50,8 @@
         >
         </component>
       </ul>
-      <!-- ISRCAnalytics: Add Release & Account buttons for Production Pipeline -->
-      <div v-if="isProductionPipelineDatabase" class="sidebar-add-section">
+      <!-- ISRCAnalytics: Add Release & Account buttons for Distribution Pipeline -->
+      <div v-if="isDistributionPipelineDatabase" class="sidebar-add-section">
         <div class="sidebar-add-section__title">Add to Pipeline</div>
         <div class="sidebar-add-section__buttons">
           <button
@@ -189,51 +189,53 @@ export default {
     }
   },
   computed: {
+    normalizedDatabaseName() {
+      return (this.application.name || '').trim().toLowerCase()
+    },
     /**
-     * ISRCAnalytics: Check if this is the Production Pipeline database.
+     * ISRCAnalytics: Check if this is the Distribution Pipeline database.
      */
-    isProductionPipelineDatabase() {
-      return this.application.name === 'Production Pipeline'
+    isDistributionPipelineDatabase() {
+      return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+        this.normalizedDatabaseName
+      )
     },
     /**
      * ISRCAnalytics: Check if this is a read-only database.
      * Live Catalogue databases should not allow adding new tables.
      */
     isReadOnlyDatabase() {
-      return this.application.name === 'Live Catalogue'
+      return this.normalizedDatabaseName === 'live catalogue'
     },
     /**
      * ISRCAnalytics: Check if this is a managed database (disables clicking).
      */
     isManagedDatabase() {
-      const dbName = this.application.name
-      return dbName === 'Live Catalogue' || dbName === 'Production Pipeline' || dbName === 'Production Catalogue'
+      return this.isReadOnlyDatabase || this.isDistributionPipelineDatabase
     },
     /**
      * ISRCAnalytics: Custom icon for Live Catalogue (music note).
-     * Production Pipeline uses the default database icon.
+     * Distribution Pipeline uses the default database icon.
      */
     customIconClass() {
-      if (this.application.name === 'Live Catalogue') {
+      if (this.isReadOnlyDatabase) {
         return 'iconoir-music-double-note'
       }
       return null
     },
     /**
      * ISRCAnalytics: Check if we should hide the "Add table" button.
-     * Both Live Catalogue and Production Pipeline should not allow adding new tables.
+     * Both Live Catalogue and Distribution Pipeline should not allow adding new tables.
      */
     shouldHideAddTable() {
-      const dbName = this.application.name
-      return dbName === 'Live Catalogue' || dbName === 'Production Pipeline' || dbName === 'Production Catalogue'
+      return this.isManagedDatabase
     },
     /**
-     * ISRCAnalytics: Auto-expand Production Pipeline and Live Catalogue databases.
+     * ISRCAnalytics: Auto-expand Distribution Pipeline and Live Catalogue databases.
      * These databases are always expanded (not collapsible).
      */
     shouldAutoExpand() {
-      const dbName = this.application.name
-      return dbName === 'Production Pipeline' || dbName === 'Live Catalogue' || dbName === 'Production Catalogue'
+      return this.isManagedDatabase
     },
     /**
      * ISRCAnalytics: Hidden junction tables that should not be shown in the sidebar.
@@ -300,7 +302,13 @@ export default {
     },
     async selected(application) {
       // ISRCAnalytics: Managed databases don't need selection handling - they're always expanded
-      const isManagedDb = ['Production Pipeline', 'Live Catalogue', 'Production Catalogue'].includes(application.name)
+      const normalizedName = (application.name || '').trim().toLowerCase()
+      const isManagedDb = [
+        'distribution pipeline',
+        'production pipeline',
+        'production catalogue',
+        'live catalogue',
+      ].includes(normalizedName)
       if (isManagedDb) {
         return // Do nothing - clicking is handled by SidebarApplication
       }
