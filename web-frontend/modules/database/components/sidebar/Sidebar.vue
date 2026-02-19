@@ -309,10 +309,42 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.pruneLegacyPipelineActions()
+    })
+  },
+  updated() {
+    this.$nextTick(() => {
+      this.pruneLegacyPipelineActions()
+    })
+  },
   beforeDestroy() {
     this.stopSlotsAutoRefresh()
   },
   methods: {
+    pruneLegacyPipelineActions() {
+      if (!this.isDistributionPipelineDatabase || !this.$el) {
+        return
+      }
+
+      // Defensive cleanup: ensure stale Release/Account quick actions never render.
+      const sections = this.$el.querySelectorAll('.sidebar-add-section')
+      sections.forEach((section) => {
+        const title = (
+          section.querySelector('.sidebar-add-section__title')?.textContent || ''
+        )
+          .trim()
+          .toLowerCase()
+        const hasLegacyFullButton = !!section.querySelector(
+          '.sidebar-add-section__button--full'
+        )
+
+        if (hasLegacyFullButton || title === 'releases' || title === 'accounts') {
+          section.remove()
+        }
+      })
+    },
     normalizeTrackSlots(data) {
       const used = Number(data?.used)
       const limit = Number(data?.limit)
