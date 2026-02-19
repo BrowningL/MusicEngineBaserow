@@ -822,6 +822,56 @@ body.theme-dark {
     }
   }
 
+  // Select item links, icons, and footer
+  .select__item-link {
+    color: var(--text-primary);
+  }
+
+  .select__items--empty {
+    color: var(--text-muted);
+  }
+
+  .select__item-active-icon {
+    color: var(--text-primary);
+  }
+
+  .select__item-options {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .select__footer {
+    border-top-color: var(--border-color);
+  }
+
+  .select__footer-button {
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .select__footer-create-link {
+    color: var(--text-primary);
+
+    &:not(.select__footer-create-link--disabled):hover {
+      background-color: var(--bg-hover);
+    }
+  }
+
+  .select__footer-create-link-icon {
+    color: var(--text-muted);
+  }
+
+  // Select options dropdown item hover
+  .select-options__dropdown-item.hover {
+    background-color: var(--bg-hover);
+  }
+
   // -------------------------------------------------------------------------
   // Tooltip
   // -------------------------------------------------------------------------
@@ -1108,6 +1158,11 @@ body.theme-dark {
   // Multiple select items
   .grid-field-multiple-select__item {
     color: var(--text-primary);
+  }
+
+  // "White" option color needs a visible background in dark mode
+  .background-color--white {
+    background-color: var(--bg-tertiary);
   }
 
   // -------------------------------------------------------------------------

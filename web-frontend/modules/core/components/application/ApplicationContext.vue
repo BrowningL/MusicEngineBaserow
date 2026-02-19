@@ -7,8 +7,8 @@
     <div class="context__menu-title">
       {{ application.name }}
     </div>
-    <!-- ISRCAnalytics: Hide entire context menu for managed databases -->
-    <ul v-if="!isReadOnlyDatabase && !isDistributionPipeline" class="context__menu">
+    <!-- ISRCAnalytics: Hide context actions in global read-only mode -->
+    <ul v-if="!isWorkspaceReadOnly" class="context__menu">
       <li
         v-for="(component, index) in additionalContextComponents"
         :key="index"
@@ -96,14 +96,10 @@
         </a>
       </li>
     </ul>
-    <!-- ISRCAnalytics: Show read-only notice for Live Catalogue -->
-    <div v-else-if="isReadOnlyDatabase" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
+    <!-- ISRCAnalytics: Show read-only notice -->
+    <div v-else class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
       <i class="iconoir-lock" style="margin-right: 8px;"></i>
-      This database is read-only. Data is updated automatically by the system.
-    </div>
-    <!-- ISRCAnalytics: Show distribution workspace notice for Distribution Pipeline -->
-    <div v-else-if="isDistributionPipeline" class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
-      Your distribution workspace. Add releases, manage distribution accounts, and track your music release workflow.
+      This workspace is read-only.
     </div>
 
     <TrashModal
@@ -143,8 +139,8 @@ export default {
     }
   },
   computed: {
-    normalizedApplicationName() {
-      return (this.application.name || '').trim().toLowerCase()
+    isWorkspaceReadOnly() {
+      return true
     },
     additionalContextComponents() {
       return Object.values(this.$registry.getAll('plugin'))
@@ -162,23 +158,6 @@ export default {
     },
     applicationType() {
       return this.$registry.get('application', this.application.type)
-    },
-    /**
-     * ISRCAnalytics: Check if this database should have its context menu hidden.
-     * Live Catalogue databases are read-only in the UI - users cannot rename,
-     * duplicate, or delete them. Only API/workers can modify data.
-     */
-    isReadOnlyDatabase() {
-      return this.normalizedApplicationName === 'live catalogue'
-    },
-    /**
-     * ISRCAnalytics: Check if this is the Distribution Pipeline database.
-     * Distribution Pipeline is editable but should not be renamed/deleted.
-     */
-    isDistributionPipeline() {
-      return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
-        this.normalizedApplicationName
-      )
     },
   },
   methods: {

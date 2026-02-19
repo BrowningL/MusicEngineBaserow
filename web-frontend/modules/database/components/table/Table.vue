@@ -39,21 +39,19 @@
               <i class="header__sub-icon iconoir-nav-arrow-down"></i>
             </template>
           </a>
-          <!-- ISRCAnalytics: Allow view creation for Live Catalogue (data still read-only) -->
           <ViewsContext
             v-if="views !== null"
             ref="viewsContext"
             :database="database"
             :table="table"
             :views="views"
-            :read-only="effectiveReadOnly && !isLiveCatalogue"
+            :read-only="effectiveReadOnly"
             :header-overflow="headerOverflow"
             @selected-view="$emit('selected-view', $event)"
           ></ViewsContext>
         </li>
-        <!-- ISRCAnalytics: Show ViewContext for Live Catalogue even though data is read-only -->
         <li
-          v-if="hasSelectedView && (!effectiveReadOnly || isLiveCatalogue) && showViewContext"
+          v-if="hasSelectedView && !effectiveReadOnly && showViewContext"
           class="header__filter-item header__filter-item--no-margin-left"
         >
           <a
@@ -148,21 +146,19 @@
           class="header__filter-item"
           data-highlight="view-group-by"
         >
-          <!-- ISRCAnalytics: Enable Group By for Live Catalogue -->
           <ViewGroupBy
             :view="view"
             :fields="fields"
-            :read-only="effectiveReadOnly && !isLiveCatalogue"
+            :read-only="effectiveReadOnly"
             :disable-group-by="disableGroupBy"
             @changed="refresh()"
           ></ViewGroupBy>
         </li>
-        <!-- ISRCAnalytics: Show Share View for Live Catalogue -->
         <li
           v-if="
             hasSelectedView &&
             view._.type.canShare &&
-            (!effectiveReadOnly || isLiveCatalogue) &&
+            !effectiveReadOnly &&
             $hasPermission(
               'database.table.view.update_slug',
               view,
@@ -171,7 +167,7 @@
           "
           class="header__filter-item"
         >
-          <ShareViewLink :view="view" :read-only="effectiveReadOnly && !isLiveCatalogue"></ShareViewLink>
+          <ShareViewLink :view="view" :read-only="effectiveReadOnly"></ShareViewLink>
         </li>
         <li
           v-if="
@@ -410,30 +406,10 @@ export default {
         )
       )
     },
-    /**
-     * ISRCAnalytics: Check if this is the Live Catalogue database.
-     * Used to enable view management features while keeping data read-only.
-     */
-    isLiveCatalogue() {
-      return this.database?.name === 'Live Catalogue'
-    },
-    /**
-     * ISRCAnalytics: Force read-only mode for Live Catalogue databases.
-     * Live Catalogue data can only be modified via API/workers, not through the UI.
-     * This ensures users can view their catalogue but not accidentally modify it.
-     */
     effectiveReadOnly() {
-      if (this.isLiveCatalogue) {
-        return true
-      }
-      return this.readOnly
+      return true
     },
     adhocFiltering() {
-      // ISRCAnalytics: Allow filtering for Live Catalogue even though data is read-only
-      // Users should be able to filter/search their catalogue without being able to edit it
-      if (this.isLiveCatalogue) {
-        return false
-      }
       if (this.effectiveReadOnly) {
         return true
       }
@@ -452,10 +428,6 @@ export default {
       )
     },
     adhocSorting() {
-      // ISRCAnalytics: Allow sorting for Live Catalogue even though data is read-only
-      if (this.isLiveCatalogue) {
-        return false
-      }
       if (this.effectiveReadOnly) {
         return true
       }
@@ -474,10 +446,6 @@ export default {
       )
     },
     adhocDecorations() {
-      // ISRCAnalytics: Allow decorations (row height, etc.) for Live Catalogue
-      if (this.isLiveCatalogue) {
-        return false
-      }
       if (this.effectiveReadOnly) {
         return true
       }

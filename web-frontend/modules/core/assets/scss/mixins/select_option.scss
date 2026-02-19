@@ -6,7 +6,7 @@
   @extend %ellipsis;
 
   display: $display;
-  color: $color-neutral-900;
+  color: var(--text-primary, $color-neutral-900);
   border-radius: 20px;
   padding: 0 10px;
 

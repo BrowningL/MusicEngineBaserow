@@ -42,11 +42,7 @@
                       update: orderApplications,
                       handle: '[data-sortable-handle]',
                       marginTop: -1.5,
-                      enabled: $hasPermission(
-                        'workspace.order_applications',
-                        selectedWorkspace,
-                        selectedWorkspace.id
-                      ),
+                      enabled: false,
                     }"
                     :application="application"
                     :pending-jobs="pendingJobs[application.type]"

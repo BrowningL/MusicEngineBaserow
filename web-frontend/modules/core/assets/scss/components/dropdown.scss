@@ -21,7 +21,7 @@
 
   &:hover {
     text-decoration: none;
-    border-color: $palette-neutral-500;
+    border-color: var(--border-strong, $palette-neutral-500);
   }
 
   .dropdown--error & {
@@ -50,7 +50,7 @@
 
 .dropdown__selected-icon {
   margin-right: 4px;
-  color: $color-neutral-600;
+  color: var(--text-muted, $color-neutral-600);
   font-size: 14px;
 }
 

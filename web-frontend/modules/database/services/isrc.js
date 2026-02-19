@@ -14,6 +14,39 @@
 export default (client, accessToken = null, apiBaseUrl = '') => {
   // Use provided URL, fall back to build-time env, then production URL
   const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
+
+  const buildAuthHeaders = (token = accessToken) => {
+    const headers = { Accept: 'application/json' }
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    return headers
+  }
+
+  const requestSlots = async (endpoint, label) => {
+    const doRequest = async (token) => {
+      return await fetch(`${ISRC_ANALYTICS_API_BASE}${endpoint}`, {
+        method: 'GET',
+        headers: buildAuthHeaders(token),
+        credentials: 'include',
+      })
+    }
+
+    let response = await doRequest(accessToken)
+
+    // Retry once using cookie-only auth if bearer token auth is rejected.
+    if ((response.status === 401 || response.status === 403) && accessToken) {
+      response = await doRequest(null)
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || `Failed to fetch ${label}: ${response.status}`)
+    }
+
+    return { data: await response.json() }
+  }
+
   return {
     /**
      * Enrich track data from ISRC or Spotify URL.
@@ -111,23 +144,7 @@ export default (client, accessToken = null, apiBaseUrl = '') => {
      * @returns {Promise} { used, limit, remaining }
      */
     async getTrackSlots() {
-      const headers = {}
-      if (accessToken) {
-        headers['Authorization'] = `Bearer ${accessToken}`
-      }
-
-      const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/catalogue/slots`, {
-        method: 'GET',
-        headers,
-        credentials: accessToken ? 'omit' : 'include',
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `Failed to fetch track slots: ${response.status}`)
-      }
-
-      return { data: await response.json() }
+      return await requestSlots('/api/catalogue/slots', 'track slots')
     },
 
     /**
@@ -136,23 +153,7 @@ export default (client, accessToken = null, apiBaseUrl = '') => {
      * @returns {Promise} { used, limit, unlimited, remaining }
      */
     async getPlaylistSlots() {
-      const headers = {}
-      if (accessToken) {
-        headers['Authorization'] = `Bearer ${accessToken}`
-      }
-
-      const response = await fetch(`${ISRC_ANALYTICS_API_BASE}/api/playlists/slots`, {
-        method: 'GET',
-        headers,
-        credentials: accessToken ? 'omit' : 'include',
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `Failed to fetch playlist slots: ${response.status}`)
-      }
-
-      return { data: await response.json() }
+      return await requestSlots('/api/playlists/slots', 'playlist slots')
     },
   }
 }

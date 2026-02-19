@@ -65,6 +65,7 @@
         <!-- ISRCAnalytics: Removed webhooks menu item -->
         <li
           v-if="
+            !isManagedDatabase &&
             table.data_sync &&
             $hasPermission(
               'database.data_sync.sync_table',
@@ -92,6 +93,7 @@
         </li>
         <li
           v-if="
+            !isManagedDatabase &&
             table.data_sync &&
             $hasPermission(
               'database.table.update',
@@ -233,12 +235,7 @@ export default {
      * Tables in Live Catalogue and Distribution Pipeline should only show export option.
      */
     isManagedDatabase() {
-      return [
-        'live catalogue',
-        'distribution pipeline',
-        'production pipeline',
-        'production catalogue',
-      ].includes(this.normalizedDatabaseName)
+      return true
     },
     showOptions() {
       // ISRCAnalytics: Show options for managed databases (only export visible)
@@ -273,6 +270,9 @@ export default {
       )
     },
     additionalContextComponents() {
+      if (this.isManagedDatabase) {
+        return []
+      }
       return Object.values(this.$registry.getAll('plugin'))
         .reduce(
           (components, plugin) =>

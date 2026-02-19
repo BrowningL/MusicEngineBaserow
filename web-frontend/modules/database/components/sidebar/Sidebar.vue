@@ -31,11 +31,7 @@
             id: table.id,
             update: orderTables,
             marginTop: -1.5,
-            enabled: $hasPermission(
-              'database.order_tables',
-              application,
-              application.workspace.id
-            ),
+            enabled: false,
           }"
           :database="application"
           :table="table"
@@ -50,24 +46,6 @@
         >
         </component>
       </ul>
-      <!-- ISRCAnalytics: Add Release & Account buttons for Distribution Pipeline -->
-      <div v-if="isDistributionPipelineDatabase" class="sidebar-add-section">
-        <div class="sidebar-add-section__title">Add to Pipeline</div>
-        <div class="sidebar-add-section__buttons">
-          <button
-            class="sidebar-add-section__button"
-            @click="openCreateReleaseModal"
-          >
-            <i class="iconoir-plus"></i> Release
-          </button>
-          <button
-            class="sidebar-add-section__button"
-            @click="openCreateAccountModal"
-          >
-            <i class="iconoir-plus"></i> Account
-          </button>
-        </div>
-      </div>
       <!-- ISRCAnalytics: Show Add Tracks/Playlists section for Live Catalogue -->
       <div v-if="isReadOnlyDatabase" class="sidebar-add-section">
         <div class="sidebar-add-section__title">Add to Catalogue</div>
@@ -92,7 +70,7 @@
           <div class="sidebar-slots__row">
             <span class="sidebar-slots__label">ISRC Slots</span>
             <span class="sidebar-slots__value">
-              {{ trackSlots.used }} / {{ trackSlots.limit }}
+              {{ trackSlotsDisplay }}
             </span>
             <a
               class="sidebar-slots__upgrade"
@@ -109,12 +87,7 @@
           <div class="sidebar-slots__row">
             <span class="sidebar-slots__label">Playlist Slots</span>
             <span class="sidebar-slots__value">
-              <template v-if="playlistSlots.unlimited">
-                {{ playlistSlots.used }} / Unlimited
-              </template>
-              <template v-else>
-                {{ playlistSlots.used }} / {{ playlistSlots.limit }}
-              </template>
+              {{ playlistSlotsDisplay }}
             </span>
             <a
               class="sidebar-slots__upgrade"
@@ -184,8 +157,12 @@ export default {
   },
   data() {
     return {
-      trackSlots: { used: 0, limit: 0 },
-      playlistSlots: { used: 0, limit: 0, unlimited: false },
+      trackSlots: { used: null, limit: null },
+      playlistSlots: { used: null, limit: null, unlimited: false },
+      slotsLoading: false,
+      slotFetchAttempts: 0,
+      slotRetryTimeoutId: null,
+      slotRefreshIntervalId: null,
     }
   },
   computed: {
@@ -228,7 +205,7 @@ export default {
      * Both Live Catalogue and Distribution Pipeline should not allow adding new tables.
      */
     shouldHideAddTable() {
-      return this.isManagedDatabase
+      return true
     },
     /**
      * ISRCAnalytics: Auto-expand Distribution Pipeline and Live Catalogue databases.
@@ -269,6 +246,40 @@ export default {
     isrcApiBaseUrl() {
       return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
     },
+    trackSlotsDisplay() {
+      if (this.hasValidTrackSlots) {
+        return `${this.trackSlots.used} / ${this.trackSlots.limit}`
+      }
+      return this.slotsLoading ? 'Loading...' : 'Unavailable'
+    },
+    playlistSlotsDisplay() {
+      if (!this.hasValidPlaylistSlots) {
+        return this.slotsLoading ? 'Loading...' : 'Unavailable'
+      }
+      if (this.playlistSlots.unlimited) {
+        return `${this.playlistSlots.used} / Unlimited`
+      }
+      return `${this.playlistSlots.used} / ${this.playlistSlots.limit}`
+    },
+    hasValidTrackSlots() {
+      return (
+        Number.isFinite(this.trackSlots.used) &&
+        Number.isFinite(this.trackSlots.limit) &&
+        this.trackSlots.limit > 0
+      )
+    },
+    hasValidPlaylistSlots() {
+      if (!Number.isFinite(this.playlistSlots.used)) {
+        return false
+      }
+      if (this.playlistSlots.unlimited) {
+        return true
+      }
+      return (
+        Number.isFinite(this.playlistSlots.limit) &&
+        this.playlistSlots.limit > 0
+      )
+    },
     ...mapGetters({
       isAppSelected: 'application/isSelected',
       authToken: 'auth/token',
@@ -279,14 +290,119 @@ export default {
       immediate: true,
       handler(isReadOnly) {
         if (isReadOnly) {
+          this.restoreSlotsFromCache()
+          this.startSlotsAutoRefresh()
           this.fetchSlots()
+        } else {
+          this.stopSlotsAutoRefresh()
         }
       },
     },
+    authToken(newValue, oldValue) {
+      if (this.isReadOnlyDatabase && newValue && newValue !== oldValue) {
+        this.fetchSlots()
+      }
+    },
+    isrcApiBaseUrl(newValue, oldValue) {
+      if (this.isReadOnlyDatabase && newValue !== oldValue) {
+        this.fetchSlots()
+      }
+    },
+  },
+  beforeDestroy() {
+    this.stopSlotsAutoRefresh()
   },
   methods: {
-    async fetchSlots() {
+    normalizeTrackSlots(data) {
+      const used = Number(data?.used)
+      const limit = Number(data?.limit)
+      if (!Number.isFinite(used) || !Number.isFinite(limit) || limit <= 0) {
+        return null
+      }
+      return { used, limit }
+    },
+    normalizePlaylistSlots(data) {
+      const used = Number(data?.used)
+      const unlimited = Boolean(data?.unlimited)
+      if (!Number.isFinite(used)) {
+        return null
+      }
+      if (unlimited) {
+        return { used, limit: null, unlimited: true }
+      }
+      const limit = Number(data?.limit)
+      if (!Number.isFinite(limit) || limit <= 0) {
+        return null
+      }
+      return { used, limit, unlimited: false }
+    },
+    restoreSlotsFromCache() {
+      if (process.server) {
+        return
+      }
       try {
+        const raw = window.localStorage.getItem('isrc-slot-cache-v1')
+        if (!raw) {
+          return
+        }
+        const parsed = JSON.parse(raw)
+        const trackSlots = this.normalizeTrackSlots(parsed?.trackSlots)
+        const playlistSlots = this.normalizePlaylistSlots(parsed?.playlistSlots)
+        if (trackSlots && playlistSlots) {
+          this.trackSlots = trackSlots
+          this.playlistSlots = playlistSlots
+        }
+      } catch (error) {
+        console.warn('Failed to restore slot cache:', error)
+      }
+    },
+    persistSlotsToCache() {
+      if (process.server || !this.hasValidTrackSlots || !this.hasValidPlaylistSlots) {
+        return
+      }
+      try {
+        window.localStorage.setItem(
+          'isrc-slot-cache-v1',
+          JSON.stringify({
+            trackSlots: this.trackSlots,
+            playlistSlots: this.playlistSlots,
+            updatedAt: new Date().toISOString(),
+          })
+        )
+      } catch (error) {
+        console.warn('Failed to persist slot cache:', error)
+      }
+    },
+    queueSlotsRetry() {
+      if (this.slotFetchAttempts >= 5) {
+        return
+      }
+      const delay = Math.min(2000 * 2 ** (this.slotFetchAttempts - 1), 30000)
+      clearTimeout(this.slotRetryTimeoutId)
+      this.slotRetryTimeoutId = setTimeout(() => {
+        this.fetchSlots()
+      }, delay)
+    },
+    startSlotsAutoRefresh() {
+      if (this.slotRefreshIntervalId) {
+        return
+      }
+      this.slotRefreshIntervalId = setInterval(() => {
+        this.fetchSlots()
+      }, 60000)
+    },
+    stopSlotsAutoRefresh() {
+      clearTimeout(this.slotRetryTimeoutId)
+      this.slotRetryTimeoutId = null
+      clearInterval(this.slotRefreshIntervalId)
+      this.slotRefreshIntervalId = null
+    },
+    async fetchSlots() {
+      if (!this.isReadOnlyDatabase || this.slotsLoading) {
+        return
+      }
+      try {
+        this.slotsLoading = true
         // ISRCAnalytics: Pass auth token for cross-origin authentication
         const token = this.authToken
         const apiUrl = this.isrcApiBaseUrl
@@ -294,10 +410,22 @@ export default {
           IsrcService(this.$client, token, apiUrl).getTrackSlots(),
           IsrcService(this.$client, token, apiUrl).getPlaylistSlots(),
         ])
-        this.trackSlots = trackResponse.data
-        this.playlistSlots = playlistResponse.data
+        const trackSlots = this.normalizeTrackSlots(trackResponse.data)
+        const playlistSlots = this.normalizePlaylistSlots(playlistResponse.data)
+        if (!trackSlots || !playlistSlots) {
+          throw new Error('Invalid slot payload received from API.')
+        }
+
+        this.trackSlots = trackSlots
+        this.playlistSlots = playlistSlots
+        this.slotFetchAttempts = 0
+        this.persistSlotsToCache()
       } catch (error) {
+        this.slotFetchAttempts += 1
+        this.queueSlotsRetry()
         console.error('Failed to fetch slot usage:', error)
+      } finally {
+        this.slotsLoading = false
       }
     },
     async selected(application) {
@@ -331,14 +459,6 @@ export default {
     },
     getPendingJobComponent(job) {
       return this.$registry.get('job', job.type).getSidebarComponent()
-    },
-    openCreateReleaseModal() {
-      // Emit global event that GridView listens to
-      this.$root.$emit('open-release-modal')
-    },
-    openCreateAccountModal() {
-      // Emit global event that GridView listens to
-      this.$root.$emit('open-account-modal')
     },
   },
 }
