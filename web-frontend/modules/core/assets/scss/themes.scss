@@ -687,6 +687,8 @@ body.theme-dark {
     background-color: var(--bg-input);
     border-color: var(--border-input);
     color: var(--text-primary);
+    // Ask browsers for dark native form controls in dark mode.
+    color-scheme: dark;
 
     &::placeholder {
       color: var(--text-muted);
@@ -695,6 +697,13 @@ body.theme-dark {
     &:focus {
       border-color: var(--grid-cell-selected-border);
     }
+  }
+
+  // Keep native select menu items readable in dark mode.
+  select option,
+  select optgroup {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
   }
 
   .input {
