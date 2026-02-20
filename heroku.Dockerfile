@@ -3,8 +3,6 @@ ARG FROM_IMAGE=ghcr.io/browningl/isrcanalytics-baserow:develop
 # hadolint ignore=DL3006
 FROM $FROM_IMAGE AS image_base
 
-RUN apt-get remove -y "postgresql-$POSTGRES_VERSION" redis-server
-
 ENV DATA_DIR=/baserow/data
 # We have to build the data dir in the docker image as Caddy does not allow it in their
 # runtime filesystem. We chown to their www-data user's uid and gid at the end.
