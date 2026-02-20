@@ -10,6 +10,3 @@ RUN mkdir -p "$DATA_DIR" && \
     chown -R 9999:9999 "$DATA_DIR"
 
 COPY deploy/heroku/heroku_env.sh /baserow/supervisor/env/heroku_env.sh
-
-ENTRYPOINT []
-CMD []
