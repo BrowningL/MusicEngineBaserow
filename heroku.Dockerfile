@@ -4,9 +4,6 @@ ARG FROM_IMAGE=ghcr.io/browningl/isrcanalytics-baserow:develop
 FROM $FROM_IMAGE AS image_base
 
 ENV DATA_DIR=/baserow/data
-# We have to build the data dir in the docker image as Caddy does not allow it in their
-# runtime filesystem. We chown to their www-data user's uid and gid at the end.
+# Ensure volume path exists and ownership stays compatible with the base image user.
 RUN mkdir -p "$DATA_DIR" && \
     chown -R 9999:9999 "$DATA_DIR"
-
-COPY deploy/heroku/heroku_env.sh /baserow/supervisor/env/heroku_env.sh
