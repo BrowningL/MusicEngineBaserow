@@ -428,6 +428,13 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ACCESS_TOKEN_LIFETIME = timedelta(
     minutes=int(os.getenv("BASEROW_ACCESS_TOKEN_LIFETIME_MINUTES", 10))  # 10 minutes
 )
+
+# In iframe environments where third-party cookies/storage are blocked, allow extending the
+# JWT lifetime via environment variable to minimize refresh loops.
+if os.getenv("BASEROW_IFRAME_MODE_JWT_EXPIRATION"):
+    ACCESS_TOKEN_LIFETIME = timedelta(
+        minutes=int(os.getenv("BASEROW_IFRAME_MODE_JWT_EXPIRATION"))
+    )
 REFRESH_TOKEN_LIFETIME = timedelta(
     hours=int(os.getenv("BASEROW_REFRESH_TOKEN_LIFETIME_HOURS", 24 * 7))  # 7 days
 )

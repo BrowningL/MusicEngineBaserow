@@ -239,6 +239,38 @@ export const actions = {
     }
 
     try {
+      if (process.client && window.parent && window !== window.parent) {
+        // Iframe Mode: Ask parent window for a new token instead of relying on
+        // blocked third-party cookies for the refresh token.
+        return new Promise((resolve, reject) => {
+          const handler = (event) => {
+            if (event.data?.type === 'BASEROW_TOKEN_UPDATE') {
+              window.removeEventListener('message', handler)
+              const newToken = event.data.token
+              const tokenUpdatedAt = new Date().getTime()
+              dispatch('setUserData', {
+                access_token: newToken,
+                refresh_token: getters.refreshToken,
+                tokenUpdatedAt,
+              })
+              resolve()
+            } else if (event.data?.type === 'BASEROW_SESSION_DEAD') {
+              window.removeEventListener('message', handler)
+              reject(new Error('Parent session dead'))
+            }
+          }
+          window.addEventListener('message', handler)
+
+          // Add a timeout to prevent hanging forever
+          setTimeout(() => {
+            window.removeEventListener('message', handler)
+            reject(new Error('Iframe token refresh timed out'))
+          }, 10000)
+
+          window.parent.postMessage({ type: 'BASEROW_REFRESH_REQUEST' }, '*')
+        })
+      }
+
       const tokenUpdatedAt = new Date().getTime()
       const { data } = await AuthService(this.$client).refresh(refreshToken)
       // if ROTATE_REFRESH_TOKEN=False in the backend the response will not contain
