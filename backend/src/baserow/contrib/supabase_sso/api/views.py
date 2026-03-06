@@ -26,7 +26,7 @@ class SupabaseAuthenticateView(APIView):
     This endpoint validates the Supabase JWT, provisions a Baserow user
     if needed, and returns Baserow JWT tokens for subsequent API access.
 
-    This is the core SSO endpoint for ISRCAnalytics integration.
+    This is the core SSO endpoint for MusicEngine integration.
     """
     permission_classes = [AllowAny]
 
@@ -230,7 +230,7 @@ class DevLogoutView(APIView):
         <h3>Or login with custom credentials:</h3>
         <div class="form-group">
             <label>Email:</label>
-            <input type="email" id="email" placeholder="admin@isrcanalytics.com">
+            <input type="email" id="email" placeholder="admin@musicengine.ai">
         </div>
         <div class="form-group">
             <label>Password:</label>
@@ -264,7 +264,7 @@ class DevLogoutView(APIView):
         }
 
         async function loginAsAdmin() {
-            await doLogin('admin@isrcanalytics.com', 'AdminPass123!');
+            await doLogin('admin@musicengine.ai', 'AdminPass123!');
         }
 
         async function loginCustom() {

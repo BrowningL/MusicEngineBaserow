@@ -1,7 +1,7 @@
 <template>
   <div>
     <Toasts></Toasts>
-    <!-- ISRCAnalytics: Removed GuidedTour - tutorials disabled -->
+    <!-- MusicEngine: Removed GuidedTour - tutorials disabled -->
     <div class="layout">
       <div class="layout__col-1" :style="{ width: col1Width + 'px' }">
         <Sidebar
@@ -67,7 +67,7 @@ import Sidebar from '@baserow/modules/core/components/sidebar/Sidebar'
 import RightSidebar from '@baserow/modules/core/components/sidebar/RightSidebar'
 import undoRedo from '@baserow/modules/core/mixins/undoRedo'
 import HorizontalResize from '@baserow/modules/core/components/HorizontalResize'
-// ISRCAnalytics: GuidedTour import removed - tutorials disabled
+// MusicEngine: GuidedTour import removed - tutorials disabled
 import WorkspaceSearchModal from '@baserow/modules/core/components/workspace/WorkspaceSearchModal.vue'
 import { CORE_ACTION_SCOPES } from '@baserow/modules/core/utils/undoRedoConstants'
 import {
@@ -81,7 +81,7 @@ export default {
     Sidebar,
     RightSidebar,
     HorizontalResize,
-    // ISRCAnalytics: GuidedTour removed - tutorials disabled
+    // MusicEngine: GuidedTour removed - tutorials disabled
     WorkspaceSearchModal,
   },
   mixins: [undoRedo],
@@ -141,7 +141,7 @@ export default {
     }
   },
   mounted() {
-    // ISRCAnalytics: Apply saved theme on app load
+    // MusicEngine: Apply saved theme on app load
     this.initializeTheme()
 
     // Connect to the web socket so we can start receiving real time updates.
@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     /**
-     * ISRCAnalytics: Initialize theme from localStorage on app load.
+     * MusicEngine: Initialize theme from localStorage on app load.
      * This ensures the saved theme preference is applied immediately.
      */
     initializeTheme() {

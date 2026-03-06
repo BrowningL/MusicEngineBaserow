@@ -1,5 +1,5 @@
 <template functional>
-  <!-- ISRCAnalytics: Simplified logo component, always shows ISRCAnalytics branding -->
+  <!-- MusicEngine: Simplified logo component, always shows MusicEngine branding -->
   <div class="logo">
     <img
       :src="$options.methods.getLogoUrl(parent)"
@@ -14,7 +14,7 @@ export default {
   name: 'EnterpriseLogo',
   methods: {
     getLogoUrl(parent) {
-      // ISRCAnalytics: Always return the ISRCAnalytics logo
+      // MusicEngine: Always return the MusicEngine logo
       return require('@baserow/modules/core/static/img/logo.svg')
     },
   },

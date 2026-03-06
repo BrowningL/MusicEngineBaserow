@@ -7,7 +7,7 @@
     <div class="context__menu-title">
       {{ application.name }}
     </div>
-    <!-- ISRCAnalytics: Hide context actions in global read-only mode -->
+    <!-- MusicEngine: Hide context actions in global read-only mode -->
     <ul v-if="!isWorkspaceReadOnly" class="context__menu">
       <li
         v-for="(component, index) in additionalContextComponents"
@@ -55,7 +55,7 @@
           @click="$refs.context.hide()"
         ></SidebarDuplicateApplicationContextItem>
       </li>
-      <!-- ISRCAnalytics: Removed Snapshots menu item -->
+      <!-- MusicEngine: Removed Snapshots menu item -->
       <li
         v-if="
           applicationType.supportsTrash() &&
@@ -96,7 +96,7 @@
         </a>
       </li>
     </ul>
-    <!-- ISRCAnalytics: Show read-only notice -->
+    <!-- MusicEngine: Show read-only notice -->
     <div v-else class="context__menu-item context__menu-item--disabled" style="padding: 12px; color: #666; font-size: 12px;">
       <i class="iconoir-lock" style="margin-right: 8px;"></i>
       This workspace is read-only.

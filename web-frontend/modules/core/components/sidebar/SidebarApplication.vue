@@ -96,7 +96,7 @@ export default {
       type: String,
       default: null,
     },
-    // ISRCAnalytics: Disable clicking for managed databases
+    // MusicEngine: Disable clicking for managed databases
     isManagedDatabase: {
       type: Boolean,
       default: false,
@@ -130,14 +130,14 @@ export default {
     },
   },
   methods: {
-    // ISRCAnalytics: Stop mousedown for managed databases to prevent sortable pixel shift
+    // MusicEngine: Stop mousedown for managed databases to prevent sortable pixel shift
     handleMousedown(event) {
       if (this.isManagedDatabase) {
         event.stopPropagation()
         event.preventDefault()
       }
     },
-    // ISRCAnalytics: Proper click handler that does nothing for managed databases
+    // MusicEngine: Proper click handler that does nothing for managed databases
     handleClick() {
       if (!this.isManagedDatabase) {
         this.$emit('selected', this.application)
@@ -149,7 +149,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* ISRCAnalytics: Disabled link style for managed databases */
+/* MusicEngine: Disabled link style for managed databases */
 .tree__link--disabled {
   cursor: default;
   pointer-events: none;  /* Completely prevents click events */
@@ -159,7 +159,7 @@ export default {
   }
 }
 
-/* ISRCAnalytics: Remove hover and ALL clicks for managed databases */
+/* MusicEngine: Remove hover and ALL clicks for managed databases */
 .tree__action--no-hover {
   pointer-events: none;  /* Disable clicks on entire row including sortable handle */
 
@@ -168,7 +168,7 @@ export default {
   }
 }
 
-/* ISRCAnalytics: Always show three dots and re-enable clicks on them */
+/* MusicEngine: Always show three dots and re-enable clicks on them */
 .tree__action--always-show-options :deep(.tree__options) {
   display: flex;
   pointer-events: auto;  /* Re-enable clicks on three dots only */

@@ -25,7 +25,7 @@ jobs:
       - name: Convert to lowercase
         id: lowercase
         run: |
-          echo "image_name=$(echo '${{ github.repository_owner }}/isrcanalytics-baserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "image_name=$(echo '${{ github.repository_owner }}/musicenginebaserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -62,7 +62,7 @@ jobs:
       - name: Convert to lowercase
         id: lowercase
         run: |
-          echo "image_name=$(echo '${{ github.repository_owner }}/isrcanalytics-baserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "image_name=$(echo '${{ github.repository_owner }}/musicenginebaserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -98,7 +98,7 @@ jobs:
       - name: Convert to lowercase
         id: lowercase
         run: |
-          echo "image_name=$(echo '${{ github.repository_owner }}/isrcanalytics-baserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "image_name=$(echo '${{ github.repository_owner }}/musicenginebaserow' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

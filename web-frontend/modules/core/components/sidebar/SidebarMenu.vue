@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar__section" ph-autocapture="sidebar" data-highlight="menu">
     <ul class="tree">
-      <!-- ISRCAnalytics: Removed SidebarSearch, Home, Notifications, Members, and Invite Others links -->
+      <!-- MusicEngine: Removed SidebarSearch, Home, Notifications, Members, and Invite Others links -->
       <component
         :is="component"
         v-for="(component, index) in sidebarWorkspaceComponents"
@@ -9,7 +9,7 @@
         :workspace="selectedWorkspace"
         :right-sidebar-open="rightSidebarOpen"
       ></component>
-      <!-- ISRCAnalytics: Removed Trash item -->
+      <!-- MusicEngine: Removed Trash item -->
     </ul>
   </div>
 </template>

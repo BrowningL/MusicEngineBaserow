@@ -16,7 +16,7 @@ urlpatterns = [
         SupabaseHealthView.as_view(),
         name='health'
     ),
-    # Iframe authentication endpoint for ISRCAnalytics integration
+    # Iframe authentication endpoint for MusicEngine integration
     # Injects JWT token into localStorage and redirects to target page
     path(
         'auth/iframe-login/',

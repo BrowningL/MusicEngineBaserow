@@ -160,7 +160,7 @@ export default {
       fieldMap: {},
       customPlatformMode: false,
       customPlatformName: '',
-      // Canonical list lives in ISRCAnalytics.com/components/workspace/distribution/distribution-constants.ts
+      // Canonical list lives in MusicEngine.ai/components/workspace/distribution/distribution-constants.ts
       platformOptions: [
         { value: 'distrokid', label: 'DistroKid' },
         { value: 'tunecore', label: 'TuneCore' },

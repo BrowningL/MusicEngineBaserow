@@ -1,15 +1,15 @@
 <template>
-  <!-- ISRCAnalytics: Updated branding -->
+  <!-- MusicEngine: Updated branding -->
   <div class="form-view__powered-by">
     Powered by
     <a
-      href="https://isrcanalytics.com"
+      href="https://musicengine.ai"
       target="_blank"
-      title="ISRCAnalytics - Music Industry Data Platform"
+      title="MusicEngine - Music Industry Data Platform"
     >
       <Logo
         class="form-view__powered-by-logo"
-        alt="ISRCAnalytics - Music Industry Data Platform"
+        alt="MusicEngine - Music Industry Data Platform"
       />
     </a>
   </div>

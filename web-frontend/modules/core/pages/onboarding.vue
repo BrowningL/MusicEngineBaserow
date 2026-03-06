@@ -111,7 +111,7 @@ export default {
       return redirect({ name: 'dashboard' })
     }
 
-    // Safety net: if ISRCAnalytics already provisioned a workspace, skip onboarding
+    // Safety net: if MusicEngine already provisioned a workspace, skip onboarding
     try {
       if (!store.getters['workspace/isLoaded']) {
         await store.dispatch('workspace/fetchAll')

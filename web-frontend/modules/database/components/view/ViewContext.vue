@@ -62,7 +62,7 @@
           {{ $t('viewContext.duplicateView') }}
         </a>
       </li>
-      <!-- ISRCAnalytics: Removed view ownership type change (To personal/collaborative) and Webhooks -->
+      <!-- MusicEngine: Removed view ownership type change (To personal/collaborative) and Webhooks -->
       <li
         v-if="
           $hasPermission(

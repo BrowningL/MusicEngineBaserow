@@ -124,7 +124,7 @@ export default {
       return null
     },
     /**
-     * Trigger the ACR scan via the ISRCAnalytics webhook API.
+     * Trigger the ACR scan via the MusicEngine webhook API.
      */
     async triggerAcrScan() {
       if (this.acrScanning || this.readOnly) {

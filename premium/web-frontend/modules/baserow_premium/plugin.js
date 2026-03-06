@@ -5,13 +5,13 @@ import {
   ExcelTableExporterType,
   FileTableExporter,
 } from '@baserow_premium/tableExporterTypes'
-// ISRCAnalytics: Removed LicensesAdminType import
+// MusicEngine: Removed LicensesAdminType import
 import rowCommentsStore from '@baserow_premium/store/row_comments'
-// ISRCAnalytics: Removed Kanban, Calendar, Timeline view stores
+// MusicEngine: Removed Kanban, Calendar, Timeline view stores
 import impersonatingStore from '@baserow_premium/store/impersonating'
 import { PremiumDatabaseApplicationType } from '@baserow_premium/applicationTypes'
 import { registerRealtimeEvents } from '@baserow_premium/realtime'
-// ISRCAnalytics: Removed Kanban, Calendar, Timeline view types
+// MusicEngine: Removed Kanban, Calendar, Timeline view types
 
 import {
   LeftBorderColorViewDecoratorType,
@@ -22,7 +22,7 @@ import {
   SingleSelectColorValueProviderType,
   ConditionalColorValueProviderType,
 } from '@baserow_premium/decoratorValueProviders'
-// ISRCAnalytics: Removed FormViewSurveyModeType
+// MusicEngine: Removed FormViewSurveyModeType
 import {
   TextFieldType,
   LongTextFieldType,
@@ -54,9 +54,9 @@ import {
   VarianceViewAggregationType,
   MedianViewAggregationType,
 } from '@baserow/modules/database/viewAggregationTypes'
-// ISRCAnalytics: Removed ChartWidgetType, PieChartWidgetType
-// ISRCAnalytics: Removed SingleSelectFormattingType (chart formatting)
-// ISRCAnalytics: Removed GenerateAIValuesJobType, GenerateAIValuesContextItemType
+// MusicEngine: Removed ChartWidgetType, PieChartWidgetType
+// MusicEngine: Removed SingleSelectFormattingType (chart formatting)
+// MusicEngine: Removed GenerateAIValuesJobType, GenerateAIValuesContextItemType
 import en from '@baserow_premium/locales/en.json'
 import fr from '@baserow_premium/locales/fr.json'
 import nl from '@baserow_premium/locales/nl.json'
@@ -74,12 +74,12 @@ import {
 } from '@baserow_premium/notificationTypes'
 import { CommentsRowModalSidebarType } from '@baserow_premium/rowModalSidebarTypes'
 import {
-  // ISRCAnalytics: Removed AIFieldType
+  // MusicEngine: Removed AIFieldType
   PremiumFormulaFieldType,
 } from '@baserow_premium/fieldTypes'
-// ISRCAnalytics: Removed AI field output types
+// MusicEngine: Removed AI field output types
 import {
-  // ISRCAnalytics: Removed AI, Kanban, Calendar, Timeline, Survey, Chart paid features
+  // MusicEngine: Removed AI, Kanban, Calendar, Timeline, Survey, Chart paid features
   ExportsPaidFeature,
   PersonalViewsPaidFeature,
   PublicLogoRemovalPaidFeature,
@@ -122,21 +122,21 @@ export default (context) => {
   }
 
   store.registerModule('row_comments', rowCommentsStore)
-  // ISRCAnalytics: Removed Kanban, Calendar, Timeline view store registrations
+  // MusicEngine: Removed Kanban, Calendar, Timeline view store registrations
   store.registerModule('impersonating', impersonatingStore)
 
-  // ISRCAnalytics: Removed aiFieldOutputType namespace registration
+  // MusicEngine: Removed aiFieldOutputType namespace registration
   app.$registry.registerNamespace('paidFeature')
 
   app.$registry.register('plugin', new PremiumPlugin(context))
-  // ISRCAnalytics: Removed Licenses admin page registration
+  // MusicEngine: Removed Licenses admin page registration
   app.$registry.register('exporter', new JSONTableExporter(context))
   app.$registry.register('exporter', new XMLTableExporter(context))
   app.$registry.register('exporter', new ExcelTableExporterType(context))
   app.$registry.register('exporter', new FileTableExporter(context))
-  // ISRCAnalytics: Removed AIFieldType registration
+  // MusicEngine: Removed AIFieldType registration
   app.$registry.register('field', new PremiumFormulaFieldType(context))
-  // ISRCAnalytics: Removed Kanban, Calendar, Timeline view registrations
+  // MusicEngine: Removed Kanban, Calendar, Timeline view registrations
 
   app.$registry.register(
     'viewDecorator',
@@ -161,7 +161,7 @@ export default (context) => {
     new PersonalViewOwnershipType(context)
   )
 
-  // ISRCAnalytics: Removed FormViewSurveyModeType registration
+  // MusicEngine: Removed FormViewSurveyModeType registration
 
   app.$registry.register('license', new PremiumLicenseType(context))
 
@@ -192,7 +192,7 @@ export default (context) => {
     new CommentsRowModalSidebarType(context)
   )
 
-  // ISRCAnalytics: Removed AI field output types, AI job type, and AI context item registrations
+  // MusicEngine: Removed AI field output types, AI job type, and AI context item registrations
 
   app.$registry.register(
     'groupedAggregation',
@@ -304,9 +304,9 @@ export default (context) => {
     new AutonumberFieldType(context)
   )
 
-  // ISRCAnalytics: Removed Chart widgets and chart field formatting registrations
+  // MusicEngine: Removed Chart widgets and chart field formatting registrations
 
-  // ISRCAnalytics: Only register features we want to keep (removed Kanban, Calendar, Timeline, AI, Survey, Chart)
+  // MusicEngine: Only register features we want to keep (removed Kanban, Calendar, Timeline, AI, Survey, Chart)
   app.$registry.register('paidFeature', new RowColoringPaidFeature(context))
   app.$registry.register('paidFeature', new RowCommentsPaidFeature(context))
   app.$registry.register(
@@ -320,5 +320,5 @@ export default (context) => {
     new PublicLogoRemovalPaidFeature(context)
   )
 
-  // ISRCAnalytics: Removed timelineFieldRules namespace registration
+  // MusicEngine: Removed timelineFieldRules namespace registration
 }

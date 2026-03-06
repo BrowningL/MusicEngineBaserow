@@ -68,7 +68,7 @@ import {
 } from '@baserow_enterprise/notificationTypes'
 import { RowsEnterViewWebhookEventType } from '@baserow_enterprise/webhookEventTypes'
 import {
-  // ISRCAnalytics: Only keep BuilderFileInputElementPaidFeature, remove enterprise upsells
+  // MusicEngine: Only keep BuilderFileInputElementPaidFeature, remove enterprise upsells
   BuilderFileInputElementPaidFeature,
 } from '@baserow_enterprise/paidFeatures'
 import { FieldPermissionsContextItemType } from '@baserow_enterprise/fieldContextItemTypes'
@@ -206,7 +206,7 @@ export default (context) => {
     new RowsEnterViewWebhookEventType(context)
   )
 
-  // ISRCAnalytics: Removed most enterprise paid feature registrations
+  // MusicEngine: Removed most enterprise paid feature registrations
   // Only keeping file input element feature
   app.$registry.register(
     'paidFeature',

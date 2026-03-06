@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar__section sidebar__section--bottom">
     <div class="sidebar__foot">
-      <!-- ISRCAnalytics: Removed Baserow branding logo -->
+      <!-- MusicEngine: Removed Baserow branding logo -->
       <div class="sidebar__foot-links">
         <a
           class="sidebar__foot-link"

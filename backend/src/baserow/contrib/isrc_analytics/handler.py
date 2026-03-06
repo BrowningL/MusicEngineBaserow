@@ -1,5 +1,5 @@
 """
-Handler for ISRC Analytics operations.
+Handler for MusicEngine operations.
 Manages track and playlist insertion into Baserow tables.
 """
 
@@ -37,7 +37,7 @@ class TableNotFoundError(IsrcHandlerException):
 
 
 class IsrcHandler:
-    """Handler for ISRC Analytics track and playlist operations."""
+    """Handler for MusicEngine track and playlist operations."""
 
     LIVE_CATALOGUE_DB_NAME = "Live Catalogue"
     TRACKS_TABLE_NAME = "Tracks"

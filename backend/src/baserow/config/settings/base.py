@@ -867,11 +867,11 @@ BASEROW_SEAT_USAGE_JOB_CRONTAB = get_crontab_from_env(
     "BASEROW_SEAT_USAGE_JOB_CRONTAB", default_crontab=ONE_AM_CRONTAB_STR
 )
 
-# ISRCAnalytics: Disable all email functionality - use dummy backend that discards emails
+# MusicEngine: Disable all email functionality - use dummy backend that discards emails
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 CELERY_EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
-# ISRCAnalytics: Disable email notifications globally
+# MusicEngine: Disable email notifications globally
 EMAIL_NOTIFICATIONS_ENABLED = False
 # The maximum amount of email notifications that can be sent per task. This
 # equals the amount of users that will receive an email, since all the

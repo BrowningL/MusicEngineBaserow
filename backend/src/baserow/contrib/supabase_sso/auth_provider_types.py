@@ -51,7 +51,7 @@ class SupabaseAuthProviderType(AuthProviderType):
         """
         Return login options for this provider.
 
-        We return None because Supabase SSO is handled externally via ISRCAnalytics.com,
+        We return None because Supabase SSO is handled externally via MusicEngine.ai,
         not through the Baserow login page. Users authenticate through the main app
         and get redirected with tokens.
         """
@@ -96,7 +96,7 @@ class SupabaseAuthProviderType(AuthProviderType):
             # For Supabase, the JWT secret is a separate value, but we can
             # decode without full verification for trusted internal use
 
-            # For ISRCAnalytics internal SSO, we trust the token if:
+            # For MusicEngine internal SSO, we trust the token if:
             # 1. It's a valid JWT structure
             # 2. It has the expected issuer (Supabase URL)
             # 3. It has required claims (sub, email)

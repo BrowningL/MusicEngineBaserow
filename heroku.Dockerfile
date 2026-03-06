@@ -1,4 +1,4 @@
-ARG FROM_IMAGE=ghcr.io/browningl/isrcanalytics-baserow:develop
+ARG FROM_IMAGE=ghcr.io/browningl/musicenginebaserow:develop
 # This is pinned as version pinning is done by the CI setting FROM_IMAGE.
 # hadolint ignore=DL3006
 FROM $FROM_IMAGE AS image_base

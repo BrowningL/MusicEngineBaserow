@@ -1,8 +1,8 @@
 export default {
-  // ISRCAnalytics: Updated page titles
-  title: 'ISRCAnalytics',
-  titleTemplate: '%s | ISRCAnalytics',
-  // ISRCAnalytics: Inline script to apply theme immediately before render to prevent FOUC
+  // MusicEngine: Updated page titles
+  title: 'MusicEngine',
+  titleTemplate: '%s | MusicEngine',
+  // MusicEngine: Inline script to apply theme immediately before render to prevent FOUC
   script: [
     {
       hid: 'theme-init',

@@ -116,7 +116,7 @@ export default function CoreModule(options) {
     BASEROW_DISABLE_SUPPORT: process.env.BASEROW_DISABLE_SUPPORT ?? '',
     BASEROW_INTEGRATIONS_PERIODIC_MINUTE_MIN:
       process.env.BASEROW_INTEGRATIONS_PERIODIC_MINUTE_MIN ?? '1',
-    // ISRCAnalytics webhook URL for Inspiration Download feature
+    // MusicEngine webhook URL for Inspiration Download feature
     ISRCANALYTICS_WEBHOOK_URL: process.env.ISRCANALYTICS_WEBHOOK_URL ?? '',
   }
 
@@ -237,12 +237,12 @@ export default function CoreModule(options) {
   this.appendPlugin({ src: path.resolve(__dirname, 'plugins/router.js') })
   this.appendPlugin({ src: path.resolve(__dirname, 'plugins/version.js') })
   this.appendPlugin({ src: path.resolve(__dirname, 'plugins/routeMounted.js') })
-  // ISRCAnalytics: Theme initialization plugin (client-side only)
+  // MusicEngine: Theme initialization plugin (client-side only)
   this.appendPlugin({
     src: path.resolve(__dirname, 'plugins/theme.client.js'),
     mode: 'client',
   })
-  // ISRCAnalytics: Cross-iframe messaging plugin (client-side only)
+  // MusicEngine: Cross-iframe messaging plugin (client-side only)
   this.appendPlugin({
     src: path.resolve(__dirname, 'plugins/iframe-messages.client.js'),
     mode: 'client',

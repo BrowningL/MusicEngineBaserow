@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class IsrcAnalyticsConfig(AppConfig):
     name = "baserow.contrib.isrc_analytics"
-    verbose_name = "ISRC Analytics"
+    verbose_name = "MusicEngine"

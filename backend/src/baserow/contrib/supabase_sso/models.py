@@ -7,7 +7,7 @@ from baserow.core.auth_provider.models import AuthProviderModel
 class SupabaseAuthProviderModel(AuthProviderModel):
     """
     Stores Supabase configuration for SSO authentication.
-    Allows ISRCAnalytics users to authenticate to Baserow using their Supabase JWT.
+    Allows MusicEngine users to authenticate to Baserow using their Supabase JWT.
     """
     supabase_url = models.URLField(
         help_text="Supabase project URL (e.g., https://xxx.supabase.co)"

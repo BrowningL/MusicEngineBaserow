@@ -1,6 +1,6 @@
 """
-API views for ISRC Analytics - adds enriched tracks/playlists to Baserow tables.
-Enrichment is handled by the ISRCAnalytics.com frontend calling Spotify directly.
+API views for MusicEngine - adds enriched tracks/playlists to Baserow tables.
+Enrichment is handled by the MusicEngine.ai frontend calling Spotify directly.
 """
 
 import logging
@@ -36,7 +36,7 @@ class AddTrackView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @extend_schema(
-        tags=["ISRC Analytics"],
+        tags=["MusicEngine"],
         operation_id="add_track",
         description="Add an enriched track to the user's Live Catalogue Tracks table",
         request=TrackAddRequestSerializer,
@@ -85,7 +85,7 @@ class AddPlaylistView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @extend_schema(
-        tags=["ISRC Analytics"],
+        tags=["MusicEngine"],
         operation_id="add_playlist",
         description="Add an enriched playlist to the user's Live Catalogue Playlists table",
         request=PlaylistAddRequestSerializer,

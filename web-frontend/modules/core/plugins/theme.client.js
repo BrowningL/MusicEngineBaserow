@@ -1,5 +1,5 @@
 /**
- * ISRCAnalytics Theme Plugin
+ * MusicEngine Theme Plugin
  * Initializes theme from localStorage immediately on client load to prevent FOUC
  * (Flash Of Unstyled Content)
  */
@@ -22,7 +22,7 @@ export default function () {
 
 function initializeTheme() {
   // Priority: URL param > localStorage > default 'light'
-  // URL param allows parent frame (ISRCAnalytics) to set theme for embedded iframe
+  // URL param allows parent frame (MusicEngine) to set theme for embedded iframe
   const urlParams = new URLSearchParams(window.location.search)
   const urlTheme = urlParams.get('theme')
 

@@ -1,15 +1,15 @@
-# Supabase SSO Integration for ISRCAnalytics Baserow Fork
+# Supabase SSO Integration for MusicEngine Baserow Fork
 
 ## Overview
 
-This document outlines the implementation plan for integrating Supabase authentication with Baserow, enabling seamless single sign-on (SSO) for ISRCAnalytics users.
+This document outlines the implementation plan for integrating Supabase authentication with Baserow, enabling seamless single sign-on (SSO) for MusicEngine users.
 
 ## Goals
 
 1. Users authenticated via Supabase can access Baserow without separate login
 2. Auto-provision Baserow user + workspace on first access
 3. No Baserow passwords needed - Supabase JWT is the only credential
-4. Seamless iframe embedding in ISRCAnalytics.com
+4. Seamless iframe embedding in MusicEngine.ai
 
 ## Architecture
 
@@ -18,15 +18,15 @@ This document outlines the implementation plan for integrating Supabase authenti
 │                         AUTHENTICATION FLOW                          │
 └─────────────────────────────────────────────────────────────────────┘
 
-1. User logs into ISRCAnalytics.com (Supabase Auth)
+1. User logs into MusicEngine.ai (Supabase Auth)
    └─> User has Supabase JWT in cookies/localStorage
 
 2. User visits /workspace page
-   └─> ISRCAnalytics frontend gets Supabase access_token
+   └─> MusicEngine frontend gets Supabase access_token
 
 3. Frontend calls: POST /api/baserow/sso-exchange
    └─> Body: { supabase_token: "..." }
-   └─> ISRCAnalytics backend validates token, calls Baserow SSO endpoint
+   └─> MusicEngine backend validates token, calls Baserow SSO endpoint
 
 4. Baserow SSO endpoint: POST /api/sso/supabase/authenticate/
    └─> Validates Supabase JWT using JWKS
@@ -35,7 +35,7 @@ This document outlines the implementation plan for integrating Supabase authenti
    └─> Auto-provisions workspace if new user
    └─> Returns Baserow JWT tokens
 
-5. ISRCAnalytics returns Baserow tokens to frontend
+5. MusicEngine returns Baserow tokens to frontend
    └─> Frontend loads iframe with Baserow JWT
 
 6. Baserow iframe authenticates via JWT cookie
@@ -443,7 +443,7 @@ if (urlToken) {
 }
 ```
 
-### Phase 3: ISRCAnalytics.com Updates
+### Phase 3: MusicEngine.ai Updates
 
 #### 3.1 Simplified Workspace URL API
 
@@ -523,7 +523,7 @@ SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_TEMPLATE_WORKSPACE_ID=133
 ```
 
-**ISRCAnalytics.com:**
+**MusicEngine.ai:**
 ```env
 # Simplified - no more admin credentials needed
 BASEROW_API_URL=https://baserow-app-production.up.railway.app/api
@@ -580,7 +580,7 @@ backend/src/baserow/contrib/supabase_sso/
 
 1. Deploy forked Baserow with Supabase SSO
 2. Create Supabase auth provider record
-3. Update ISRCAnalytics.com to use new SSO endpoint
+3. Update MusicEngine.ai to use new SSO endpoint
 4. Migrate existing users by creating SupabaseUserMapping records
 5. Remove old password-based code
 

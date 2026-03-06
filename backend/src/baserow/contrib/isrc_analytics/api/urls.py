@@ -1,7 +1,7 @@
 """
-URL configuration for ISRC Analytics API endpoints.
+URL configuration for MusicEngine API endpoints.
 Only handles adding tracks/playlists to Baserow tables.
-Enrichment is done via ISRCAnalytics.com API.
+Enrichment is done via MusicEngine.ai API.
 """
 
 from django.urls import re_path

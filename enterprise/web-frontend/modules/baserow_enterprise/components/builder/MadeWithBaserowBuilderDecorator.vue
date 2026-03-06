@@ -1,5 +1,5 @@
 <template>
-  <!-- ISRCAnalytics: Removed "Made with Baserow" badge -->
+  <!-- MusicEngine: Removed "Made with Baserow" badge -->
   <div>
     <slot></slot>
   </div>

@@ -17,12 +17,12 @@ export default {
   components: { Login },
   layout: 'login',
   async asyncData({ app, route, store, redirect }) {
-    // Redirect to ISRCAnalytics unless admin escape hatch is used
+    // Redirect to MusicEngine unless admin escape hatch is used
     if (!route.query.admin && process.server) {
-      return redirect(301, 'https://isrcanalytics.com/login')
+      return redirect(301, 'https://musicengine.ai/login')
     }
     if (!route.query.admin && process.client) {
-      window.location.href = 'https://isrcanalytics.com/login'
+      window.location.href = 'https://musicengine.ai/login'
       return
     }
     if (store.getters['settings/get'].show_admin_signup_page === true) {

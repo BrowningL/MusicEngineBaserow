@@ -71,7 +71,7 @@
           :invitation="invitation"
           class="margin-top-0 margin-bottom-0"
         ></WorkspaceInvitation>
-        <!-- ISRCAnalytics: Removed suggested templates and resources sections -->
+        <!-- MusicEngine: Removed suggested templates and resources sections -->
         <div class="dashboard__wrapper">
           <ul
             v-if="orderedApplicationsInSelectedWorkspace.length"
@@ -185,7 +185,7 @@ export default {
       return error({ statusCode: 404, message: 'Workspace not found.' })
     }
 
-    // ISRCAnalytics: Auto-redirect to first database's first table (server-side)
+    // MusicEngine: Auto-redirect to first database's first table (server-side)
     try {
       const applications = store.getters['application/getAllOfWorkspace'](workspace)
       const databases = applications
@@ -208,7 +208,7 @@ export default {
       }
     } catch (redirectError) {
       // If redirect fails, continue to normal workspace page
-      console.error('ISRCAnalytics: Auto-redirect failed', redirectError)
+      console.error('MusicEngine: Auto-redirect failed', redirectError)
     }
 
     try {

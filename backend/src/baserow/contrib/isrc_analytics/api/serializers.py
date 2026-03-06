@@ -1,5 +1,5 @@
 """
-API serializers for ISRC Analytics - adding tracks/playlists to Baserow tables.
+API serializers for MusicEngine - adding tracks/playlists to Baserow tables.
 """
 
 from rest_framework import serializers

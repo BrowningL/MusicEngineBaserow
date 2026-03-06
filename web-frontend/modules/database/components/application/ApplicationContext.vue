@@ -4,7 +4,7 @@
     :application="application"
     :workspace="workspace"
   >
-    <!-- ISRCAnalytics: Removed View API Docs menu item -->
+    <!-- MusicEngine: Removed View API Docs menu item -->
   </ApplicationContext>
 </template>
 

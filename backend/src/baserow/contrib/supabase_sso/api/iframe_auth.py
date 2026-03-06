@@ -1,5 +1,5 @@
 """
-Iframe Authentication Endpoint for ISRCAnalytics Integration
+Iframe Authentication Endpoint for MusicEngine Integration
 
 This module provides a token injection endpoint that enables seamless iframe
 authentication by:

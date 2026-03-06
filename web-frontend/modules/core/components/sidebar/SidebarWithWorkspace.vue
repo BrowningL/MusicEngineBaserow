@@ -20,7 +20,7 @@
             :key="applicationGroup.type"
           >
             <template v-if="applicationGroup.applications.length > 0">
-              <!-- ISRCAnalytics: Hide "Databases" heading to save space -->
+              <!-- MusicEngine: Hide "Databases" heading to save space -->
               <div v-if="applicationGroup.name !== 'Databases'" class="tree__heading">
                 {{ applicationGroup.name }}
               </div>
@@ -48,7 +48,7 @@
                     :pending-jobs="pendingJobs[application.type]"
                     :workspace="selectedWorkspace"
                   ></component>
-                  <!-- ISRCAnalytics: Arrow separator between Distribution Pipeline and Live Catalogue -->
+                  <!-- MusicEngine: Arrow separator between Distribution Pipeline and Live Catalogue -->
                   <div
                     v-if="shouldShowPipelineArrow(application, index, applicationGroup.applications)"
                     :key="'arrow-' + application.id"
@@ -72,7 +72,7 @@
         </ul>
       </div>
     </div>
-<!-- ISRCAnalytics: Removed "Add new..." button and CreateApplicationContext -->
+<!-- MusicEngine: Removed "Add new..." button and CreateApplicationContext -->
   </div>
 </template>
 
@@ -153,7 +153,7 @@ export default {
       return this.$registry.get('job', job.type).getSidebarComponent()
     },
     /**
-     * ISRCAnalytics: Sort databases so Distribution Pipeline comes before Live Catalogue.
+     * MusicEngine: Sort databases so Distribution Pipeline comes before Live Catalogue.
      */
     sortedApplications(applications) {
       return [...applications].sort((a, b) => {
@@ -172,7 +172,7 @@ export default {
       })
     },
     /**
-     * ISRCAnalytics: Show arrow between Distribution Pipeline and Live Catalogue.
+     * MusicEngine: Show arrow between Distribution Pipeline and Live Catalogue.
      */
     shouldShowPipelineArrow(application, index, applications) {
       const sorted = this.sortedApplications(applications)

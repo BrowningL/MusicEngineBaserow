@@ -1,19 +1,19 @@
 /**
- * ISRC Analytics API service.
- * - Enrichment calls go to ISRCAnalytics.com API (which uses workers)
+ * MusicEngine API service.
+ * - Enrichment calls go to MusicEngine.ai API (which uses workers)
  * - Add calls go to Baserow backend API (which inserts rows)
  * - Slots calls use Baserow JWT token for authentication
  */
 
 /**
- * Create ISRC Analytics service
+ * Create MusicEngine service
  * @param {Object} client - Baserow API client
  * @param {string} accessToken - Optional Baserow JWT access token for authenticated requests
  * @param {string} apiBaseUrl - Optional API base URL (from runtime config)
  */
 export default (client, accessToken = null, apiBaseUrl = '') => {
   // Use provided URL, fall back to build-time env, then production URL
-  const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
+  const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
 
   const buildAuthHeaders = (token = accessToken) => {
     const headers = { Accept: 'application/json' }
@@ -50,7 +50,7 @@ export default (client, accessToken = null, apiBaseUrl = '') => {
   return {
     /**
      * Enrich track data from ISRC or Spotify URL.
-     * Calls ISRCAnalytics.com API which handles Spotify data fetching.
+     * Calls MusicEngine.ai API which handles Spotify data fetching.
      * @param {string} input - ISRC code or Spotify track URL
      * @returns {Promise} Enriched track data
      */
@@ -83,7 +83,7 @@ export default (client, accessToken = null, apiBaseUrl = '') => {
 
     /**
      * Enrich artist data from Spotify artist URL.
-     * Calls ISRCAnalytics.com API which fetches all artist tracks.
+     * Calls MusicEngine.ai API which fetches all artist tracks.
      * @param {string} input - Spotify artist URL or URI
      * @returns {Promise} Artist data with all tracks
      */
@@ -107,7 +107,7 @@ export default (client, accessToken = null, apiBaseUrl = '') => {
 
     /**
      * Enrich playlist data from Spotify URL.
-     * Calls ISRCAnalytics.com API which handles Spotify data fetching.
+     * Calls MusicEngine.ai API which handles Spotify data fetching.
      * @param {string} input - Spotify playlist URL
      * @returns {Promise} Enriched playlist data
      */

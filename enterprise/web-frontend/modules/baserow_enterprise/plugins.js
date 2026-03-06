@@ -1,11 +1,11 @@
 import { BaserowPlugin } from '@baserow/modules/core/plugins'
-// ISRCAnalytics: Removed MemberRolesDatabaseContextItem import (no longer used)
+// MusicEngine: Removed MemberRolesDatabaseContextItem import (no longer used)
 import EnterpriseFeatures from '@baserow_enterprise/features'
 import SnapshotModalWarning from '@baserow_enterprise/components/SnapshotModalWarning'
 import EnterpriseSettings from '@baserow_enterprise/components/EnterpriseSettings'
 import EnterpriseSettingsOverrideDashboardHelp from '@baserow_enterprise/components/EnterpriseSettingsOverrideDashboardHelp'
 import EnterpriseLogo from '@baserow_enterprise/components/EnterpriseLogo'
-// ISRCAnalytics: Removed DatabaseApplicationType import (no longer used)
+// MusicEngine: Removed DatabaseApplicationType import (no longer used)
 import AssistantPanel from '@baserow_enterprise/components/assistant/AssistantPanel'
 import DateDependencyFieldTypeIcon from '@baserow_enterprise/components/dateDependency/DateDependencyFieldTypeIcon'
 import ExportWorkspaceModalWarning from '@baserow_enterprise/components/ExportWorkspaceModalWarning'
@@ -16,13 +16,13 @@ export class EnterprisePlugin extends BaserowPlugin {
   }
 
   getSidebarWorkspaceComponents(workspace) {
-    // ISRCAnalytics: Removed Direct Support (Chatwoot) and Audit Log
+    // MusicEngine: Removed Direct Support (Chatwoot) and Audit Log
     // Users can contact support via Telegram @BrownieSE
     return []
   }
 
   getAdditionalApplicationContextComponents(workspace, application) {
-    // ISRCAnalytics: Removed MemberRolesDatabaseContextItem (Manage members)
+    // MusicEngine: Removed MemberRolesDatabaseContextItem (Manage members)
     // All users are in individual workspaces, member roles not needed
     return []
   }
@@ -34,7 +34,7 @@ export class EnterprisePlugin extends BaserowPlugin {
   }
 
   getAdditionalTableContextComponents(workspace, table) {
-    // ISRCAnalytics: Removed MemberRolesTableContextItem and DateDependencyMenuItem
+    // MusicEngine: Removed MemberRolesTableContextItem and DateDependencyMenuItem
     return []
   }
 
@@ -45,7 +45,7 @@ export class EnterprisePlugin extends BaserowPlugin {
   }
 
   getAdditionalViewContextComponents() {
-    // ISRCAnalytics: Removed MemberRolesViewContextItem and DateDependencyMenuItem
+    // MusicEngine: Removed MemberRolesViewContextItem and DateDependencyMenuItem
     return []
   }
 

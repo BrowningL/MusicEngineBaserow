@@ -267,7 +267,7 @@ export default {
       return Array.isArray(value) && value.length > 0 ? value : null
     },
     /**
-     * Trigger stem splitting via the ISRCAnalytics webhook API.
+     * Trigger stem splitting via the MusicEngine webhook API.
      * Splits the Inspiration File into vocal and instrumental stems using Demucs.
      */
     async triggerStemSplit() {
@@ -310,7 +310,7 @@ export default {
           user_jwt_token: this.$store.state.auth.token,
         }
 
-        // Call the ISRCAnalytics stem-split webhook endpoint
+        // Call the MusicEngine stem-split webhook endpoint
         const webhookUrl = this.$config?.ISRCANALYTICS_WEBHOOK_URL
 
         if (!webhookUrl) {
@@ -360,7 +360,7 @@ export default {
       }
     },
     /**
-     * Trigger the inspiration download via the ISRCAnalytics webhook API.
+     * Trigger the inspiration download via the MusicEngine webhook API.
      * We simulate a Baserow webhook payload to trigger the download.
      */
     async triggerInspirationDownload() {
@@ -412,7 +412,7 @@ export default {
           ],
         }
 
-        // Call the ISRCAnalytics webhook endpoint
+        // Call the MusicEngine webhook endpoint
         // This is a public endpoint that doesn't require authentication
         // The URL must be configured via ISRCANALYTICS_WEBHOOK_URL environment variable
         const webhookUrl = this.$config?.ISRCANALYTICS_WEBHOOK_URL

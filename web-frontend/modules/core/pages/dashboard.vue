@@ -48,7 +48,7 @@ import WorkspaceInvitation from '@baserow/modules/core/components/workspace/Work
  * The main purpose of the dashboard is to either redirect the user to the correct
  * workspace homepage or show a message if the user doesn't have a workspace.
  *
- * ISRCAnalytics: Modified to redirect directly to first database table.
+ * MusicEngine: Modified to redirect directly to first database table.
  */
 export default {
   components: {
@@ -62,7 +62,7 @@ export default {
     const allWorkspaces = store.getters['workspace/getAll']
     const applications = store.getters['application/getAll']
 
-    // ISRCAnalytics: Helper to find first table in a workspace
+    // MusicEngine: Helper to find first table in a workspace
     const findFirstTable = (workspaceId) => {
       const databases = applications
         .filter((a) => a.type === 'database' && a.workspace?.id === workspaceId)

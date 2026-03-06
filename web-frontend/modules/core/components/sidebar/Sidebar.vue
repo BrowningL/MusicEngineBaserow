@@ -17,7 +17,7 @@
       <SidebarAdmin v-show="!collapsed"></SidebarAdmin>
     </template>
     <template v-if="!showAdmin">
-      <!-- ISRCAnalytics: Removed workspace selector and SidebarMenu (notifications, search, etc.) -->
+      <!-- MusicEngine: Removed workspace selector and SidebarMenu (notifications, search, etc.) -->
 
       <SidebarWithWorkspace
         v-show="!collapsed"

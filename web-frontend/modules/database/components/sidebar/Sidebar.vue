@@ -46,7 +46,7 @@
         >
         </component>
       </ul>
-      <!-- ISRCAnalytics: Show Add Tracks/Playlists section for Live Catalogue -->
+      <!-- MusicEngine: Show Add Tracks/Playlists section for Live Catalogue -->
       <div v-if="isReadOnlyDatabase" class="sidebar-add-section">
         <div class="sidebar-add-section__title">Add to Catalogue</div>
         <div class="sidebar-add-section__buttons">
@@ -104,7 +104,7 @@
       <AddTracksModal ref="addTracksModal" :database="application" />
       <AddPlaylistsModal ref="addPlaylistsModal" :database="application" />
 
-      <!-- ISRCAnalytics: Hide "+ New table" for managed databases -->
+      <!-- MusicEngine: Hide "+ New table" for managed databases -->
       <a
         v-if="
           !shouldHideAddTable &&
@@ -170,7 +170,7 @@ export default {
       return (this.application.name || '').trim().toLowerCase()
     },
     /**
-     * ISRCAnalytics: Check if this is the Distribution Pipeline database.
+     * MusicEngine: Check if this is the Distribution Pipeline database.
      */
     isDistributionPipelineDatabase() {
       return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
@@ -178,20 +178,20 @@ export default {
       )
     },
     /**
-     * ISRCAnalytics: Check if this is a read-only database.
+     * MusicEngine: Check if this is a read-only database.
      * Live Catalogue databases should not allow adding new tables.
      */
     isReadOnlyDatabase() {
       return this.normalizedDatabaseName === 'live catalogue'
     },
     /**
-     * ISRCAnalytics: Check if this is a managed database (disables clicking).
+     * MusicEngine: Check if this is a managed database (disables clicking).
      */
     isManagedDatabase() {
       return this.isReadOnlyDatabase || this.isDistributionPipelineDatabase
     },
     /**
-     * ISRCAnalytics: Custom icon for Live Catalogue (music note).
+     * MusicEngine: Custom icon for Live Catalogue (music note).
      * Distribution Pipeline uses the default database icon.
      */
     customIconClass() {
@@ -201,21 +201,21 @@ export default {
       return null
     },
     /**
-     * ISRCAnalytics: Check if we should hide the "Add table" button.
+     * MusicEngine: Check if we should hide the "Add table" button.
      * Both Live Catalogue and Distribution Pipeline should not allow adding new tables.
      */
     shouldHideAddTable() {
       return true
     },
     /**
-     * ISRCAnalytics: Auto-expand Distribution Pipeline and Live Catalogue databases.
+     * MusicEngine: Auto-expand Distribution Pipeline and Live Catalogue databases.
      * These databases are always expanded (not collapsible).
      */
     shouldAutoExpand() {
       return this.isManagedDatabase
     },
     /**
-     * ISRCAnalytics: Hidden junction tables that should not be shown in the sidebar.
+     * MusicEngine: Hidden junction tables that should not be shown in the sidebar.
      * These are internal tables used for many-to-many relationships.
      */
     hiddenTableNames() {
@@ -224,7 +224,7 @@ export default {
     orderedTables() {
       return this.application.tables
         .filter((table) => {
-          // ISRCAnalytics: Hide junction tables from Live Catalogue sidebar
+          // MusicEngine: Hide junction tables from Live Catalogue sidebar
           if (this.isReadOnlyDatabase && this.hiddenTableNames.includes(table.name)) {
             return false
           }
@@ -240,11 +240,11 @@ export default {
       )
     },
     upgradeUrl() {
-      const baseUrl = this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
+      const baseUrl = this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
       return `${baseUrl}/settings/billing`
     },
     isrcApiBaseUrl() {
-      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
     },
     trackSlotsDisplay() {
       if (this.hasValidTrackSlots) {
@@ -435,7 +435,7 @@ export default {
       }
       try {
         this.slotsLoading = true
-        // ISRCAnalytics: Pass auth token for cross-origin authentication
+        // MusicEngine: Pass auth token for cross-origin authentication
         const token = this.authToken
         const apiUrl = this.isrcApiBaseUrl
         const [trackResponse, playlistResponse] = await Promise.all([
@@ -461,7 +461,7 @@ export default {
       }
     },
     async selected(application) {
-      // ISRCAnalytics: Managed databases don't need selection handling - they're always expanded
+      // MusicEngine: Managed databases don't need selection handling - they're always expanded
       const normalizedName = (application.name || '').trim().toLowerCase()
       const isManagedDb = [
         'distribution pipeline',

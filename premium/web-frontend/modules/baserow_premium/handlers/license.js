@@ -104,7 +104,7 @@ export class LicenseHandler {
   }
 
   hasFeature(feature, forSpecificWorkspace = null) {
-    // ISRCAnalytics: Enable all premium features without license
+    // MusicEngine: Enable all premium features without license
     // This enables: table export, personal views, row notifications,
     // row comments, row coloring, and public logo removal
     return true

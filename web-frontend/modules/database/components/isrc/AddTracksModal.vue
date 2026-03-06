@@ -357,7 +357,7 @@ export default {
   },
   computed: {
     isrcApiBaseUrl() {
-      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://isrcanalytics.com'
+      return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
     },
     cataloguePageUrl() {
       // TODO: Configure this via environment or settings

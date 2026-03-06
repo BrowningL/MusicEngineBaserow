@@ -19,7 +19,7 @@ class LicensePlugin:
     A collection of methods used to query for what licenses a user has access to and
     hence which features they can use.
 
-    ISRCAnalytics: Modified to always return True for all feature checks,
+    MusicEngine: Modified to always return True for all feature checks,
     enabling all premium features without requiring a license.
     """
 
@@ -34,7 +34,7 @@ class LicensePlugin:
         workspace: Workspace,
     ) -> bool:
         """
-        ISRCAnalytics: Always returns True to enable all premium features.
+        MusicEngine: Always returns True to enable all premium features.
         """
         return True
 
@@ -43,19 +43,19 @@ class LicensePlugin:
         feature: str,
     ) -> bool:
         """
-        ISRCAnalytics: Always returns True to enable all premium features.
+        MusicEngine: Always returns True to enable all premium features.
         """
         return True
 
     def workspace_has_feature(self, feature: str, workspace: Workspace) -> bool:
         """
-        ISRCAnalytics: Always returns True to enable all premium features.
+        MusicEngine: Always returns True to enable all premium features.
         """
         return True
 
     def user_has_feature_instance_wide(self, feature: str, user: AbstractUser) -> bool:
         """
-        ISRCAnalytics: Always returns True to enable all premium features.
+        MusicEngine: Always returns True to enable all premium features.
         """
         return True
 

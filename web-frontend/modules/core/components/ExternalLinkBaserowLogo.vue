@@ -1,13 +1,13 @@
 <template>
-  <!-- ISRCAnalytics: Updated branding from Baserow to ISRCAnalytics -->
+  <!-- MusicEngine: Updated branding from Baserow to MusicEngine -->
   <a
-    href="https://isrcanalytics.com"
+    href="https://musicengine.ai"
     target="_blank"
-    title="ISRCAnalytics - Music Industry Data Platform"
+    title="MusicEngine - Music Industry Data Platform"
   >
     <Logo
       height="14"
-      alt="ISRCAnalytics - Music Industry Data Platform"
+      alt="MusicEngine - Music Industry Data Platform"
     />
   </a>
 </template>

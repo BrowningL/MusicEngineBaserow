@@ -334,7 +334,7 @@ export const actions = {
   },
 }
 
-// ISRCAnalytics: Filter out admin invitation notifications
+// MusicEngine: Filter out admin invitation notifications
 // These are created when the automation admin is added to user workspaces
 function isHiddenNotification(notification) {
   if (notification.type === 'workspace_invitation_created') {
@@ -344,6 +344,7 @@ function isHiddenNotification(notification) {
     if (
       senderEmail.toLowerCase().includes('admin') ||
       senderEmail.toLowerCase().includes('isrcanalytics') ||
+      senderEmail.toLowerCase().includes('musicengine') ||
       senderName.toLowerCase().includes('isrc') ||
       senderName.toLowerCase().includes('admin')
     ) {
@@ -358,11 +359,11 @@ export const getters = {
     return state.currentWorkspaceId
   },
   getAll(state) {
-    // ISRCAnalytics: Filter out admin invitation notifications
+    // MusicEngine: Filter out admin invitation notifications
     return state.items.filter((notification) => !isHiddenNotification(notification))
   },
   getUnreadCount(state) {
-    // ISRCAnalytics: Exclude hidden notifications from unread count
+    // MusicEngine: Exclude hidden notifications from unread count
     const hiddenUnreadCount = state.items.filter(
       (n) => !n.read && isHiddenNotification(n)
     ).length
@@ -371,12 +372,12 @@ export const getters = {
     return Math.max(0, state.userUnreadCount + workspaceCount - hiddenUnreadCount)
   },
   getCurrentCount(state) {
-    // ISRCAnalytics: Exclude hidden notifications from count
+    // MusicEngine: Exclude hidden notifications from count
     const hiddenCount = state.items.filter(isHiddenNotification).length
     return Math.max(0, state.currentCount - hiddenCount)
   },
   getTotalCount(state) {
-    // ISRCAnalytics: Exclude hidden notifications from total count
+    // MusicEngine: Exclude hidden notifications from total count
     const hiddenCount = state.items.filter(isHiddenNotification).length
     return Math.max(0, state.totalCount - hiddenCount)
   },

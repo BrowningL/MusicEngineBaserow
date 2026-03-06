@@ -86,7 +86,7 @@ export default {
     }
   },
   computed: {
-    // ISRCAnalytics: Disabled "We need your help" popup
+    // MusicEngine: Disabled "We need your help" popup
     displayAlert() {
       return false
     },

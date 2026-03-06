@@ -1,6 +1,6 @@
 /**
- * ISRCAnalytics Iframe Messages Plugin
- * Listens for postMessage events from the parent ISRCAnalytics app
+ * MusicEngine Iframe Messages Plugin
+ * Listens for postMessage events from the parent MusicEngine app
  * and translates them into Vue global events.
  */
 

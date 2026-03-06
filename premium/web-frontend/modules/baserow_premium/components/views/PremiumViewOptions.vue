@@ -1,5 +1,5 @@
 <template>
-  <!-- ISRCAnalytics: Removed "Hide Baserow Logo" toggle, only show export option -->
+  <!-- MusicEngine: Removed "Hide Baserow Logo" toggle, only show export option -->
   <div>
     <div
       v-if="hasValidExporter"
