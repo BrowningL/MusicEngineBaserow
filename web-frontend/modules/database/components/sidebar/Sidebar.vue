@@ -453,6 +453,12 @@ export default {
         this.slotFetchAttempts = 0
         this.persistSlotsToCache()
       } catch (error) {
+        if (error?.code === 'SLOT_AUTH_REQUIRED') {
+          // Auth can expire while the iframe sits idle. Keep cached values and wait
+          // for the next normal refresh instead of spamming retries/errors.
+          this.slotFetchAttempts = 0
+          return
+        }
         this.slotFetchAttempts += 1
         this.queueSlotsRetry()
         console.error('Failed to fetch slot usage:', error)

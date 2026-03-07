@@ -14,6 +14,7 @@
 export default (client, accessToken = null, apiBaseUrl = '') => {
   // Use provided URL, fall back to build-time env, then production URL
   const ISRC_ANALYTICS_API_BASE = apiBaseUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
+  const SLOT_AUTH_REQUIRED_ERROR_CODE = 'SLOT_AUTH_REQUIRED'
 
   const buildAuthHeaders = (token = accessToken) => {
     const headers = { Accept: 'application/json' }
@@ -32,19 +33,47 @@ export default (client, accessToken = null, apiBaseUrl = '') => {
       })
     }
 
+    const buildSlotAuthRequiredError = (message = 'Authentication required') => {
+      const error = new Error(message)
+      error.code = SLOT_AUTH_REQUIRED_ERROR_CODE
+      return error
+    }
+
+    const parseJson = async (response) => {
+      return await response.json().catch(() => null)
+    }
+
     let response = await doRequest(accessToken)
+    let responseData = await parseJson(response)
 
     // Retry once using cookie-only auth if bearer token auth is rejected.
-    if ((response.status === 401 || response.status === 403) && accessToken) {
+    if (
+      accessToken &&
+      (
+        response.status === 401 ||
+        response.status === 403 ||
+        responseData?.requireAuth === true
+      )
+    ) {
       response = await doRequest(null)
+      responseData = await parseJson(response)
+    }
+
+    if (
+      responseData?.requireAuth === true ||
+      response.status === 401 ||
+      response.status === 403
+    ) {
+      throw buildSlotAuthRequiredError(responseData?.error)
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `Failed to fetch ${label}: ${response.status}`)
+      throw new Error(
+        responseData?.error || `Failed to fetch ${label}: ${response.status}`
+      )
     }
 
-    return { data: await response.json() }
+    return { data: responseData }
   }
 
   return {
