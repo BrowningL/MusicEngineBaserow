@@ -17,6 +17,13 @@
         :read-only="readOnly"
       ></GridViewRowHeight>
     </li>
+    <GridViewSelectedRowsExport
+      :database="database"
+      :table="table"
+      :view="view"
+      :fields="fields"
+      :store-prefix="storePrefix"
+    ></GridViewSelectedRowsExport>
     <li class="header__filter-item header__filter-item--full-width">
       <ViewSearch
         :view="view"
@@ -33,13 +40,23 @@ import { mapState } from 'vuex'
 
 import GridViewRowHeight from '@baserow/modules/database/components/view/grid/GridViewRowHeight'
 import GridViewHide from '@baserow/modules/database/components/view/grid/GridViewHide'
+import GridViewSelectedRowsExport from '@baserow/modules/database/components/view/grid/GridViewSelectedRowsExport'
 import ViewSearch from '@baserow/modules/database/components/view/ViewSearch'
 
 export default {
   name: 'GridViewHeader',
-  components: { GridViewRowHeight, GridViewHide, ViewSearch },
+  components: {
+    GridViewRowHeight,
+    GridViewHide,
+    GridViewSelectedRowsExport,
+    ViewSearch,
+  },
   props: {
     database: {
+      type: Object,
+      required: true,
+    },
+    table: {
       type: Object,
       required: true,
     },

@@ -1,6 +1,7 @@
 import { TestApp } from '@baserow/test/helpers/testApp'
 import GridView from '@baserow/modules/database/components/view/grid/GridView'
 import GridViewRow from '@baserow/modules/database/components/view/grid/GridViewRow'
+import GridViewSelectedRowsExport from '@baserow/modules/database/components/view/grid/GridViewSelectedRowsExport'
 
 const baseMockConfig = {
   BASEROW_ROW_PAGE_SIZE_LIMIT: 200,
@@ -185,6 +186,36 @@ describe('GridView checkbox selection', () => {
     expect(wrapper.find('.checkbox--checked').exists()).toBe(true)
   })
 
+  test('checkbox-selected rows are highlighted', async () => {
+    const { fields, view, application } = await populateStore()
+
+    const row = rows[0]
+
+    const wrapper = await mountComponent(GridViewRow, {
+      view,
+      renderedFields: fields,
+      visibleFields: fields,
+      allFieldsInTable: fields,
+      leftOffset: 0,
+      readOnly: false,
+      includeRowDetails: true,
+      storePrefix: 'page/',
+      decorationsByPlace: {},
+      rowsAtEndOfGroups: new Set(),
+      workspaceId: application.workspace.id,
+      count: 1,
+      canDrag: true,
+      rowIdentifierType: 'id',
+      row,
+      fieldWidths: { 1: 200, 2: 200 },
+    })
+
+    await store.dispatch('page/view/grid/toggleCheckboxRowSelection', { row })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.grid-view__row--selected').exists()).toBe(true)
+  })
+
   test('different context menus for checked vs unchecked rows', async () => {
     const { table, fields, view, application } = await populateStore()
     const row = rows[0]
@@ -286,5 +317,37 @@ describe('GridView checkbox selection', () => {
     await wrapper.vm.copySelection({ preventDefault: () => {} })
 
     expect(navigator.clipboard.writeText).toHaveBeenCalled()
+  })
+
+  test('exporting selected rows downloads a csv', async () => {
+    const { table, view, application } = await populateStore()
+    const allFields = [primary, ...fieldData]
+
+    await store.dispatch('page/view/grid/toggleCheckboxRowSelection', {
+      row: rows[0],
+    })
+    await store.dispatch('page/view/grid/toggleCheckboxRowSelection', {
+      row: rows[1],
+    })
+
+    const wrapper = await mountComponent(GridViewSelectedRowsExport, {
+      database: application,
+      table,
+      view,
+      fields: allFields,
+      storePrefix: 'page/',
+    })
+
+    const downloadCsvFile = jest
+      .spyOn(wrapper.vm, 'downloadCsvFile')
+      .mockImplementation(() => {})
+
+    await wrapper.vm.exportSelectedRows()
+
+    expect(downloadCsvFile).toHaveBeenCalledTimes(1)
+    expect(downloadCsvFile.mock.calls[0][0]).toContain('selected rows.csv')
+    expect(downloadCsvFile.mock.calls[0][1]).toContain('Name,Surname')
+    expect(downloadCsvFile.mock.calls[0][1]).toContain('John,Doe')
+    expect(downloadCsvFile.mock.calls[0][1]).toContain('Jane,Smith')
   })
 })

@@ -711,6 +711,10 @@
     "title": "Create multiple rows",
     "choice": "Add {rowAmountChoice} rows"
   },
+  "gridViewSelectedRowsExport": {
+    "label": "Export 1 row | Export {count} rows",
+    "exporting": "Exporting..."
+  },
   "formViewMeta": {
     "includeRowId": "Use {row_id} to include the newly created row id in the URL."
   },

@@ -317,12 +317,7 @@ export default {
       ].checkboxSelectedRows.includes(rowId)
     },
     isRowHighlighted(row) {
-      // const selectionType =
-      //   this.$store.getters[this.storePrefix + 'view/grid/getSelectionType']
-      return (
-        // selectionType === GRID_VIEW_MULTI_SELECT_AREA &&
-        row._.selectedBy.length > 0
-      )
+      return this.isCheckboxSelected(row.id) || row._.selectedBy.length > 0
     },
     isCellSelected(fieldId) {
       return this.row._.selected && this.row._.selectedFieldId === fieldId
