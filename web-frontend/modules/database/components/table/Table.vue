@@ -413,7 +413,7 @@ export default {
 
       const isLiveCatalogue = dbName === 'live catalogue'
       const isDistributionManagement = dbName === 'distribution management'
-      const isDistributionPipeline = ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)
+      const isDistributionPipeline = ['catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)
 
       if (isLiveCatalogue) {
         return true
@@ -431,7 +431,7 @@ export default {
       }
 
       if (isDistributionPipeline) {
-        const readOnlyTables = dbName === 'production pipeline'
+        const readOnlyTables = ['production pipeline', 'catalog pipeline'].includes(dbName)
           ? ['uploads', 'tracks', 'artists']
           : [
               'browser profiles',
@@ -440,7 +440,7 @@ export default {
               'artists',
               'distribution platforms',
             ]
-        const editableTables = dbName === 'production pipeline'
+        const editableTables = ['production pipeline', 'catalog pipeline'].includes(dbName)
           ? ['releases', 'production workspace']
           : ['releases', 'production workspace', 'distributor accounts']
 

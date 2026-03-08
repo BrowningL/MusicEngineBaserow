@@ -180,10 +180,10 @@ export default {
         ) {
           return [
             {
-              key: `${application.id}-production-pipeline`,
-              sortableId: `${application.id}-production-pipeline`,
+              key: `${application.id}-catalog-pipeline`,
+              sortableId: `${application.id}-catalog-pipeline`,
               application,
-              displayName: 'Production Pipeline',
+              displayName: 'Catalog Pipeline',
               visibleTableNames: [
                 'Artists',
                 'Production Workspace',
@@ -240,7 +240,7 @@ export default {
         'distribution platforms',
         'browser profiles',
       ].some((tableName) => tableNames.includes(tableName))
-      const hasProductionPipelineTables = [
+      const hasCatalogPipelineTables = [
         'artists',
         'production workspace',
         'releases',
@@ -248,7 +248,7 @@ export default {
         'uploads',
       ].some((tableName) => tableNames.includes(tableName))
 
-      return hasDistributionManagementTables && hasProductionPipelineTables
+      return hasDistributionManagementTables && hasCatalogPipelineTables
     },
     /**
      * MusicEngine: Sort the managed databases into the intended workflow order.
@@ -264,7 +264,7 @@ export default {
       })
     },
     /**
-     * MusicEngine: Show arrows between Production Pipeline,
+     * MusicEngine: Show arrows between Catalog Pipeline,
      * Distribution Management, and Live Catalogue when those databases appear consecutively.
      */
     shouldShowWorkflowArrow(entry, index, entries) {
@@ -288,7 +288,7 @@ export default {
       const normalized = this.normalizeAppName(name)
 
       if (
-        ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+        ['catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
           normalized
         )
       ) {

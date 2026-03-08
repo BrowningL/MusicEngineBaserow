@@ -198,7 +198,7 @@ export default {
      * MusicEngine: Check if this database is part of the managed workflow.
      */
     isDistributionPipelineDatabase() {
-      return ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+      return ['distribution management', 'catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
         this.normalizedDatabaseName
       )
     },
@@ -219,7 +219,7 @@ export default {
      * MusicEngine: Give each workflow stage a distinct icon treatment.
      */
     customIconClass() {
-      if (this.normalizedDatabaseName === 'production pipeline') {
+      if (this.normalizedDatabaseName === 'catalog pipeline') {
         return 'iconoir-db sidebar-application-icon sidebar-application-icon--production'
       }
 
@@ -231,7 +231,7 @@ export default {
         return 'iconoir-music-double-note sidebar-application-icon sidebar-application-icon--catalogue'
       }
 
-      if (['distribution pipeline', 'production catalogue'].includes(this.normalizedDatabaseName)) {
+      if (['distribution pipeline', 'production pipeline', 'production catalogue'].includes(this.normalizedDatabaseName)) {
         return 'iconoir-db sidebar-application-icon sidebar-application-icon--production'
       }
 
@@ -519,6 +519,7 @@ export default {
       // MusicEngine: Managed databases don't need selection handling - they're always expanded
       const normalizedName = (application.name || '').trim().toLowerCase()
       const isManagedDb = [
+        'catalog pipeline',
         'distribution pipeline',
         'production pipeline',
         'production catalogue',

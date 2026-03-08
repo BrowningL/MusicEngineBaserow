@@ -16,9 +16,9 @@
           @contextmenu.prevent="openTableContext($event, table)"
         >
           <i v-if="table.data_sync" class="table-tabs-bar__tab-icon iconoir-data-transfer-down"></i>
-          <!-- ISRCAnalytics: Show lock/unlock icons for managed tables -->
+          <!-- ISRCAnalytics: Show lock/edit icons for managed tables -->
           <i v-if="isTableReadOnly(table)" class="table-tabs-bar__tab-icon iconoir-lock" style="margin-right: 4px; font-size: 14px; opacity: 0.7;"></i>
-          <i v-else-if="!isTableReadOnly(table) && ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes((database.name || '').trim().toLowerCase())" class="table-tabs-bar__tab-icon iconoir-unlock" style="margin-right: 4px; font-size: 14px; opacity: 0.7;"></i>
+          <i v-else-if="!isTableReadOnly(table) && ['distribution management', 'catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes((database.name || '').trim().toLowerCase())" class="table-tabs-bar__tab-icon iconoir-edit-pencil" style="margin-right: 4px; font-size: 14px; opacity: 0.7;"></i>
           <span class="table-tabs-bar__tab-name">{{ table.name }}</span>
         </a>
       </div>
@@ -167,7 +167,7 @@ export default {
     canCreateTable() {
       // ISRCAnalytics: Custom logic to disable table creation on read-only databases
       const dbName = (this.database?.name || '').trim().toLowerCase()
-      if (dbName === 'live catalogue' || ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)) {
+      if (dbName === 'live catalogue' || ['distribution management', 'catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)) {
         return false
       }
 
@@ -195,8 +195,8 @@ export default {
           if (readOnlyTables.includes(tableName)) return true
         }
 
-        if (['distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)) {
-          const readOnlyTables = dbName === 'production pipeline'
+        if (['catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)) {
+          const readOnlyTables = ['production pipeline', 'catalog pipeline'].includes(dbName)
             ? ['uploads', 'tracks', 'artists']
             : [
             'browser profiles',
