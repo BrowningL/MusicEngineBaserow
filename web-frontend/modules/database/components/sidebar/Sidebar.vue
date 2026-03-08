@@ -199,7 +199,7 @@ export default {
      * MusicEngine: Check if this database is part of the managed workflow.
      */
     isDistributionPipelineDatabase() {
-      return ['distribution management', 'catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+      return ['distribution management', 'catalog pipeline', 'catalogue pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
         this.normalizedDatabaseName
       )
     },
@@ -220,8 +220,8 @@ export default {
      * MusicEngine: Give each workflow stage a distinct icon treatment.
      */
     customIconClass() {
-      if (this.normalizedDatabaseName === 'catalog pipeline') {
-        return 'iconoir-db sidebar-application-icon sidebar-application-icon--production'
+      if (['catalog pipeline', 'catalogue pipeline'].includes(this.normalizedDatabaseName)) {
+        return 'iconoir-edit-pencil sidebar-application-icon sidebar-application-icon--production'
       }
 
       if (this.normalizedDatabaseName === 'distribution management') {
@@ -229,7 +229,7 @@ export default {
       }
 
       if (this.isReadOnlyDatabase) {
-        return 'iconoir-music-double-note sidebar-application-icon sidebar-application-icon--catalogue'
+        return 'sidebar-application-icon sidebar-application-icon--catalogue sidebar-application-icon--money'
       }
 
       if (['distribution pipeline', 'production pipeline', 'production catalogue'].includes(this.normalizedDatabaseName)) {
@@ -301,7 +301,7 @@ export default {
         'musicengine-sidebar-application': true,
         'musicengine-sidebar-application--managed': this.isManagedDatabase,
         'musicengine-sidebar-application--readonly': this.isReadOnlyDatabase,
-        'musicengine-sidebar-application--production': this.normalizedDatabaseName === 'catalog pipeline',
+        'musicengine-sidebar-application--production': ['catalog pipeline', 'catalogue pipeline'].includes(this.normalizedDatabaseName),
         'musicengine-sidebar-application--distribution': this.normalizedDatabaseName === 'distribution management',
         'musicengine-sidebar-application--catalogue': this.isReadOnlyDatabase,
       }
@@ -558,6 +558,7 @@ export default {
       const normalizedName = (application.name || '').trim().toLowerCase()
       const isManagedDb = [
         'catalog pipeline',
+        'catalogue pipeline',
         'distribution pipeline',
         'production pipeline',
         'production catalogue',
@@ -713,25 +714,37 @@ export default {
   border-radius: 6px;
   font-size: 14px;
   line-height: 1;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
 }
 
 :deep(.sidebar-application-icon--production) {
   background: #111111;
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #111111;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
 }
 
 :deep(.sidebar-application-icon--distribution) {
   background: #5190ef;
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #5190ef;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
 }
 
 :deep(.sidebar-application-icon--catalogue) {
   background: #6b8e6b;
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #1a472a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
+}
+
+:deep(.sidebar-application-icon--money) {
+  font-style: normal;
+}
+
+:deep(.sidebar-application-icon--money::before) {
+  content: '$';
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .sidebar-add-section__title {
@@ -746,7 +759,7 @@ export default {
 .sidebar-add-section__buttons {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   max-width: 100%;
 }
 
@@ -790,21 +803,28 @@ export default {
 }
 
 .sidebar-slots__row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 6px;
   font-size: 11px;
+  white-space: nowrap;
 }
 
 .sidebar-slots__label {
   color: rgba(17, 17, 17, 0.6);
-  min-width: 70px;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .sidebar-slots__value {
+  display: inline-flex;
+  align-items: center;
   color: #111111;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  font-size: 10.5px;
 }
 
 .sidebar-slots__upgrade {
@@ -821,7 +841,8 @@ export default {
   cursor: pointer;
   text-decoration: none;
   transition: all 0.15s ease;
-  margin-left: auto;
+  margin-left: 0;
+  justify-self: end;
   box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.16);
 
   &:hover {

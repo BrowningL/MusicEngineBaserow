@@ -277,7 +277,7 @@ export default {
      */
     isManagedDatabase() {
       const dbName = this.normalizedDatabaseName
-      return ['live catalogue', 'distribution management', 'catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)
+      return ['live catalogue', 'distribution management', 'catalog pipeline', 'catalogue pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)
     },
     isTableReadOnly() {
       const dbName = this.normalizedDatabaseName
@@ -304,7 +304,7 @@ export default {
         if (readOnlyTables.includes(tableName)) return true
       }
 
-      if (['production pipeline', 'catalog pipeline'].includes(dbName)) {
+      if (['production pipeline', 'catalog pipeline', 'catalogue pipeline'].includes(dbName)) {
         const readOnlyTables = ['uploads', 'tracks', 'artists']
         if (readOnlyTables.includes(tableName)) return true
       }
@@ -509,19 +509,19 @@ export default {
 .sidebar-table-icon-wrap--production {
   background: #111111;
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #111111;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
 }
 
 .sidebar-table-icon-wrap--distribution {
   background: #5190ef;
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #5190ef;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
 }
 
 .sidebar-table-icon-wrap--catalogue {
   background: #6b8e6b;
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #1a472a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.94);
 }
 
 .sidebar-table-icon-wrap--readonly {

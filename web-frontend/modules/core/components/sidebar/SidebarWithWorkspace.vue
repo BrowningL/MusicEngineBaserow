@@ -288,7 +288,7 @@ export default {
       const normalized = this.normalizeAppName(name)
 
       if (
-        ['catalog pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+        ['catalog pipeline', 'catalogue pipeline', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
           normalized
         )
       ) {
