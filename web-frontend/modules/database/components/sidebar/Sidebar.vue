@@ -48,7 +48,7 @@
       </ul>
       <!-- MusicEngine: Show Add Tracks/Playlists section for Live Catalogue -->
       <div v-if="isReadOnlyDatabase" class="sidebar-add-section">
-        <div class="sidebar-add-section__title">Add to Catalogue</div>
+        <div class="sidebar-add-section__title">Add to Live Catalogue</div>
         <div class="sidebar-add-section__buttons">
           <a
             class="sidebar-add-section__button"
