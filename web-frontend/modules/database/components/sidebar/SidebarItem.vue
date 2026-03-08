@@ -12,8 +12,7 @@
         class="sidebar-table-icon-wrap"
         :class="[tableToneClass, { 'sidebar-table-icon-wrap--readonly': isTableReadOnly }]"
       >
-        <span v-if="isReleaseTable" class="sidebar-release-record-icon"></span>
-        <i v-else class="sidebar-table-icon" :class="tableIconClass"></i>
+        <i class="sidebar-table-icon" :class="tableIconClass"></i>
         <span v-if="isTableReadOnly" class="sidebar-table-icon__badge">
           <i class="iconoir-lock"></i>
         </span>
@@ -240,14 +239,12 @@ export default {
     normalizedDatabaseName() {
       return (this.database.name || '').trim().toLowerCase()
     },
-    isReleaseTable() {
-      return (this.table?.name || '').trim().toLowerCase() === 'releases'
-    },
     tableIconClass() {
       const tableName = (this.table?.name || '').trim().toLowerCase()
       const iconMap = {
         artists: 'iconoir-user',
         'production workspace': 'iconoir-app-window',
+        releases: 'iconoir-multiple-pages-empty',
         tracks: 'iconoir-music-double-note',
         uploads: 'iconoir-cloud-upload',
         'distributor accounts': 'iconoir-community',
@@ -534,21 +531,6 @@ export default {
 .sidebar-table-icon {
   font-size: 12px;
   line-height: 1;
-}
-
-.sidebar-release-record-icon {
-  width: 11px;
-  height: 11px;
-  border-radius: 999px;
-  flex-shrink: 0;
-  background: radial-gradient(
-    circle at center,
-    var(--bg-primary, #fff) 0 1.5px,
-    currentColor 1.6px 100%
-  );
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.38),
-    inset 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
 .sidebar-table-icon__badge {
