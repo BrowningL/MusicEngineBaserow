@@ -301,6 +301,9 @@ export default {
         'musicengine-sidebar-application': true,
         'musicengine-sidebar-application--managed': this.isManagedDatabase,
         'musicengine-sidebar-application--readonly': this.isReadOnlyDatabase,
+        'musicengine-sidebar-application--production': this.normalizedDatabaseName === 'catalog pipeline',
+        'musicengine-sidebar-application--distribution': this.normalizedDatabaseName === 'distribution management',
+        'musicengine-sidebar-application--catalogue': this.isReadOnlyDatabase,
       }
     },
     trackSlotsDisplay() {
@@ -591,18 +594,43 @@ export default {
 .sidebar-add-section {
   margin: 12px 0 0 14px;
   padding: 14px;
-  border: 1px solid rgba(17, 17, 17, 0.1);
-  border-bottom-color: rgba(17, 17, 17, 0.1);
+  border: 1px solid var(--musicengine-accent-border, rgba(17, 17, 17, 0.1));
+  border-bottom-color: var(--musicengine-accent-border, rgba(17, 17, 17, 0.1));
   border-radius: 14px;
   background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
   box-shadow: 0 14px 28px rgba(17, 17, 17, 0.06);
   overflow: hidden;
 }
 
+:deep(.musicengine-sidebar-application--production) {
+  --musicengine-accent: #111111;
+  --musicengine-accent-hover: #111111;
+  --musicengine-accent-soft: rgba(17, 17, 17, 0.06);
+  --musicengine-accent-border: rgba(17, 17, 17, 0.16);
+  --musicengine-accent-contrast: #ffffff;
+}
+
+:deep(.musicengine-sidebar-application--distribution) {
+  --musicengine-accent: #5190ef;
+  --musicengine-accent-hover: #4080df;
+  --musicengine-accent-soft: rgba(81, 144, 239, 0.1);
+  --musicengine-accent-border: rgba(81, 144, 239, 0.24);
+  --musicengine-accent-contrast: #ffffff;
+}
+
+:deep(.musicengine-sidebar-application--catalogue) {
+  --musicengine-accent: #6b8e6b;
+  --musicengine-accent-hover: #5a7d5a;
+  --musicengine-accent-soft: rgba(107, 142, 107, 0.12);
+  --musicengine-accent-border: rgba(26, 71, 42, 0.2);
+  --musicengine-accent-contrast: #ffffff;
+}
+
 :deep(.musicengine-sidebar-application--managed > .tree__action) {
   margin-bottom: 8px;
   padding: 0 12px;
   border: 1px solid rgba(17, 17, 17, 0.12);
+  border-left: 4px solid var(--musicengine-accent, #111111);
   background: linear-gradient(180deg, #ffffff 0%, #f7f7f7 100%);
   box-shadow: 0 10px 24px rgba(17, 17, 17, 0.04);
 }
@@ -642,7 +670,7 @@ export default {
 
 :deep(.musicengine-sidebar-application--managed .tree__sub-link) {
   padding-right: 36px;
-  border: 1px solid rgba(17, 17, 17, 0.08);
+  border: 1px solid var(--musicengine-accent-border, rgba(17, 17, 17, 0.08));
   border-radius: 10px;
   background: #ffffff;
   color: #111111;
@@ -651,24 +679,24 @@ export default {
 
 :deep(.musicengine-sidebar-application--managed .tree__sub-link:hover),
 :deep(.musicengine-sidebar-application--managed .tree__sub.active .tree__sub-link) {
-  border-color: #111111;
-  background: #111111;
-  color: #ffffff;
+  border-color: var(--musicengine-accent, #111111);
+  background: var(--musicengine-accent, #111111);
+  color: var(--musicengine-accent-contrast, #ffffff);
   box-shadow: 0 12px 24px rgba(17, 17, 17, 0.1);
 }
 
 :deep(.musicengine-sidebar-application--managed .tree__sub-link:hover .sidebar-table-icon-wrap),
 :deep(.musicengine-sidebar-application--managed .tree__sub.active .sidebar-table-icon-wrap) {
   background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  color: var(--musicengine-accent-contrast, #ffffff);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
 :deep(.musicengine-sidebar-application--managed .tree__sub-link:hover .sidebar-table-icon__badge),
 :deep(.musicengine-sidebar-application--managed .tree__sub.active .sidebar-table-icon__badge) {
-  background: #111111;
+  background: var(--musicengine-accent, #111111);
   color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 0 1px #111111;
+  box-shadow: 0 0 0 1px var(--musicengine-accent, #111111);
 }
 
 :deep(.musicengine-sidebar-application--managed .tree__sub-link:hover .sidebar-table-sync-icon),
@@ -695,21 +723,21 @@ export default {
 }
 
 :deep(.sidebar-application-icon--distribution) {
-  background: #ffffff;
-  color: #111111;
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.14);
+  background: #5190ef;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #5190ef;
 }
 
 :deep(.sidebar-application-icon--catalogue) {
-  background: #f4f4f5;
-  color: #111111;
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
+  background: #6b8e6b;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #1a472a;
 }
 
 .sidebar-add-section__title {
   font-size: 10px;
   font-weight: 700;
-  color: #111111;
+  color: var(--musicengine-accent, #111111);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -729,19 +757,19 @@ export default {
   padding: 5px 10px;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
-  background-color: #111111;
+  color: var(--musicengine-accent-contrast, #ffffff);
+  background-color: var(--musicengine-accent, #111111);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   border: none;
-  box-shadow: inset 0 0 0 1px #111111;
+  box-shadow: inset 0 0 0 1px var(--musicengine-accent, #111111);
   white-space: nowrap;
   min-width: 0;
 
   &:hover {
-    background-color: #1f1f1f;
-    color: #ffffff;
+    background-color: var(--musicengine-accent-hover, #1f1f1f);
+    color: var(--musicengine-accent-contrast, #ffffff);
     text-decoration: none;
   }
 
@@ -755,7 +783,7 @@ export default {
 .sidebar-slots {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  border-top: 1px solid var(--musicengine-accent-border, rgba(17, 17, 17, 0.08));
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -787,7 +815,7 @@ export default {
   height: 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #111111;
+  color: var(--musicengine-accent, #111111);
   background-color: #ffffff;
   border-radius: 4px;
   cursor: pointer;
@@ -797,8 +825,8 @@ export default {
   box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.16);
 
   &:hover {
-    background-color: #111111;
-    color: #ffffff;
+    background-color: var(--musicengine-accent, #111111);
+    color: var(--musicengine-accent-contrast, #ffffff);
     text-decoration: none;
   }
 

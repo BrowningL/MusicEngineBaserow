@@ -516,15 +516,15 @@ export default {
 }
 
 .sidebar-table-icon-wrap--distribution {
-  background: #ffffff;
-  color: #111111;
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.14);
+  background: #5190ef;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #5190ef;
 }
 
 .sidebar-table-icon-wrap--catalogue {
-  background: #f4f4f5;
-  color: #111111;
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
+  background: #6b8e6b;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #1a472a;
 }
 
 .sidebar-table-icon-wrap--readonly {
