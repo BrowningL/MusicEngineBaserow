@@ -74,10 +74,10 @@
             </span>
             <a
               class="sidebar-slots__upgrade"
-              :class="{ 'sidebar-slots__upgrade--disabled': false }"
-              :href="upgradeUrl"
-              target="_blank"
-              title="Get more ISRC slots"
+              :class="{ 'sidebar-slots__upgrade--disabled': trackSlots.unlimited }"
+              :href="trackSlots.unlimited ? null : upgradeUrl"
+              :target="trackSlots.unlimited ? null : '_blank'"
+              :title="trackSlots.unlimited ? 'Unlimited ISRC slots' : 'Get more ISRC slots'"
             >
               +
             </a>
@@ -172,7 +172,7 @@ export default {
   },
   data() {
     return {
-      trackSlots: { used: null, limit: null },
+      trackSlots: { used: null, limit: null, unlimited: false },
       playlistSlots: { used: null, limit: null, unlimited: false },
       slotsLoading: false,
       slotFetchAttempts: 0,
@@ -296,10 +296,13 @@ export default {
       return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
     },
     trackSlotsDisplay() {
-      if (this.hasValidTrackSlots) {
-        return `${this.trackSlots.used} / ${this.trackSlots.limit}`
+      if (!this.hasValidTrackSlots) {
+        return this.slotsLoading ? 'Loading...' : 'Unavailable'
       }
-      return this.slotsLoading ? 'Loading...' : 'Unavailable'
+      if (this.trackSlots.unlimited) {
+        return `${this.trackSlots.used} / Unlimited`
+      }
+      return `${this.trackSlots.used} / ${this.trackSlots.limit}`
     },
     playlistSlotsDisplay() {
       if (!this.hasValidPlaylistSlots) {
@@ -311,8 +314,13 @@ export default {
       return `${this.playlistSlots.used} / ${this.playlistSlots.limit}`
     },
     hasValidTrackSlots() {
+      if (!Number.isFinite(this.trackSlots.used)) {
+        return false
+      }
+      if (this.trackSlots.unlimited) {
+        return true
+      }
       return (
-        Number.isFinite(this.trackSlots.used) &&
         Number.isFinite(this.trackSlots.limit) &&
         this.trackSlots.limit > 0
       )
@@ -396,11 +404,18 @@ export default {
     },
     normalizeTrackSlots(data) {
       const used = Number(data?.used)
-      const limit = Number(data?.limit)
-      if (!Number.isFinite(used) || !Number.isFinite(limit) || limit <= 0) {
+      const unlimited = Boolean(data?.unlimited)
+      if (!Number.isFinite(used)) {
         return null
       }
-      return { used, limit }
+      if (unlimited) {
+        return { used, limit: null, unlimited: true }
+      }
+      const limit = Number(data?.limit)
+      if (!Number.isFinite(limit) || limit <= 0) {
+        return null
+      }
+      return { used, limit, unlimited: false }
     },
     normalizePlaylistSlots(data) {
       const used = Number(data?.used)
