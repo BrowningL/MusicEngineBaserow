@@ -216,13 +216,25 @@ export default {
       return this.isReadOnlyDatabase || this.isDistributionPipelineDatabase
     },
     /**
-     * MusicEngine: Custom icon for Live Catalogue (music note).
-     * The workflow databases use the default database icon.
+     * MusicEngine: Give each workflow stage a distinct icon treatment.
      */
     customIconClass() {
-      if (this.isReadOnlyDatabase) {
-        return 'iconoir-music-double-note'
+      if (this.normalizedDatabaseName === 'production pipeline') {
+        return 'iconoir-db sidebar-application-icon sidebar-application-icon--production'
       }
+
+      if (this.normalizedDatabaseName === 'distribution management') {
+        return 'iconoir-git-fork sidebar-application-icon sidebar-application-icon--distribution'
+      }
+
+      if (this.isReadOnlyDatabase) {
+        return 'iconoir-music-double-note sidebar-application-icon sidebar-application-icon--catalogue'
+      }
+
+      if (['distribution pipeline', 'production catalogue'].includes(this.normalizedDatabaseName)) {
+        return 'iconoir-db sidebar-application-icon sidebar-application-icon--production'
+      }
+
       return null
     },
     /**
@@ -545,6 +557,33 @@ export default {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
   overflow: hidden;
+}
+
+:deep(.sidebar-application-icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+
+:deep(.sidebar-application-icon--production) {
+  background: rgba(84, 101, 255, 0.12);
+  color: #5465ff;
+}
+
+:deep(.sidebar-application-icon--distribution) {
+  background: rgba(24, 148, 112, 0.14);
+  color: #118468;
+}
+
+:deep(.sidebar-application-icon--catalogue) {
+  background: rgba(204, 137, 28, 0.14);
+  color: #b56b09;
 }
 
 .sidebar-add-section__title {

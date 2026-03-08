@@ -8,16 +8,22 @@
       @mousedown.prevent
       @click.prevent="selectTable(database, table)"
     >
+      <span
+        class="sidebar-table-icon-wrap"
+        :class="[tableToneClass, { 'sidebar-table-icon-wrap--readonly': isTableReadOnly }]"
+      >
+        <i class="sidebar-table-icon" :class="tableIconClass"></i>
+        <span v-if="isTableReadOnly" class="sidebar-table-icon__badge">
+          <i class="iconoir-lock"></i>
+        </span>
+      </span>
       <i
         v-if="table.data_sync"
         v-tooltip:[syncTooltipOptions]="
           `${$t('sidebarItem.lastSynced')}: ${lastSyncedDate}`
         "
-        class="iconoir-data-transfer-down"
+        class="iconoir-data-transfer-down sidebar-table-sync-icon"
       ></i>
-      <!-- ISRCAnalytics: Show lock/unlock icons for managed tables -->
-      <i v-if="isTableReadOnly" class="iconoir-lock" style="margin-right: 6px; font-size: 14px; opacity: 0.7;"></i>
-      <i v-else-if="!isTableReadOnly && ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes((database.name || '').trim().toLowerCase())" class="iconoir-unlock" style="margin-right: 6px; font-size: 14px; opacity: 0.7;"></i>
       <Editable
         ref="rename"
         :value="table.name"
@@ -233,6 +239,39 @@ export default {
     normalizedDatabaseName() {
       return (this.database.name || '').trim().toLowerCase()
     },
+    tableIconClass() {
+      const tableName = (this.table?.name || '').trim().toLowerCase()
+      const iconMap = {
+        artists: 'iconoir-user',
+        'production workspace': 'iconoir-app-window',
+        releases: 'iconoir-book-stack',
+        tracks: 'iconoir-music-double-note',
+        uploads: 'iconoir-cloud-upload',
+        'distributor accounts': 'iconoir-community',
+        'distribution platforms': 'iconoir-globe',
+        'browser profiles': 'iconoir-fingerprint',
+        playlists: 'iconoir-playlist',
+      }
+
+      return iconMap[tableName] || 'iconoir-table'
+    },
+    tableToneClass() {
+      const dbName = this.normalizedDatabaseName
+
+      if (!this.isManagedDatabase) {
+        return 'sidebar-table-icon-wrap--default'
+      }
+
+      if (dbName === 'distribution management') {
+        return 'sidebar-table-icon-wrap--distribution'
+      }
+
+      if (dbName === 'live catalogue') {
+        return 'sidebar-table-icon-wrap--catalogue'
+      }
+
+      return 'sidebar-table-icon-wrap--production'
+    },
     /**
      * ISRCAnalytics: Check if this table is in a managed database.
      */
@@ -445,3 +484,73 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.sidebar-table-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: rgba(84, 101, 255, 0.12);
+  color: #5465ff;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+
+.sidebar-table-icon-wrap--default {
+  background: rgba(123, 133, 145, 0.12);
+  color: #6b7280;
+}
+
+.sidebar-table-icon-wrap--production {
+  background: rgba(84, 101, 255, 0.12);
+  color: #5465ff;
+}
+
+.sidebar-table-icon-wrap--distribution {
+  background: rgba(24, 148, 112, 0.14);
+  color: #118468;
+}
+
+.sidebar-table-icon-wrap--catalogue {
+  background: rgba(204, 137, 28, 0.14);
+  color: #b56b09;
+}
+
+.sidebar-table-icon-wrap--readonly {
+  opacity: 0.88;
+}
+
+.sidebar-table-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.sidebar-table-icon__badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary, #fff);
+  color: var(--text-muted, #7d8591);
+  box-shadow: 0 0 0 1px var(--bg-primary, #fff);
+}
+
+.sidebar-table-icon__badge i {
+  font-size: 7px;
+  line-height: 1;
+}
+
+.sidebar-table-sync-icon {
+  color: var(--text-muted, #7d8591);
+  font-size: 14px;
+}
+</style>
