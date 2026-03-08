@@ -363,7 +363,6 @@ import {
   SyncedFieldsConfigureDataSyncType,
   SettingsConfigureDataSyncType,
 } from '@baserow/modules/database/configureDataSyncTypes'
-import { DatabaseGuidedTourType } from '@baserow/modules/database/guidedTourTypes'
 import {
   DatabaseSearchType,
   DatabaseTableSearchType,
@@ -1117,8 +1116,6 @@ export default (context) => {
     'configureDataSync',
     new SettingsConfigureDataSyncType(context)
   )
-
-  app.$registry.register('guidedTour', new DatabaseGuidedTourType(context))
 
   registerRealtimeEvents(app.$realtime)
 

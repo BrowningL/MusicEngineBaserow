@@ -65,7 +65,6 @@ import {
   WorkspaceOnboardingType,
   InviteOnboardingType,
 } from '@baserow/modules/core/onboardingTypes'
-import { SidebarGuidedTourType } from '@baserow/modules/core/guidedTourTypes'
 
 import { TOTPAuthType } from '@baserow/modules/core/twoFactorAuthTypes'
 
@@ -365,5 +364,4 @@ export default (context, inject) => {
 
   registry.register('onboarding', new InviteOnboardingType(context))
 
-  registry.register('guidedTour', new SidebarGuidedTourType(context))
 }
