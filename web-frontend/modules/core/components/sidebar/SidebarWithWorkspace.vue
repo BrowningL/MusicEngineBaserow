@@ -19,7 +19,7 @@
             v-for="applicationGroup in groupedApplicationsForSelectedWorkspace"
             :key="applicationGroup.type"
           >
-            <template v-if="applicationGroup.applications.length > 0">
+            <template v-if="applicationGroup.sidebarEntries.length > 0">
               <!-- MusicEngine: Hide "Databases" heading to save space -->
               <div v-if="applicationGroup.name !== 'Databases'" class="tree__heading">
                 {{ applicationGroup.name }}
@@ -32,26 +32,26 @@
                 data-highlight="applications"
               >
                 <template
-                  v-for="(application, index) in sortedApplications(applicationGroup.applications)"
+                  v-for="(entry, index) in sortedApplications(applicationGroup.sidebarEntries)"
                 >
                   <component
-                    :is="getApplicationComponent(application)"
-                    :key="application.id"
+                    :is="getApplicationComponent(entry.application)"
+                    :key="entry.key"
                     v-sortable="{
-                      id: application.id,
+                      id: entry.sortableId,
                       update: orderApplications,
                       handle: '[data-sortable-handle]',
                       marginTop: -1.5,
                       enabled: false,
                     }"
-                    :application="application"
-                    :pending-jobs="pendingJobs[application.type]"
+                    :application="entry.application"
+                    v-bind="getSidebarComponentProps(entry)"
                     :workspace="selectedWorkspace"
                   ></component>
                   <!-- MusicEngine: Arrow separators between the managed databases -->
                   <div
-                    v-if="shouldShowWorkflowArrow(application, index, applicationGroup.applications)"
-                    :key="'arrow-' + application.id"
+                    v-if="shouldShowWorkflowArrow(entry, index, applicationGroup.sidebarEntries)"
+                    :key="'arrow-' + entry.key"
                     class="sidebar__pipeline-arrow"
                   >
                     <i class="iconoir-arrow-down"></i>
@@ -101,26 +101,29 @@ export default {
       const applicationTypes = Object.values(
         this.$registry.getAll('application')
       ).map((applicationType) => {
+        const applications = this.applications
+          .filter((application) => {
+            return (
+              application.workspace.id === this.selectedWorkspace.id &&
+              application.type === applicationType.getType() &&
+              applicationType.isVisible(application)
+            )
+          })
+          .sort((a, b) => a.order - b.order)
+
         return {
           name: applicationType.getNamePlural(),
           type: applicationType.getType(),
           developmentStage: applicationType.developmentStage,
-          applications: this.applications
-            .filter((application) => {
-              return (
-                application.workspace.id === this.selectedWorkspace.id &&
-                application.type === applicationType.getType() &&
-                applicationType.isVisible(application)
-              )
-            })
-            .sort((a, b) => a.order - b.order),
+          applications,
+          sidebarEntries: this.buildSidebarEntries(applications),
         }
       })
       return applicationTypes
     },
     applicationsCount() {
       return this.groupedApplicationsForSelectedWorkspace.reduce(
-        (acc, group) => acc + group.applications.length,
+        (acc, group) => acc + group.sidebarEntries.length,
         0
       )
     },
@@ -149,36 +152,134 @@ export default {
         .get('application', application.type)
         .getSidebarComponent()
     },
+    getSidebarComponentProps(entry) {
+      if (entry.application.type !== 'database') {
+        return {}
+      }
+
+      return {
+        displayName: entry.displayName,
+        visibleTableNames: entry.visibleTableNames,
+        showPendingJobs: entry.showPendingJobs,
+      }
+    },
     getPendingJobComponent(job) {
       return this.$registry.get('job', job.type).getSidebarComponent()
+    },
+    buildSidebarEntries(applications) {
+      const hasDedicatedDistributionManagement = applications.some(
+        (application) =>
+          this.normalizeAppName(application.name) === 'distribution management'
+      )
+
+      return applications.flatMap((application) => {
+        if (
+          application.type === 'database' &&
+          !hasDedicatedDistributionManagement &&
+          this.shouldSplitCombinedPipeline(application)
+        ) {
+          return [
+            {
+              key: `${application.id}-production-pipeline`,
+              sortableId: `${application.id}-production-pipeline`,
+              application,
+              displayName: 'Production Pipeline',
+              visibleTableNames: [
+                'Artists',
+                'Production Workspace',
+                'Releases',
+                'Tracks',
+                'Uploads',
+              ],
+              showPendingJobs: true,
+            },
+            {
+              key: `${application.id}-distribution-management`,
+              sortableId: `${application.id}-distribution-management`,
+              application,
+              displayName: 'Distribution Management',
+              visibleTableNames: [
+                'Distributor Accounts',
+                'Distribution Platforms',
+                'Browser Profiles',
+              ],
+              showPendingJobs: false,
+            },
+          ]
+        }
+
+        return [
+          {
+            key: `${application.id}`,
+            sortableId: `${application.id}`,
+            application,
+            displayName: null,
+            visibleTableNames: null,
+            showPendingJobs: true,
+          },
+        ]
+      })
+    },
+    shouldSplitCombinedPipeline(application) {
+      const normalized = this.normalizeAppName(application.name)
+      const isCombinedPipeline = [
+        'distribution pipeline',
+        'production pipeline',
+        'production catalogue',
+      ].includes(normalized)
+
+      if (!isCombinedPipeline) {
+        return false
+      }
+
+      const tableNames = (application.tables || []).map((table) =>
+        this.normalizeAppName(table.name)
+      )
+      const hasDistributionManagementTables = [
+        'distributor accounts',
+        'distribution platforms',
+        'browser profiles',
+      ].some((tableName) => tableNames.includes(tableName))
+      const hasProductionPipelineTables = [
+        'artists',
+        'production workspace',
+        'releases',
+        'tracks',
+        'uploads',
+      ].some((tableName) => tableNames.includes(tableName))
+
+      return hasDistributionManagementTables && hasProductionPipelineTables
     },
     /**
      * MusicEngine: Sort the managed databases into the intended workflow order.
      */
-    sortedApplications(applications) {
-      return [...applications].sort((a, b) => {
-        const rankA = this.getManagedDatabaseRank(a.name)
-        const rankB = this.getManagedDatabaseRank(b.name)
+    sortedApplications(entries) {
+      return [...entries].sort((a, b) => {
+        const rankA = this.getManagedDatabaseRank(this.getEntryName(a))
+        const rankB = this.getManagedDatabaseRank(this.getEntryName(b))
 
         if (rankA !== rankB) return rankA - rankB
 
-        return a.order - b.order
+        return a.application.order - b.application.order
       })
     },
     /**
-     * MusicEngine: Show arrows between Distribution Management, Production Pipeline,
-     * and Live Catalogue when those databases appear consecutively.
+     * MusicEngine: Show arrows between Production Pipeline,
+     * Distribution Management, and Live Catalogue when those databases appear consecutively.
      */
-    shouldShowWorkflowArrow(application, index, applications) {
-      const sorted = this.sortedApplications(applications)
-      const currentRank = this.getManagedDatabaseRank(application.name)
+    shouldShowWorkflowArrow(entry, index, entries) {
+      const sorted = this.sortedApplications(entries)
+      const currentRank = this.getManagedDatabaseRank(this.getEntryName(entry))
       const nextApp = sorted[index + 1]
 
       return (
         currentRank < 2 &&
         nextApp &&
-        this.getManagedDatabaseRank(nextApp.name) === currentRank + 1
+        this.getManagedDatabaseRank(this.getEntryName(nextApp)) === currentRank + 1
       )
+    },
+    getEntryName(entry) {
+      return entry.displayName || entry.application.name
     },
     normalizeAppName(name) {
       return (name || '').trim().toLowerCase()
@@ -186,15 +287,15 @@ export default {
     getManagedDatabaseRank(name) {
       const normalized = this.normalizeAppName(name)
 
-      if (normalized === 'distribution management') {
-        return 0
-      }
-
       if (
         ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
           normalized
         )
       ) {
+        return 0
+      }
+
+      if (normalized === 'distribution management') {
         return 1
       }
 

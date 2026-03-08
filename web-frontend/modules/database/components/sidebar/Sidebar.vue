@@ -1,7 +1,7 @@
 <template>
   <SidebarApplication
     :workspace="workspace"
-    :application="application"
+    :application="sidebarApplication"
     :custom-icon-class="customIconClass"
     :is-managed-database="isManagedDatabase"
     @selected="selected"
@@ -33,7 +33,7 @@
             marginTop: -1.5,
             enabled: false,
           }"
-          :database="application"
+          :database="sidebarApplication"
           :table="table"
         ></SidebarItem>
       </ul>
@@ -150,6 +150,21 @@ export default {
       type: Object,
       required: true,
     },
+    displayName: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    visibleTableNames: {
+      type: Array,
+      required: false,
+      default: null,
+    },
+    showPendingJobs: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     workspace: {
       type: Object,
       required: true,
@@ -166,8 +181,18 @@ export default {
     }
   },
   computed: {
+    sidebarApplication() {
+      if (!this.displayName) {
+        return this.application
+      }
+
+      return {
+        ...this.application,
+        name: this.displayName,
+      }
+    },
     normalizedDatabaseName() {
-      return (this.application.name || '').trim().toLowerCase()
+      return (this.sidebarApplication.name || '').trim().toLowerCase()
     },
     /**
      * MusicEngine: Check if this database is part of the managed workflow.
@@ -224,6 +249,14 @@ export default {
     orderedTables() {
       return this.application.tables
         .filter((table) => {
+          if (
+            Array.isArray(this.visibleTableNames) &&
+            this.visibleTableNames.length > 0 &&
+            !this.visibleTableNames.includes(table.name)
+          ) {
+            return false
+          }
+
           // MusicEngine: Hide junction tables from Live Catalogue sidebar
           if (this.isReadOnlyDatabase && this.hiddenTableNames.includes(table.name)) {
             return false
@@ -233,6 +266,10 @@ export default {
         .sort((a, b) => a.order - b.order)
     },
     pendingJobs() {
+      if (!this.showPendingJobs) {
+        return []
+      }
+
       return this.$store.getters['job/getAll'].filter((job) =>
         this.$registry
           .get('job', job.type)
