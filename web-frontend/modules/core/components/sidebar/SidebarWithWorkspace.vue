@@ -183,7 +183,7 @@ export default {
               key: `${application.id}-catalog-pipeline`,
               sortableId: `${application.id}-catalog-pipeline`,
               application,
-              displayName: 'Catalog Pipeline',
+              displayName: 'Catalogue Pipeline',
               visibleTableNames: [
                 'Artists',
                 'Production Workspace',
@@ -264,7 +264,7 @@ export default {
       })
     },
     /**
-     * MusicEngine: Show arrows between Catalog Pipeline,
+     * MusicEngine: Show arrows between Catalogue Pipeline,
      * Distribution Management, and Live Catalogue when those databases appear consecutively.
      */
     shouldShowWorkflowArrow(entry, index, entries) {
