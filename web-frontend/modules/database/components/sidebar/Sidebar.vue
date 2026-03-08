@@ -2,6 +2,7 @@
   <SidebarApplication
     :workspace="workspace"
     :application="sidebarApplication"
+    :class="sidebarApplicationClasses"
     :custom-icon-class="customIconClass"
     :is-managed-database="isManagedDatabase"
     @selected="selected"
@@ -295,6 +296,13 @@ export default {
     isrcApiBaseUrl() {
       return this.$config?.isrcAnalyticsApiUrl || process.env.ISRC_ANALYTICS_API_URL || 'https://musicengine.ai'
     },
+    sidebarApplicationClasses() {
+      return {
+        'musicengine-sidebar-application': true,
+        'musicengine-sidebar-application--managed': this.isManagedDatabase,
+        'musicengine-sidebar-application--readonly': this.isReadOnlyDatabase,
+      }
+    },
     trackSlotsDisplay() {
       if (!this.hasValidTrackSlots) {
         return this.slotsLoading ? 'Loading...' : 'Unavailable'
@@ -402,9 +410,21 @@ export default {
         }
       })
     },
+    isUnlimitedSlotsPayload(data) {
+      if (!data || typeof data !== 'object') {
+        return false
+      }
+
+      if (data.unlimited === true || data.limit === null) {
+        return true
+      }
+
+      const limitLabel = String(data.limitLabel || '').trim().toLowerCase()
+      return limitLabel === 'unlimited'
+    },
     normalizeTrackSlots(data) {
       const used = Number(data?.used)
-      const unlimited = Boolean(data?.unlimited)
+      const unlimited = this.isUnlimitedSlotsPayload(data)
       if (!Number.isFinite(used)) {
         return null
       }
@@ -419,7 +439,7 @@ export default {
     },
     normalizePlaylistSlots(data) {
       const used = Number(data?.used)
-      const unlimited = Boolean(data?.unlimited)
+      const unlimited = this.isUnlimitedSlotsPayload(data)
       if (!Number.isFinite(used)) {
         return null
       }
@@ -569,10 +589,91 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-add-section {
-  margin: 6px 0 0 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
+  margin: 12px 0 0 14px;
+  padding: 14px;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-bottom-color: rgba(17, 17, 17, 0.1);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  box-shadow: 0 14px 28px rgba(17, 17, 17, 0.06);
   overflow: hidden;
+}
+
+:deep(.musicengine-sidebar-application--managed > .tree__action) {
+  margin-bottom: 8px;
+  padding: 0 12px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: linear-gradient(180deg, #ffffff 0%, #f7f7f7 100%);
+  box-shadow: 0 10px 24px rgba(17, 17, 17, 0.04);
+}
+
+:deep(.musicengine-sidebar-application--managed > .tree__action .tree__link) {
+  color: #111111;
+}
+
+:deep(.musicengine-sidebar-application--managed > .tree__action .tree__link-text),
+:deep(.musicengine-sidebar-application--managed > .tree__action .tree__icon) {
+  color: #111111;
+  font-weight: 600;
+}
+
+:deep(.musicengine-sidebar-application--managed > .tree__action .tree__options) {
+  color: rgba(17, 17, 17, 0.5);
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__subs) {
+  padding-top: 2px;
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub) {
+  margin: 6px 0 0 14px;
+  background: transparent;
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub:hover),
+:deep(.musicengine-sidebar-application--managed .tree__sub.active) {
+  background: transparent;
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub::before) {
+  left: -7px;
+  border-right-color: rgba(17, 17, 17, 0.12);
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub-link) {
+  padding-right: 36px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 0 6px 16px rgba(17, 17, 17, 0.03);
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub-link:hover),
+:deep(.musicengine-sidebar-application--managed .tree__sub.active .tree__sub-link) {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(17, 17, 17, 0.1);
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub-link:hover .sidebar-table-icon-wrap),
+:deep(.musicengine-sidebar-application--managed .tree__sub.active .sidebar-table-icon-wrap) {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub-link:hover .sidebar-table-icon__badge),
+:deep(.musicengine-sidebar-application--managed .tree__sub.active .sidebar-table-icon__badge) {
+  background: #111111;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 1px #111111;
+}
+
+:deep(.musicengine-sidebar-application--managed .tree__sub-link:hover .sidebar-table-sync-icon),
+:deep(.musicengine-sidebar-application--managed .tree__sub.active .sidebar-table-sync-icon) {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 :deep(.sidebar-application-icon) {
@@ -588,27 +689,30 @@ export default {
 }
 
 :deep(.sidebar-application-icon--production) {
-  background: rgba(84, 101, 255, 0.12);
-  color: #5465ff;
+  background: #111111;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #111111;
 }
 
 :deep(.sidebar-application-icon--distribution) {
-  background: rgba(24, 148, 112, 0.14);
-  color: #118468;
+  background: #ffffff;
+  color: #111111;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.14);
 }
 
 :deep(.sidebar-application-icon--catalogue) {
-  background: rgba(204, 137, 28, 0.14);
-  color: #b56b09;
+  background: #f4f4f5;
+  color: #111111;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
 }
 
 .sidebar-add-section__title {
   font-size: 10px;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 700;
+  color: #111111;
   margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.08em;
 }
 
 .sidebar-add-section__buttons {
@@ -624,19 +728,20 @@ export default {
   gap: 6px;
   padding: 5px 10px;
   font-size: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background-color: var(--bg-tertiary);
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #111111;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   border: none;
+  box-shadow: inset 0 0 0 1px #111111;
   white-space: nowrap;
   min-width: 0;
 
   &:hover {
-    background-color: var(--bg-hover);
-    color: var(--text-primary);
+    background-color: #1f1f1f;
+    color: #ffffff;
     text-decoration: none;
   }
 
@@ -648,7 +753,9 @@ export default {
 }
 
 .sidebar-slots {
-  margin-top: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -662,13 +769,13 @@ export default {
 }
 
 .sidebar-slots__label {
-  color: var(--text-secondary);
+  color: rgba(17, 17, 17, 0.6);
   min-width: 70px;
 }
 
 .sidebar-slots__value {
-  color: var(--text-primary);
-  font-weight: 500;
+  color: #111111;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
@@ -680,25 +787,27 @@ export default {
   height: 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #5190ef;
-  background-color: var(--bg-tertiary);
+  color: #111111;
+  background-color: #ffffff;
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.15s ease;
   margin-left: auto;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.16);
 
   &:hover {
-    background-color: var(--bg-hover);
-    color: #5190ef;
+    background-color: #111111;
+    color: #ffffff;
     text-decoration: none;
   }
 
   &--disabled {
-    color: var(--text-muted);
-    background-color: var(--bg-tertiary);
+    color: rgba(17, 17, 17, 0.3);
+    background-color: #f3f4f6;
     cursor: default;
     pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.06);
   }
 }
 

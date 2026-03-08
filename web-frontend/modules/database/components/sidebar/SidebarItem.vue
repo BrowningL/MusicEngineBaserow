@@ -498,29 +498,33 @@ export default {
   height: 18px;
   border-radius: 6px;
   flex-shrink: 0;
-  background: rgba(84, 101, 255, 0.12);
-  color: #5465ff;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+  background: #111111;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
 }
 
 .sidebar-table-icon-wrap--default {
-  background: rgba(123, 133, 145, 0.12);
-  color: #6b7280;
+  background: #f4f4f5;
+  color: #4b5563;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
 }
 
 .sidebar-table-icon-wrap--production {
-  background: rgba(84, 101, 255, 0.12);
-  color: #5465ff;
+  background: #111111;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #111111;
 }
 
 .sidebar-table-icon-wrap--distribution {
-  background: rgba(24, 148, 112, 0.14);
-  color: #118468;
+  background: #ffffff;
+  color: #111111;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.14);
 }
 
 .sidebar-table-icon-wrap--catalogue {
-  background: rgba(204, 137, 28, 0.14);
-  color: #b56b09;
+  background: #f4f4f5;
+  color: #111111;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
 }
 
 .sidebar-table-icon-wrap--readonly {
