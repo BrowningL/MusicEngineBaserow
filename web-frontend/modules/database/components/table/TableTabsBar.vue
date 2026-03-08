@@ -16,6 +16,9 @@
           @contextmenu.prevent="openTableContext($event, table)"
         >
           <i v-if="table.data_sync" class="table-tabs-bar__tab-icon iconoir-data-transfer-down"></i>
+          <!-- ISRCAnalytics: Show lock/unlock icons for managed tables -->
+          <i v-if="isTableReadOnly(table)" class="table-tabs-bar__tab-icon iconoir-lock" style="margin-right: 4px; font-size: 14px; opacity: 0.7;"></i>
+          <i v-else-if="!isTableReadOnly(table) && ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes((database.name || '').trim().toLowerCase())" class="table-tabs-bar__tab-icon iconoir-unlock" style="margin-right: 4px; font-size: 14px; opacity: 0.7;"></i>
           <span class="table-tabs-bar__tab-name">{{ table.name }}</span>
         </a>
       </div>
@@ -55,6 +58,7 @@
         </li>
         <li
           v-if="
+            !isTableReadOnly(contextTable) &&
             $hasPermission(
               'database.table.update',
               contextTable,
@@ -70,6 +74,7 @@
         </li>
         <li
           v-if="
+            !isTableReadOnly(contextTable) &&
             $hasPermission(
               'database.table.duplicate',
               contextTable,
@@ -86,6 +91,7 @@
         </li>
         <li
           v-if="
+            !isTableReadOnly(contextTable) &&
             $hasPermission(
               'database.table.delete',
               contextTable,
@@ -159,6 +165,12 @@ export default {
       return [...this.tables].sort((a, b) => a.order - b.order)
     },
     canCreateTable() {
+      // ISRCAnalytics: Custom logic to disable table creation on read-only databases
+      const dbName = (this.database?.name || '').trim().toLowerCase()
+      if (dbName === 'live catalogue' || ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)) {
+        return false
+      }
+
       return (
         !this.readOnly &&
         this.$hasPermission(
@@ -167,6 +179,37 @@ export default {
           this.database.workspace.id
         )
       )
+    },
+    isTableReadOnly() {
+      return (table) => {
+        const dbName = (this.database?.name || '').trim().toLowerCase()
+        const tableName = (table?.name || '').trim().toLowerCase()
+
+        if (dbName === 'live catalogue') return true
+
+        if (dbName === 'distribution management') {
+          const readOnlyTables = [
+            'browser profiles',
+            'distribution platforms',
+          ]
+          if (readOnlyTables.includes(tableName)) return true
+        }
+
+        if (['distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)) {
+          const readOnlyTables = dbName === 'production pipeline'
+            ? ['uploads', 'tracks', 'artists']
+            : [
+            'browser profiles',
+            'uploads',
+            'tracks',
+            'artists',
+            'distribution platforms',
+          ]
+          if (readOnlyTables.includes(tableName)) return true
+        }
+
+        return this.readOnly
+      }
     },
   },
   watch: {

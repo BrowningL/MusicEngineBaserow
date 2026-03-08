@@ -170,10 +170,10 @@ export default {
       return (this.application.name || '').trim().toLowerCase()
     },
     /**
-     * MusicEngine: Check if this is the Distribution Pipeline database.
+     * MusicEngine: Check if this database is part of the managed workflow.
      */
     isDistributionPipelineDatabase() {
-      return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+      return ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(
         this.normalizedDatabaseName
       )
     },
@@ -192,7 +192,7 @@ export default {
     },
     /**
      * MusicEngine: Custom icon for Live Catalogue (music note).
-     * Distribution Pipeline uses the default database icon.
+     * The workflow databases use the default database icon.
      */
     customIconClass() {
       if (this.isReadOnlyDatabase) {
@@ -202,13 +202,13 @@ export default {
     },
     /**
      * MusicEngine: Check if we should hide the "Add table" button.
-     * Both Live Catalogue and Distribution Pipeline should not allow adding new tables.
+     * The managed workflow databases should not allow adding new tables.
      */
     shouldHideAddTable() {
       return true
     },
     /**
-     * MusicEngine: Auto-expand Distribution Pipeline and Live Catalogue databases.
+     * MusicEngine: Auto-expand the managed workflow databases.
      * These databases are always expanded (not collapsible).
      */
     shouldAutoExpand() {

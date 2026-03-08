@@ -15,6 +15,9 @@
         "
         class="iconoir-data-transfer-down"
       ></i>
+      <!-- ISRCAnalytics: Show lock/unlock icons for managed tables -->
+      <i v-if="isTableReadOnly" class="iconoir-lock" style="margin-right: 6px; font-size: 14px; opacity: 0.7;"></i>
+      <i v-else-if="!isTableReadOnly && ['distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes((database.name || '').trim().toLowerCase())" class="iconoir-unlock" style="margin-right: 6px; font-size: 14px; opacity: 0.7;"></i>
       <Editable
         ref="rename"
         :value="table.name"
@@ -65,7 +68,7 @@
         <!-- ISRCAnalytics: Removed webhooks menu item -->
         <li
           v-if="
-            !isManagedDatabase &&
+            !isTableReadOnly &&
             table.data_sync &&
             $hasPermission(
               'database.data_sync.sync_table',
@@ -93,7 +96,7 @@
         </li>
         <li
           v-if="
-            !isManagedDatabase &&
+            !isTableReadOnly &&
             table.data_sync &&
             $hasPermission(
               'database.table.update',
@@ -127,7 +130,7 @@
         <!-- ISRCAnalytics: Hide rename for managed databases -->
         <li
           v-if="
-            !isManagedDatabase &&
+            !isTableReadOnly &&
             $hasPermission(
               'database.table.update',
               table,
@@ -144,7 +147,7 @@
         <!-- ISRCAnalytics: Hide duplicate for managed databases -->
         <li
           v-if="
-            !isManagedDatabase &&
+            !isTableReadOnly &&
             $hasPermission(
               'database.table.duplicate',
               table,
@@ -163,7 +166,7 @@
         <!-- ISRCAnalytics: Hide delete for managed databases -->
         <li
           v-if="
-            !isManagedDatabase &&
+            !isTableReadOnly &&
             $hasPermission(
               'database.table.delete',
               table,
@@ -232,14 +235,46 @@ export default {
     },
     /**
      * ISRCAnalytics: Check if this table is in a managed database.
-     * Tables in Live Catalogue and Distribution Pipeline should only show export option.
      */
     isManagedDatabase() {
-      return true
+      const dbName = this.normalizedDatabaseName
+      return ['live catalogue', 'distribution management', 'distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)
+    },
+    isTableReadOnly() {
+      const dbName = this.normalizedDatabaseName
+      const tableName = (this.table?.name || '').trim().toLowerCase()
+
+      if (dbName === 'live catalogue') return true
+
+      if (dbName === 'distribution management') {
+        const readOnlyTables = [
+          'browser profiles',
+          'distribution platforms',
+        ]
+        if (readOnlyTables.includes(tableName)) return true
+      }
+
+      if (['distribution pipeline', 'production catalogue'].includes(dbName)) {
+        const readOnlyTables = [
+          'browser profiles',
+          'uploads',
+          'tracks',
+          'artists',
+          'distribution platforms',
+        ]
+        if (readOnlyTables.includes(tableName)) return true
+      }
+
+      if (dbName === 'production pipeline') {
+        const readOnlyTables = ['uploads', 'tracks', 'artists']
+        if (readOnlyTables.includes(tableName)) return true
+      }
+
+      return false
     },
     showOptions() {
       // ISRCAnalytics: Show options for managed databases (only export visible)
-      if (this.isManagedDatabase) {
+      if (this.isTableReadOnly) {
         return this.$hasPermission(
           'database.table.run_export',
           this.table,

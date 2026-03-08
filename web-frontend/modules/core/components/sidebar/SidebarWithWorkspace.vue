@@ -48,9 +48,9 @@
                     :pending-jobs="pendingJobs[application.type]"
                     :workspace="selectedWorkspace"
                   ></component>
-                  <!-- MusicEngine: Arrow separator between Distribution Pipeline and Live Catalogue -->
+                  <!-- MusicEngine: Arrow separators between the managed databases -->
                   <div
-                    v-if="shouldShowPipelineArrow(application, index, applicationGroup.applications)"
+                    v-if="shouldShowWorkflowArrow(application, index, applicationGroup.applications)"
                     :key="'arrow-' + application.id"
                     class="sidebar__pipeline-arrow"
                   >
@@ -153,44 +153,56 @@ export default {
       return this.$registry.get('job', job.type).getSidebarComponent()
     },
     /**
-     * MusicEngine: Sort databases so Distribution Pipeline comes before Live Catalogue.
+     * MusicEngine: Sort the managed databases into the intended workflow order.
      */
     sortedApplications(applications) {
       return [...applications].sort((a, b) => {
-        // Distribution Pipeline (or Production Catalogue for legacy) should come first
-        const isPipelineA = this.isPipelineApplication(a.name)
-        const isPipelineB = this.isPipelineApplication(b.name)
-        const isLiveCatalogueA = this.normalizeAppName(a.name) === 'live catalogue'
-        const isLiveCatalogueB = this.normalizeAppName(b.name) === 'live catalogue'
+        const rankA = this.getManagedDatabaseRank(a.name)
+        const rankB = this.getManagedDatabaseRank(b.name)
 
-        if (isPipelineA && !isPipelineB) return -1
-        if (isPipelineB && !isPipelineA) return 1
-        if (isLiveCatalogueA && !isLiveCatalogueB) return 1
-        if (isLiveCatalogueB && !isLiveCatalogueA) return -1
+        if (rankA !== rankB) return rankA - rankB
 
         return a.order - b.order
       })
     },
     /**
-     * MusicEngine: Show arrow between Distribution Pipeline and Live Catalogue.
+     * MusicEngine: Show arrows between Distribution Management, Production Pipeline,
+     * and Live Catalogue when those databases appear consecutively.
      */
-    shouldShowPipelineArrow(application, index, applications) {
+    shouldShowWorkflowArrow(application, index, applications) {
       const sorted = this.sortedApplications(applications)
-      const isPipeline = this.isPipelineApplication(application.name)
+      const currentRank = this.getManagedDatabaseRank(application.name)
       const nextApp = sorted[index + 1]
+
       return (
-        isPipeline &&
+        currentRank < 2 &&
         nextApp &&
-        this.normalizeAppName(nextApp.name) === 'live catalogue'
+        this.getManagedDatabaseRank(nextApp.name) === currentRank + 1
       )
     },
     normalizeAppName(name) {
       return (name || '').trim().toLowerCase()
     },
-    isPipelineApplication(name) {
-      return ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
-        this.normalizeAppName(name)
-      )
+    getManagedDatabaseRank(name) {
+      const normalized = this.normalizeAppName(name)
+
+      if (normalized === 'distribution management') {
+        return 0
+      }
+
+      if (
+        ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(
+          normalized
+        )
+      ) {
+        return 1
+      }
+
+      if (normalized === 'live catalogue') {
+        return 2
+      }
+
+      return 3
     },
     async orderApplications(order, oldOrder) {
       try {

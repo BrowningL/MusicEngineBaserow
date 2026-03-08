@@ -407,7 +407,52 @@ export default {
       )
     },
     effectiveReadOnly() {
-      return true
+      // ISRCAnalytics: Custom read-only rules for specific tables
+      const dbName = (this.database?.name || '').trim().toLowerCase()
+      const tableName = (this.table?.name || '').trim().toLowerCase()
+
+      const isLiveCatalogue = dbName === 'live catalogue'
+      const isDistributionManagement = dbName === 'distribution management'
+      const isDistributionPipeline = ['distribution pipeline', 'production pipeline', 'production catalogue'].includes(dbName)
+
+      if (isLiveCatalogue) {
+        return true
+      }
+
+      if (isDistributionManagement) {
+        const readOnlyTables = ['browser profiles', 'distribution platforms']
+        const editableTables = ['distributor accounts']
+
+        if (readOnlyTables.includes(tableName)) {
+          return true
+        } else if (editableTables.includes(tableName)) {
+          return false
+        }
+      }
+
+      if (isDistributionPipeline) {
+        const readOnlyTables = dbName === 'production pipeline'
+          ? ['uploads', 'tracks', 'artists']
+          : [
+              'browser profiles',
+              'uploads',
+              'tracks',
+              'artists',
+              'distribution platforms',
+            ]
+        const editableTables = dbName === 'production pipeline'
+          ? ['releases', 'production workspace']
+          : ['releases', 'production workspace', 'distributor accounts']
+
+        if (readOnlyTables.includes(tableName)) {
+          return true
+        } else if (editableTables.includes(tableName)) {
+          return false
+        }
+      }
+
+      // Default Baserow logic (if any was here, but it was just hardcoded `return true`)
+      return false
     },
     adhocFiltering() {
       if (this.effectiveReadOnly) {
