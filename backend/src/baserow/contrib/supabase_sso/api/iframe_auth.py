@@ -82,7 +82,11 @@ class IframeLoginView(View):
         # Validate theme - only allow 'light' or 'dark'
         safe_theme = 'dark' if theme == 'dark' else ('light' if theme == 'light' else '')
 
-        logger.info(f"Iframe login: injecting token for user_id={user_id}, redirect={redirect_path}, theme={safe_theme or 'default'}")
+        logger.info(
+            "Iframe login: injecting token for user_id=%s, theme=%s",
+            user_id,
+            safe_theme or 'default',
+        )
 
         # Return HTML page that injects token into localStorage and redirects
         html = f'''<!DOCTYPE html>
@@ -145,28 +149,23 @@ class IframeLoginView(View):
             // Legacy keys that some versions may use
             localStorage.setItem('token', token);
 
-            console.log('[IframeAuth] Token saved to localStorage');
-
             // Set theme preference if provided
             if (theme) {{
                 localStorage.setItem('isrc-theme', theme);
-                console.log('[IframeAuth] Theme set to:', theme);
             }}
         }} catch (e) {{
-            console.warn('[IframeAuth] localStorage not available:', e);
+            // Best-effort only. Cookie auth below can still recover the session.
         }}
 
         // Set the jwt_token cookie - this is what Baserow's frontend actually reads
         // SameSite=None is required for cross-site iframe embedding
         try {{
             document.cookie = 'jwt_token=' + token + '; path=/; max-age=604800; SameSite=None; Secure';
-            console.log('[IframeAuth] Token saved to cookie');
         }} catch (e) {{
-            console.warn('[IframeAuth] Cookie not available:', e);
+            // Best-effort only. localStorage auth above may already be enough.
         }}
 
         // Redirect to the target page
-        console.log('[IframeAuth] Redirecting to:', redirect);
         window.location.href = redirect;
     }})();
     </script>
