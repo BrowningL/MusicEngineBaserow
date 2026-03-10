@@ -175,10 +175,20 @@ def redeem_launch_session(launch_id: str):
             f"{MUSICENGINE_APP_URL}/api/baserow/iframe-launch/{launch_id}",
             headers={'Accept': 'application/json'},
             timeout=IFRAME_LAUNCH_TIMEOUT_SECONDS,
+            allow_redirects=False,
         )
     except requests.RequestException as exc:
         logger.error("Iframe launch redemption request failed - %s", exc)
         return None, HttpResponse('Failed to start workspace session', status=502)
+
+    if 300 <= response.status_code < 400:
+        logger.warning(
+            "Iframe launch redemption was redirected with status=%s for launch_id=%s to location=%s",
+            response.status_code,
+            launch_id,
+            response.headers.get('Location'),
+        )
+        return None, HttpResponse('Failed to redeem workspace session', status=502)
 
     if response.status_code == 410:
         return None, HttpResponse('Workspace session expired', status=410)
