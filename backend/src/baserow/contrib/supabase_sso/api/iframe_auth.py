@@ -97,7 +97,8 @@ def build_iframe_bootstrap_html(refresh_token: str, access_token: str | None, re
     theme_json = json.dumps(sanitize_theme(theme))
     app_origins_json = json.dumps(get_iframe_allowed_origins())
 
-    return """<!DOCTYPE html>
+    return (
+        """<!DOCTYPE html>
 <html>
 <head>
     <title>Authenticating...</title>
@@ -154,11 +155,11 @@ def build_iframe_bootstrap_html(refresh_token: str, access_token: str | None, re
     </div>
     <script>
     (function() {
-        var refreshToken = %s;
-        var apiToken = %s || refreshToken;
-        var redirectPath = %s;
-        var theme = %s;
-        var trustedAppOrigins = %s;
+        var refreshToken = __REFRESH_TOKEN__;
+        var apiToken = __ACCESS_TOKEN__ || refreshToken;
+        var redirectPath = __REDIRECT_PATH__;
+        var theme = __THEME__;
+        var trustedAppOrigins = __TRUSTED_APP_ORIGINS__;
 
         function persistSession() {
             localStorage.setItem('jwt_token', refreshToken);
@@ -403,12 +404,13 @@ def build_iframe_bootstrap_html(refresh_token: str, access_token: str | None, re
     })();
     </script>
 </body>
-</html>""" % (
-        refresh_token_json,
-        access_token_json,
-        redirect_json,
-        theme_json,
-        app_origins_json,
+    )
+        </html>"""
+        .replace('__REFRESH_TOKEN__', refresh_token_json)
+        .replace('__ACCESS_TOKEN__', access_token_json)
+        .replace('__REDIRECT_PATH__', redirect_json)
+        .replace('__THEME__', theme_json)
+        .replace('__TRUSTED_APP_ORIGINS__', app_origins_json)
     )
 
 
