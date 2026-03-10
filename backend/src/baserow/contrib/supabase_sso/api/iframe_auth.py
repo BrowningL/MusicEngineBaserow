@@ -9,8 +9,11 @@ The launch-id flow is preferred because it keeps the real Baserow token and
 redirect target off the browser-visible iframe URL.
 """
 
+import json
 import logging
 import os
+import re
+from urllib.parse import urlparse
 
 import requests
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -18,7 +21,6 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.utils.decorators import method_decorator
-from django.utils.html import escape
 
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -29,6 +31,36 @@ MUSICENGINE_APP_URL = os.environ.get('MUSICENGINE_APP_URL', 'https://musicengine
 IFRAME_LAUNCH_TIMEOUT_SECONDS = float(
     os.environ.get('IFRAME_LAUNCH_REQUEST_TIMEOUT_SECONDS', '5')
 )
+EXTRA_ALLOWED_FRAME_ANCESTORS = os.environ.get(
+    'BASEROW_EXTRA_ALLOWED_FRAME_ANCESTORS',
+    '',
+)
+
+
+def get_origin(url: str) -> str:
+    parsed = urlparse(url)
+    if not parsed.scheme or not parsed.netloc:
+        return ''
+    return f"{parsed.scheme}://{parsed.netloc}"
+
+
+def get_iframe_allowed_origins() -> list[str]:
+    configured_origins = [
+        get_origin(MUSICENGINE_APP_URL),
+    ]
+
+    for origin in re.split(r'[\s,]+', EXTRA_ALLOWED_FRAME_ANCESTORS.strip()):
+        if origin:
+            configured_origins.append(origin)
+
+    deduped_origins = []
+    for origin in configured_origins:
+        cleaned_origin = (origin or '').strip().rstrip('/')
+        if not cleaned_origin or cleaned_origin in deduped_origins:
+            continue
+        deduped_origins.append(cleaned_origin)
+
+    return deduped_origins
 
 
 def sanitize_theme(theme: str) -> str:
@@ -58,101 +90,334 @@ def validate_refresh_token(token: str) -> int | None:
         return None
 
 
-def build_iframe_bootstrap_html(token: str, redirect_path: str, theme: str) -> str:
-    safe_token = escape(token)
-    safe_redirect = escape(redirect_path)
-    safe_theme = sanitize_theme(theme)
+def build_iframe_bootstrap_html(refresh_token: str, access_token: str | None, redirect_path: str, theme: str) -> str:
+    refresh_token_json = json.dumps(refresh_token)
+    access_token_json = json.dumps(access_token or '')
+    redirect_json = json.dumps(redirect_path)
+    theme_json = json.dumps(sanitize_theme(theme))
+    app_origins_json = json.dumps(get_iframe_allowed_origins())
 
-    return f'''<!DOCTYPE html>
+    return """<!DOCTYPE html>
 <html>
 <head>
     <title>Authenticating...</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        html, body {
             margin: 0;
-            background: #1a1a2e;
-            color: #eee;
-        }}
-        .container {{
-            text-align: center;
-            padding: 40px;
-        }}
-        .spinner {{
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto 20px;
-        }}
-        @keyframes spin {{
-            to {{ transform: rotate(360deg); }}
-        }}
-        p {{
-            color: #aaa;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 100vh;
+            color: #334155;
             font-size: 14px;
-        }}
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(51, 65, 85, 0.18);
+            border-top-color: rgba(51, 65, 85, 0.72);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: #ffffff;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="status" id="bootstrap-status">
         <div class="spinner"></div>
-        <p>Authenticating, please wait...</p>
+        <span>Authenticating, please wait...</span>
     </div>
     <script>
-    (function() {{
-        const token = "{safe_token}";
-        const redirect = "{safe_redirect}";
-        const theme = "{safe_theme}";
+    (function() {
+        var refreshToken = %s;
+        var apiToken = %s || refreshToken;
+        var redirectPath = %s;
+        var theme = %s;
+        var trustedAppOrigins = %s;
 
-        // Save to localStorage - this is where Baserow's Nuxt auth looks for the token
-        try {{
-            // Primary key used by Baserow
-            localStorage.setItem('jwt_token', token);
-
-            // Nuxt auth module also uses these keys
-            localStorage.setItem('auth._token.local', 'JWT ' + token);
+        function persistSession() {
+            localStorage.setItem('jwt_token', refreshToken);
+            localStorage.setItem('refresh_token', refreshToken);
             localStorage.setItem('auth.strategy', 'local');
+            if (apiToken) {
+                localStorage.setItem('auth._token.local', 'JWT ' + apiToken);
+                localStorage.setItem('token', apiToken);
+            }
 
-            // Legacy keys that some versions may use
-            localStorage.setItem('token', token);
-
-            // Set theme preference if provided
-            if (theme) {{
+            if (theme) {
                 localStorage.setItem('isrc-theme', theme);
-            }}
-        }} catch (e) {{
-            // Best-effort only. Cookie auth below can still recover the session.
-        }}
+            }
 
-        // Set the jwt_token cookie - this is what Baserow's frontend actually reads
-        // SameSite=None is required for cross-site iframe embedding
-        try {{
-            document.cookie = 'jwt_token=' + token + '; path=/; max-age=604800; SameSite=None; Secure';
-        }} catch (e) {{
-            // Best-effort only. localStorage auth above may already be enough.
-        }}
+            document.cookie = 'jwt_token=' + encodeURIComponent(refreshToken) +
+                '; path=/; max-age=604800; SameSite=None; Secure';
+        }
 
-        // Redirect to the target page
-        window.location.href = redirect;
-    }})();
+        function shouldAttachMusicEngineAuth(url, origin) {
+            try {
+                var parsed = new URL(url, origin);
+
+                if (trustedAppOrigins.indexOf(parsed.origin) === -1) {
+                    return false;
+                }
+
+                if (parsed.pathname.indexOf('/api/catalogue/') === 0) {
+                    return true;
+                }
+
+                if (
+                    parsed.pathname === '/api/playlists/slots' ||
+                    parsed.pathname.indexOf('/api/playlists/slots/') === 0
+                ) {
+                    return true;
+                }
+
+                if (
+                    parsed.pathname === '/api/baserow/trigger-inspiration-download' ||
+                    parsed.pathname.indexOf('/api/baserow/trigger-inspiration-download/') === 0
+                ) {
+                    return true;
+                }
+
+                return false;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function withAuthorizationHeader(headersSource) {
+            var headers = new Headers(headersSource || {});
+            if (!headers.has('Authorization') && apiToken) {
+                headers.set('Authorization', 'Bearer ' + apiToken);
+            }
+            return headers;
+        }
+
+        function patchNetwork(win) {
+            if (!win || win.__musicengineIframeNetworkPatched) {
+                return;
+            }
+
+            win.__musicengineIframeNetworkPatched = true;
+
+            var origin = win.location && win.location.origin
+                ? win.location.origin
+                : window.location.origin;
+
+            if (typeof win.fetch === 'function') {
+                var originalFetch = win.fetch.bind(win);
+                win.fetch = function (input, init) {
+                    var url = '';
+                    if (typeof input === 'string') {
+                        url = input;
+                    } else if (input && typeof input === 'object' && input.url) {
+                        url = input.url;
+                    }
+
+                    if (apiToken && shouldAttachMusicEngineAuth(url, origin)) {
+                        var nextInit = init ? Object.assign({}, init) : {};
+                        var nextHeaders = withAuthorizationHeader(
+                            nextInit.headers ||
+                            (input && typeof input === 'object' && input.headers ? input.headers : undefined)
+                        );
+                        nextInit.headers = nextHeaders;
+
+                        if (input && typeof input === 'object' && input.url) {
+                            return originalFetch(new win.Request(input, nextInit));
+                        }
+
+                        return originalFetch(input, nextInit);
+                    }
+
+                    return originalFetch(input, init);
+                };
+            }
+
+            if (typeof win.XMLHttpRequest === 'function') {
+                var OriginalXHR = win.XMLHttpRequest;
+
+                function WrappedXHR() {
+                    var xhr = new OriginalXHR();
+                    var url = '';
+                    var hasAuthorizationHeader = false;
+
+                    var originalOpen = xhr.open;
+                    xhr.open = function (method, nextUrl) {
+                        url = nextUrl || '';
+                        return originalOpen.apply(xhr, arguments);
+                    };
+
+                    var originalSetRequestHeader = xhr.setRequestHeader;
+                    xhr.setRequestHeader = function (header, value) {
+                        if (String(header || '').toLowerCase() === 'authorization') {
+                            hasAuthorizationHeader = true;
+                        }
+                        return originalSetRequestHeader.apply(xhr, arguments);
+                    };
+
+                    var originalSend = xhr.send;
+                    xhr.send = function () {
+                        if (apiToken && !hasAuthorizationHeader && shouldAttachMusicEngineAuth(url, origin)) {
+                            try {
+                                originalSetRequestHeader.call(xhr, 'Authorization', 'Bearer ' + apiToken);
+                            } catch (e) {
+                                // Best effort.
+                            }
+                        }
+                        return originalSend.apply(xhr, arguments);
+                    };
+
+                    return xhr;
+                }
+
+                WrappedXHR.UNSENT = OriginalXHR.UNSENT;
+                WrappedXHR.OPENED = OriginalXHR.OPENED;
+                WrappedXHR.HEADERS_RECEIVED = OriginalXHR.HEADERS_RECEIVED;
+                WrappedXHR.LOADING = OriginalXHR.LOADING;
+                WrappedXHR.DONE = OriginalXHR.DONE;
+                WrappedXHR.prototype = OriginalXHR.prototype;
+
+                win.XMLHttpRequest = WrappedXHR;
+            }
+        }
+
+        function syncTokenToFrame(frameEl, nextToken) {
+            if (!frameEl || !frameEl.contentWindow || !nextToken) {
+                return;
+            }
+            try {
+                frameEl.contentWindow.postMessage({
+                    type: 'BASEROW_TOKEN_UPDATE',
+                    token: nextToken
+                }, '*');
+            } catch (e) {
+                // Best effort.
+            }
+        }
+
+        function wireMessageBridge(frameEl) {
+            if (!frameEl || window.__musicengineIframeBridgeAttached) {
+                return;
+            }
+
+            window.__musicengineIframeBridgeAttached = true;
+
+            window.addEventListener('message', function (event) {
+                var data = event.data || {};
+
+                if (event.source === frameEl.contentWindow) {
+                    if (data.type === 'BASEROW_REFRESH_REQUEST' || data.type === 'BASEROW_SESSION_DEAD') {
+                        try {
+                            window.parent.postMessage(data, '*');
+                        } catch (e) {
+                            // Best effort.
+                        }
+                    }
+                    return;
+                }
+
+                if (event.source !== window.parent) {
+                    return;
+                }
+
+                if (data.type === 'BASEROW_TOKEN_UPDATE' && data.token) {
+                    apiToken = data.token;
+                    try {
+                        localStorage.setItem('auth._token.local', 'JWT ' + apiToken);
+                        localStorage.setItem('token', apiToken);
+                    } catch (e) {
+                        // Best effort.
+                    }
+                    syncTokenToFrame(frameEl, data.token);
+                    return;
+                }
+
+                if (data.type === 'BASEROW_SESSION_DEAD') {
+                    try {
+                        frameEl.contentWindow && frameEl.contentWindow.postMessage(data, '*');
+                    } catch (e) {
+                        // Best effort.
+                    }
+                }
+            });
+        }
+
+        function mountWorkspaceFrame() {
+            document.body.innerHTML =
+                '<iframe id="musicengine-workspace-frame" title="Baserow Workspace"></iframe>';
+
+            var frame = document.getElementById('musicengine-workspace-frame');
+            if (!frame) {
+                window.location.href = redirectPath;
+                return;
+            }
+
+            wireMessageBridge(frame);
+
+            var initializeFrame = function () {
+                try {
+                    patchNetwork(frame.contentWindow);
+                    syncTokenToFrame(frame, apiToken);
+                } catch (e) {
+                    // Best effort.
+                }
+            };
+
+            frame.addEventListener('load', initializeFrame);
+            frame.src = redirectPath;
+            setTimeout(initializeFrame, 500);
+        }
+
+        try {
+            persistSession();
+        } catch (e) {
+            document.body.innerHTML = '<div class="status">Authentication failed.</div>';
+            return;
+        }
+
+        mountWorkspaceFrame();
+    })();
     </script>
 </body>
-</html>'''
+</html>""" % (
+        refresh_token_json,
+        access_token_json,
+        redirect_json,
+        theme_json,
+        app_origins_json,
+    )
 
 
-def build_iframe_bootstrap_response(token: str, redirect_path: str, theme: str):
-    if not token:
+def build_iframe_bootstrap_response(refresh_token: str, access_token: str | None, redirect_path: str, theme: str):
+    if not refresh_token:
         logger.warning("Iframe login called without token")
         return HttpResponseBadRequest('Missing token parameter')
 
-    user_id = validate_refresh_token(token)
+    user_id = validate_refresh_token(refresh_token)
     if not user_id:
         return HttpResponseBadRequest('Invalid or expired token')
 
@@ -165,8 +430,23 @@ def build_iframe_bootstrap_response(token: str, redirect_path: str, theme: str):
         safe_theme or 'default',
     )
 
-    html = build_iframe_bootstrap_html(token, redirect_path, safe_theme)
-    return HttpResponse(html, content_type='text/html')
+    html = build_iframe_bootstrap_html(refresh_token, access_token, redirect_path, safe_theme)
+    response = HttpResponse(html, content_type='text/html')
+    response.set_cookie(
+        'jwt_token',
+        refresh_token,
+        max_age=604800,
+        httponly=False,
+        secure=True,
+        samesite='None',
+        path='/',
+    )
+
+    allowed_origins = get_iframe_allowed_origins()
+    if allowed_origins:
+        response['Content-Security-Policy'] = f"frame-ancestors {' '.join(allowed_origins)}"
+    response['X-Frame-Options'] = 'ALLOWALL'
+    return response
 
 
 def redeem_launch_session(launch_id: str):
@@ -207,9 +487,10 @@ def redeem_launch_session(launch_id: str):
         logger.error("Iframe launch redemption returned invalid JSON for launch_id=%s", launch_id)
         return None, HttpResponse('Invalid workspace session response', status=502)
 
-    token = payload.get('token')
+    access_token = payload.get('access_token')
     redirect_path = payload.get('redirect_path', '/dashboard')
-    if not isinstance(token, str) or not token:
+    refresh_token = payload.get('refresh_token') or payload.get('token')
+    if not isinstance(refresh_token, str) or not refresh_token:
         logger.error("Iframe launch redemption missing token for launch_id=%s", launch_id)
         return None, HttpResponse('Invalid workspace session payload', status=502)
 
@@ -217,8 +498,9 @@ def redeem_launch_session(launch_id: str):
         redirect_path = '/dashboard'
 
     return {
+        'access_token': access_token if isinstance(access_token, str) and access_token else None,
         'redirect_path': redirect_path,
-        'token': token,
+        'refresh_token': refresh_token,
     }, None
 
 
@@ -226,10 +508,11 @@ def redeem_launch_session(launch_id: str):
 @method_decorator(xframe_options_exempt, name='dispatch')
 class IframeLoginView(View):
     def get(self, request):
-        token = request.GET.get('token', '')
+        refresh_token = request.GET.get('token', '')
+        access_token = request.GET.get('access_token', '')
         redirect_path = request.GET.get('redirect', '/dashboard')
         theme = request.GET.get('theme', '')
-        return build_iframe_bootstrap_response(token, redirect_path, theme)
+        return build_iframe_bootstrap_response(refresh_token, access_token, redirect_path, theme)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -245,7 +528,8 @@ class IframeLaunchView(View):
             return error_response
 
         return build_iframe_bootstrap_response(
-            payload['token'],
+            payload.get('refresh_token', ''),
+            payload.get('access_token'),
             payload['redirect_path'],
             request.GET.get('theme', ''),
         )
